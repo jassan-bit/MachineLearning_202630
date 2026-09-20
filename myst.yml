@@ -1,0 +1,19 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+
+version: 1
+
+project:
+  id: e8d525b8-d48d-441f-be80-f57b96fb5f79
+  title: Machine Learning
+  # description:
+  # keywords: []
+  # authors: []
+
+  toc:
+    - file: model_evaluation.ipynb
+
+site:
+  template: book-theme
+  # options:
+  #   favicon: favicon.ico
+  #   logo: site_logo.png
