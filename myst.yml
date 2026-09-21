@@ -2,30 +2,27 @@
 
 project:
   title: "Primer Entregable del Proyecto de Investigación"
-  description: "SelecciÃ³n de base de datos, anÃ¡lisis exploratorio e implementaciÃ³n de modelo base"
+  description: "Selección de base de datos, análisis exploratorio e implementación de modelo base"
   keywords:
     - Machine Learning
     - Criptomonedas
-    - RegresiÃ³n temporal
+    - Regresión temporal
     - Binance
     - Series temporales
-
   authors:
     - name: Jassan Alberto Arteta Chavarro
-
-  bibliography:
-    - references.bib
-
   toc:
     - file: intro.md
       title: Inicio
-
     - file: database.md
       title: 1. Base de Datos
-
     - file: eda.ipynb
       title: 2. Análisis Exploratorio de Datos (EDA)
     - file: model_base.ipynb
       title: 3. Modelo Base
     - file: conclusions.ipynb
       title: 4. Conclusiones, Limitaciones y Reproducibilidad
+
+site:
+  template: book-theme
+  title: "Machine Learning - Proyecto de Investigación"
