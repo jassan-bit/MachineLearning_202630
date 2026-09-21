@@ -1,12 +1,12 @@
-version: 1
+﻿version: 1
 
 project:
   title: "Primer Entregable del Proyecto de Investigación"
-  description: "Selección de base de datos, análisis exploratorio e implementación de modelo base"
+  description: "SelecciÃ³n de base de datos, anÃ¡lisis exploratorio e implementaciÃ³n de modelo base"
   keywords:
     - Machine Learning
     - Criptomonedas
-    - Regresión temporal
+    - RegresiÃ³n temporal
     - Binance
     - Series temporales
 
@@ -24,11 +24,10 @@ project:
       title: 1. Base de Datos
 
     - file: model_evaluation.ipynb
-      title: 2. EDA y 3. Modelo Base
+      title: 2. EDA, 3. Modelo Base y 4. Conclusiones
 
-    - file: conclusions.md
-      title: 4. Conclusiones, Limitaciones y Reproducibilidad
 
 site:
   template: book-theme
   title: "Machine Learning - Proyecto de Investigación"
+
