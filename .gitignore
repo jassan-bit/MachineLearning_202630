@@ -2,3 +2,6 @@
 _build
 
 data/
+model_evaluation.ipynb
+model_evaluation_backup.ipynb
+model_evaluation_pre_2_1.ipynb

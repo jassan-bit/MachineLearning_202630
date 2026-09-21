@@ -23,11 +23,9 @@ project:
     - file: database.md
       title: 1. Base de Datos
 
-    - file: model_evaluation.ipynb
-      title: 2. EDA, 3. Modelo Base y 4. Conclusiones
-
-
-site:
-  template: book-theme
-  title: "Machine Learning - Proyecto de Investigación"
-
+    - file: eda.ipynb
+      title: 2. Análisis Exploratorio de Datos (EDA)
+    - file: model_base.ipynb
+      title: 3. Modelo Base
+    - file: conclusions.ipynb
+      title: 4. Conclusiones, Limitaciones y Reproducibilidad
