@@ -44,7 +44,9 @@ Los datos fueron obtenidos directamente del mercado **Spot de Binance** mediante
 
 Se utilizó el endpoint de velas o *klines*:
 
-`/api/v3/klines`
+**URL oficial:** <https://data-api.binance.vision/api/v3/klines>
+
+Este endpoint público (GET /api/v3/klines) permite descargar directamente las velas históricas del mercado Spot de Binance.
 
 Los pares analizados son:
 
