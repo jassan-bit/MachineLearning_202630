@@ -1,28 +1,20 @@
-﻿version: 1
-
+# TOC del libro: Inicio y capítulos 1–4 derivados del notebook maestro final.
+# Publicación desde salidas guardadas; las celdas de código usan skip-execution.
+version: 1
 project:
-  title: "Primer Entregable del Proyecto de Investigación"
-  description: "Selección de base de datos, análisis exploratorio e implementación de modelo base"
-  keywords:
-    - Machine Learning
-    - Criptomonedas
-    - Regresión temporal
-    - Binance
-    - Series temporales
+  title: Pronóstico de Volatilidad en Mercados de Criptomonedas mediante MLP Multisalida
   authors:
-    - name: Jassan Alberto Arteta Chavarro
+  - name: Jassan Alberto Arteta Chavarro
   toc:
-    - file: intro.md
-      title: Inicio
-    - file: database.md
-      title: 1. Base de Datos
-    - file: eda.ipynb
-      title: 2. Análisis Exploratorio de Datos (EDA)
-    - file: model_base.ipynb
-      title: 3. Modelo Base
-    - file: conclusions.ipynb
-      title: 4. Conclusiones, Limitaciones y Reproducibilidad
-
+  - file: intro.md
+    title: Inicio
+  - file: database.md
+    title: 1. Base de Datos
+  - file: eda.ipynb
+    title: 2. Análisis Exploratorio de Datos (EDA)
+  - file: model_base.ipynb
+    title: 3. Pronóstico de Volatilidad con MLP Multisalida
+  - file: conclusions.ipynb
+    title: 4. Conclusiones, Limitaciones y Reproducibilidad
 site:
   template: book-theme
-  title: "Machine Learning - Proyecto de Investigación"

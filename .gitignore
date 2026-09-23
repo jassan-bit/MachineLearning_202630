@@ -1,7 +1,16 @@
-# MyST build outputs
-_build
+﻿__pycache__/
+.ipynb_checkpoints/
+_build/
+data/raw/
+data/processed/
+*.pyc
+.env
 
-data/
+# Local-only master and editing artifacts
 model_evaluation.ipynb
 model_evaluation_backup.ipynb
 model_evaluation_pre_2_1.ipynb
+crypto_binance_master_1h.csv
+Microsoft/
+append_book.py
+finish_book.py

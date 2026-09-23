@@ -1,331 +1,104 @@
-﻿# 1. Base de Datos
+# 1. Base de Datos
 
-## 1.1 Definición del problema de investigación
+## Fuente, frecuencia y período
 
-Este proyecto aborda un problema de **regresión temporal aplicado al mercado de criptomonedas**.
+La fuente es **Binance Spot**, mediante su endpoint público de velas históricas:
 
-El objetivo consiste en utilizar información histórica de mercado para construir un modelo capaz de predecir una variable continua asociada al comportamiento futuro de los rendimientos de los criptoactivos.
+[https://data-api.binance.vision/api/v3/klines](https://data-api.binance.vision/api/v3/klines)
 
-Los criptoactivos considerados son:
+La frecuencia es **1h** y el período solicitado es **2020-01-01 a 2026-09-20**, con la fecha final interpretada como día completo en UTC. Se consideran cinco activos: **BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT**. La disponibilidad efectiva de cada serie puede comenzar después del inicio solicitado.
 
-- BTCUSDT
-- ETHUSDT
-- BNBUSDT
-- XRPUSDT
-- SOLUSDT
+El flujo de adquisición descarga automáticamente los datos mediante paginación cuando no dispone de la caché local, o cuando se fuerza explícitamente una descarga. El archivo `data/processed/crypto_binance_master_1h.csv` funciona como **caché reproducible**: con `FORCE_DOWNLOAD = False` y el archivo existente, se carga el CSV sin consultar de nuevo Binance. Este libro utiliza la caché y las salidas existentes; no descarga ni regenera datos.
 
-Debido a que las observaciones poseen fecha y hora, se encuentran ordenadas cronológicamente y presentan dependencia temporal, el problema corresponde a la **Ruta C: Regresión temporal** definida para el proyecto.
+## Variables originales y símbolo
 
-La variable objetivo se construirá a partir del **rendimiento logarítmico futuro del precio de cierre**, preservando estrictamente el orden temporal de las observaciones.
+Las velas proporcionan las siguientes variables:
 
----
+| Variable | Descripción |
+|---|---|
+| `open_time` | Fecha y hora de apertura de la vela. |
+| `open` | Precio de apertura. |
+| `high` | Precio máximo. |
+| `low` | Precio mínimo. |
+| `close` | Precio de cierre. |
+| `volume` | Volumen negociado en el activo base. |
+| `close_time` | Fecha y hora de cierre de la vela. |
+| `quote_asset_volume` | Volumen negociado en el activo de cotización. |
+| `number_of_trades` | Número de operaciones. |
+| `taker_buy_base_asset_volume` | Volumen comprador taker en el activo base. |
+| `taker_buy_quote_asset_volume` | Volumen comprador taker en el activo de cotización. |
+| `ignore` | Campo auxiliar del endpoint, descartado durante el procesamiento. |
 
-## 1.2 Justificación de la selección del dataset
+Se añade `symbol` para identificar cada criptomoneda. Se conservan las variables OHLCV y de actividad suministradas por la fuente, aunque la entrada del MLP utiliza únicamente la historia de `volatility`.
 
-El mercado de criptomonedas constituye un entorno apropiado para el estudio de modelos de Machine Learning aplicados a series temporales debido a características como:
+## Procesamiento temporal y período común
 
-- Alta frecuencia de observación.
-- Elevada volatilidad.
-- Comportamientos no lineales.
-- Presencia de movimientos extremos.
-- Cambios de régimen.
-- Dependencia temporal.
-- Operación continua durante las 24 horas del día.
+Los timestamps numéricos recibidos del endpoint se convierten desde milisegundos a UTC. Al leer el CSV, las fechas ISO con formatos mixtos se convierten mediante `pd.to_datetime(..., format="mixed", utc=True)` para `open_time` y `close_time`. Las variables numéricas se convierten a sus tipos correspondientes.
 
-Estas características permiten desarrollar un problema de regresión temporal con un número elevado de observaciones y evaluar rigurosamente aspectos como el orden cronológico, la volatilidad, la construcción de variables rezagadas y la prevención de fuga de información.
+Las observaciones se ordenan por `symbol` y `open_time` y se eliminan duplicados de esa pareja. El período común se obtiene tomando la **mayor fecha inicial** y la **menor fecha final** disponibles entre los cinco activos. A continuación, cada serie se restringe a ese intervalo compartido.
 
-El dataset seleccionado supera ampliamente el número mínimo de observaciones requerido para el desarrollo del proyecto.
+La diferencia entre aperturas consecutivas se calcula por símbolo en `delta_h`. Cuando no es exactamente una hora, se marca `new_segment` y se inicia un nuevo `segment_id`. Los identificadores de segmento se interpretan junto con el símbolo. No se rellenan huecos ni se construyen retornos o ventanas supervisadas atravesando discontinuidades.
 
----
+## Retorno logarítmico y variable objetivo
 
-## 1.3 Fuente de los datos y condiciones de uso
+Dentro de cada símbolo y segmento continuo se calcula:
 
-Los datos fueron obtenidos directamente del mercado **Spot de Binance** mediante su interfaz pública de datos de mercado.
+$$r_t = \ln\left(\frac{P_t}{P_{t-1}}\right),$$
 
-Se utilizó el endpoint de velas o *klines*:
+donde $P_t$ es `close`. Esta variable se almacena como `log_return`.
 
-**URL oficial:** <https://data-api.binance.vision/api/v3/klines>
+El target único es `volatility`, la desviación estándar móvil muestral de los últimos **30 retornos horarios**:
 
-Este endpoint público (GET /api/v3/klines) permite descargar directamente las velas históricas del mercado Spot de Binance.
+$$\sigma_t = \operatorname{std}(r_{t-29},\ldots,r_t).$$
 
-Los pares analizados son:
+Se utiliza `window=30`, `min_periods=30` y `ddof=1`, sin anualizar. El primer retorno de cada segmento no está definido y se requieren 31 cierres consecutivos para obtener 30 retornos válidos. Solo se excluyen las filas no utilizables por `log_return` o `volatility`, y se comprueba que no existan infinitos.
 
-- BTCUSDT
-- ETHUSDT
-- BNBUSDT
-- XRPUSDT
-- SOLUSDT
+La serie limpia alimenta el EDA y las ventanas supervisadas del modelo. Los valores **7, 14, 21 y 28** representan longitudes de entrada del MLP; no cambian la definición del target de 30 horas. Todos los experimentos predicen las siguientes **7 horas** de la misma variable objetivo.
 
-La frecuencia seleccionada es de **una hora (1h)** y todas las marcas temporales se manejan en **UTC**.
+## De la serie preparada a las muestras supervisadas
 
-El periodo inicial de extracción fue establecido entre el **1 de enero de 2020** y el **20 de septiembre de 2026**.
+Para cada activo y `segment_id`, la entrada contiene las últimas `w` observaciones de `volatility`, con `w` en {7, 14, 21, 28}; la salida contiene las siguientes siete observaciones. El salto entre muestras es una hora y la ventana completa de entrada y salida debe pertenecer a un mismo segmento continuo.
 
-Debido a que SOLUSDT comenzó a disponer de observaciones posteriormente, el análisis conjunto utiliza el periodo temporal común a los cinco criptoactivos.
+La separación cronológica se realiza antes del escalamiento. Se usan cinco folds expansivos a partir de siete bloques consecutivos y se purgan las muestras que se solapan en las fronteras entre train, validation y test. En cada fold, los dos `StandardScaler`, para entradas y objetivos, se ajustan solo con train. El detalle del diagnóstico de timeseries-cv y de la adaptación se conserva en [el capítulo de modelado](model_base.ipynb); las tablas y figuras de preparación se presentan en [el EDA](eda.ipynb).
 
-Los datos corresponden a información pública de mercado. La fuente, el periodo, la frecuencia y el procedimiento de extracción se documentan con el propósito de garantizar la trazabilidad y reproducibilidad del análisis.
 
-Las condiciones específicas de utilización y redistribución de la información estarán sujetas a los términos vigentes establecidos por el proveedor de los datos.
+## 1.6 Definición del problema de investigación
 
----
+El problema consiste en pronosticar la volatilidad futura de cinco criptomonedas usando exclusivamente información histórica disponible hasta el tiempo t, entendido como el cierre de la última vela observada. La salida multistep es `volatility_(t+1), ..., volatility_(t+7)`. El target permanece definido como la desviación estándar muestral móvil de 30 retornos horarios, sin anualización.
 
-## 1.4 Diccionario de variables
+## 1.7 Justificación de la selección del dataset
 
-| Variable | Tipo | Unidad | Significado |
-|---|---|---|---|
-| `symbol` | Categórica | - | Identificador del par negociado |
-| `open_time` | Temporal | UTC | Fecha y hora de inicio de la vela |
-| `open` | Numérica continua | USDT por unidad del activo base | Precio de apertura |
-| `high` | Numérica continua | USDT por unidad del activo base | Precio máximo alcanzado durante la vela |
-| `low` | Numérica continua | USDT por unidad del activo base | Precio mínimo alcanzado durante la vela |
-| `close` | Numérica continua | USDT por unidad del activo base | Precio de cierre |
-| `volume` | Numérica continua | Activo base | Volumen negociado del activo base |
-| `close_time` | Temporal | UTC | Fecha y hora de cierre de la vela |
-| `quote_asset_volume` | Numérica continua | USDT | Volumen negociado expresado en el activo cotizado |
-| `number_of_trades` | Numérica discreta | Operaciones | Número de operaciones registradas durante la vela |
-| `taker_buy_base_volume` | Numérica continua | Activo base | Volumen de compras *taker* expresado en el activo base |
-| `taker_buy_quote_volume` | Numérica continua | USDT | Volumen de compras *taker* expresado en el activo cotizado |
+Binance Spot proporciona información financiera real, disponibilidad histórica y frecuencia horaria mediante una API pública. El alto número de observaciones permite estudiar un problema de forecasting temporal con varios períodos de evaluación. La caché CSV y la configuración explícita de fechas, activos y transformaciones facilitan la reproducibilidad del estudio.
 
----
+## 1.8 Tamaño de la muestra
 
-## 1.5 Estructura de los datos
+Las cifras siguientes proceden de las salidas guardadas de adquisición, período común y construcción del target en el maestro (celdas 4, 6 y 8, numeración desde 1).
 
-La unidad de observación está definida por la combinación:
+| Activo | Filas originales en la caché | Filas del período común | Observaciones utilizables |
+|---|---:|---:|---:|
+| BTCUSDT | 58.888 | 53.542 | 53.212 |
+| ETHUSDT | 58.888 | 53.542 | 53.212 |
+| BNBUSDT | 58.888 | 53.542 | 53.212 |
+| XRPUSDT | 58.888 | 53.542 | 53.212 |
+| SOLUSDT | 53.542 | 53.542 | 53.212 |
+| Total | 289.094 | 267.710 | 266.060 |
 
-**criptoactivo × hora**
+Son cinco activos. La caché tiene 12 columnas: 11 campos conservados de Binance y `symbol`; `ignore` ya fue descartado. La preparación añade `delta_h`, `new_segment`, `segment_id`, `log_return` y `volatility`, para 17 columnas. Esto no equivale a 17 predictores: el MLP usa una única variable, `volatility`, representada mediante 7, 14, 21 o 28 rezagos. El tamaño supera ampliamente las 20.000 observaciones indicadas por la guía, incluso por activo. La dependencia temporal impide interpretar cada fila como una réplica estadística independiente.
 
-El nivel de agregación temporal es de **una hora**.
+## 1.9 Calidad de los datos
 
-El dataset presenta una estructura de **panel temporal multiactivo**, debido a que varios criptoactivos son observados repetidamente a través del tiempo.
+Las salidas existentes registran cero NaN en las 12 columnas originales del período común y cero duplicados de la pareja `symbol/open_time` tras ordenar y deduplicar. Una pareja única implica también ausencia de filas completas duplicadas en ese conjunto; fechas iguales entre activos distintos son esperadas y no son duplicados de una serie.
 
-Las características principales de la estructura son:
+Se registraron 10 saltos horarios por activo, 50 eventos activo-fecha en total, y 11 segmentos por activo. No son 50 horas ausentes: cada salto puede cubrir más de una hora. `delta_h` mide la separación horaria y tiene cinco NaN iniciales, uno por activo, porque no existe una observación previa. `segment_id` reinicia la construcción de retornos y ventanas ante discontinuidades.
 
-- **Número de criptoactivos:** 5.
-- **Frecuencia temporal:** 1 hora.
-- **Zona horaria:** UTC.
-- **Mercado:** Binance Spot.
-- **Tipo de problema:** regresión temporal.
-- **Variable objetivo:** continua.
-- **Componente espacial:** no aplica.
+El primer retorno de cada segmento no puede calcularse: hay 55 NaN de `log_return` (11 por activo). La volatilidad requiere 30 retornos válidos, equivalentes a 31 cierres consecutivos; aparecen 1.650 NaN de `volatility` (330 por activo). Los NaN de retorno están incluidos en esas filas, por lo que se eliminan determinísticamente 1.650 filas, no la suma de ambas cuentas. La auditoría guardada informa cero infinitos en todas las columnas numéricas. Las observaciones útiles tienen retornos y volatilidad finitos; no se rellenan huecos ni se unen extremos de segmentos.
 
-Para el análisis conjunto se utiliza un periodo común en el cual los cinco criptoactivos poseen exactamente las mismas marcas temporales.
+Los valores extremos no se eliminan automáticamente, ya que en series financieras los retornos extremos y los episodios de alta volatilidad contienen información relevante sobre riesgo y comportamiento del mercado.
 
-La estructura cronológica de los datos obliga a mantener el orden temporal durante todas las etapas de partición, preprocesamiento, entrenamiento y evaluación.
+## 1.10 Sesgos y representatividad
 
----
+Se estudian cinco criptomonedas de Binance Spot durante un período específico: solicitado desde 2020-01-01 hasta 2026-09-20, con período común desde 2020-08-11 06:00 UTC hasta 2026-09-20 23:00 UTC. La selección de activos, exchange y regímenes observados limita la representatividad. Los resultados no necesariamente representan otros exchanges ni todos los criptoactivos.
 
-## 1.6 Tamaño de la muestra
+## 1.11 Consideraciones éticas
 
-El dataset correspondiente al periodo temporal común contiene:
-
-- **267.595 observaciones**.
-- **5 criptoactivos**.
-- **12 variables originales**.
-- Aproximadamente **53.519 observaciones por criptoactivo** antes de construir la variable objetivo.
-
-La relación entre el número de observaciones y el número de variables originales es:
-
-$$
-\frac{n}{p}
-=
-\frac{267\,595}{12}
-\approx 22\,299.58
-$$
-
-donde:
-
-- $n = 267\,595$ corresponde al número de observaciones.
-- $p = 12$ corresponde al número de variables originales.
-
-Por lo tanto, existe un número de observaciones considerablemente superior al número de variables.
-
-El tamaño de la muestra supera ampliamente el mínimo de **20.000 observaciones** establecido para el entregable.
-
-### Entidades independientes
-
-El dataset contiene cinco entidades principales correspondientes a los pares:
-
-1. BTCUSDT
-2. ETHUSDT
-3. BNBUSDT
-4. XRPUSDT
-5. SOLUSDT
-
-Cada entidad es observada repetidamente a través del tiempo.
-
-### Rango de la variable objetivo
-
-La variable objetivo es continua y corresponde al rendimiento logarítmico futuro.
-
-Su rango, tendencia central, dispersión, asimetría, curtosis y comportamiento en las colas serán estudiados detalladamente durante el Análisis Exploratorio de Datos.
-
----
-
-## 1.7 Calidad de los datos
-
-La calidad del dataset fue evaluada antes de iniciar el modelado.
-
-Se verificaron valores faltantes, duplicados, consistencia de precios, volúmenes, continuidad temporal y presencia de valores extremos.
-
-### 1.7.1 Valores faltantes
-
-El control realizado sobre las variables originales no identificó valores faltantes.
-
-Los valores ausentes encontrados posteriormente corresponden únicamente a variables auxiliares derivadas.
-
-Por ejemplo, la variable utilizada para medir la diferencia temporal entre observaciones presenta naturalmente un valor ausente en la primera observación de cada criptoactivo, debido a que no existe una observación anterior con la cual realizar la comparación.
-
-Estos valores no representan pérdida de información del dataset original.
-
-Debido a que las variables originales no presentan valores faltantes, no resulta necesario clasificar un mecanismo de ausencia como:
-
-- MCAR (*Missing Completely At Random*).
-- MAR (*Missing At Random*).
-- MNAR (*Missing Not At Random*).
-
-Tampoco se requiere realizar imputación sobre las variables originales.
-
----
-
-### 1.7.2 Duplicados exactos y casi duplicados
-
-No se identificaron duplicados exactos.
-
-Tampoco se identificaron registros duplicados para la combinación:
-
-`symbol + open_time`
-
-Esta combinación identifica de manera única cada observación dentro del panel temporal.
-
-La revisión de registros casi duplicados se mantendrá como parte de la auditoría del dataset antes del modelado definitivo.
-
----
-
-### 1.7.3 Outliers
-
-El mercado de criptomonedas puede presentar movimientos de precios y rendimientos considerablemente elevados.
-
-Por esta razón, un valor extremo no será considerado automáticamente un error.
-
-El procedimiento utilizado será:
-
-1. Detectar estadísticamente las observaciones extremas.
-2. Compararlas con los precios originales.
-3. Verificar su coherencia temporal.
-4. Diferenciar errores de registro de movimientos reales del mercado.
-5. Conservar los movimientos extremos legítimos.
-
-Esta decisión es especialmente importante debido a que los eventos extremos pueden contener información relevante para la predicción financiera.
-
----
-
-### 1.7.4 Valores imposibles o inconsistentes
-
-Se realizaron controles sobre las variables de precios OHLC, volumen, número de operaciones y marcas temporales.
-
-No se identificaron:
-
-- Precios menores o iguales a cero.
-- Volúmenes negativos.
-- Número de operaciones negativo.
-- Valores infinitos.
-- Registros duplicados.
-- Inconsistencias entre `Open`, `High`, `Low` y `Close`.
-- Registros cuyo tiempo de cierre sea anterior o igual al tiempo de apertura.
-
-Las relaciones utilizadas para comprobar la consistencia de las variables OHLC incluyen:
-
-$$
-High \geq Open
-$$
-
-$$
-High \geq Close
-$$
-
-$$
-High \geq Low
-$$
-
-$$
-Low \leq Open
-$$
-
-$$
-Low \leq Close
-$$
-
-No se detectaron violaciones de estas condiciones.
-
----
-
-### 1.7.5 Continuidad temporal
-
-Durante la auditoría temporal se detectaron **10 discontinuidades temporales** comunes a los cinco criptoactivos.
-
-Las interrupciones aparecen simultáneamente en:
-
-- BTCUSDT
-- ETHUSDT
-- BNBUSDT
-- XRPUSDT
-- SOLUSDT
-
-Además, se verificó que, dentro del periodo temporal común, los cinco activos poseen exactamente el mismo conjunto de marcas temporales.
-
-Por tanto, el panel se encuentra sincronizado entre activos.
-
-No se realizará interpolación artificial de precios para completar las discontinuidades detectadas.
-
-En su lugar, las discontinuidades serán identificadas explícitamente y la construcción de:
-
-- rezagos,
-- rendimientos,
-- ventanas móviles,
-- indicadores de volatilidad
-
-se realizará respetando los segmentos temporales continuos.
-
-Esto evita generar retornos artificiales a través de periodos sin observaciones.
-
----
-
-### 1.7.6 Sesgos de muestreo y representatividad
-
-Los datos proceden exclusivamente del mercado **Spot de Binance**.
-
-Por esta razón, los resultados representan directamente el comportamiento de los pares seleccionados dentro de este mercado y no necesariamente el comportamiento completo del mercado global de criptomonedas.
-
-También existe un criterio de selección asociado a utilizar cinco criptoactivos de alta relevancia y liquidez.
-
-Los resultados deberán interpretarse teniendo en cuenta estas características y no generalizarse automáticamente a:
-
-- Otros exchanges.
-- Criptoactivos con menor liquidez.
-- Mercados de derivados.
-- Otros periodos históricos.
-- La totalidad del mercado global de activos digitales.
-
----
-
-## 1.8 Consideraciones éticas
-
-El dataset contiene exclusivamente información pública y agregada del mercado.
-
-No contiene:
-
-- Nombres de personas.
-- Identificadores personales.
-- Información financiera individual.
-- Direcciones de usuarios.
-- Información médica.
-- Coordenadas geográficas personales.
-- Datos demográficos.
-- Información privada de participantes del mercado.
-
-Las marcas temporales corresponden a velas agregadas y no permiten identificar a participantes individuales.
-
-Por esta razón, el riesgo de reidentificación de personas es mínimo.
-
-Los datos serán utilizados exclusivamente con fines académicos y de investigación.
-
-Asimismo, se mantendrá la trazabilidad de la fuente y se documentarán las transformaciones realizadas sobre los datos con el propósito de favorecer la transparencia y reproducibilidad del estudio.
+Se utilizan datos de mercado agregados: no existen datos personales, identificadores humanos ni información médica o privada en las variables del estudio. No se requieren procedimientos de anonimización. Los resultados tienen fines académicos y no constituyen recomendación financiera.
