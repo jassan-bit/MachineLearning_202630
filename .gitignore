@@ -6,11 +6,24 @@ data/processed/
 *.pyc
 .env
 
-# Local-only master and editing artifacts
+# Datos locales
+data/raw/
+data/processed/
+
+# Build de MyST
+_build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Variables privadas
+.env
+
+# Notebook maestro local
 model_evaluation.ipynb
-model_evaluation_backup.ipynb
-model_evaluation_pre_2_1.ipynb
-crypto_binance_master_1h.csv
+
 Microsoft/
-append_book.py
-finish_book.py
