@@ -27,3 +27,25 @@ __pycache__/
 vol_venv/
 
 Microsoft/
+
+# Exclusiones remotas conservadas (no afectan archivos ya versionados)
+model_evaluation.ipynb
+model_evaluation_backup.ipynb
+model_evaluation_pre_2_1.ipynb
+crypto_binance_master_1h.csv
+append_book.py
+finish_book.py
+
+# Backups, experimentos y diagnosticos exclusivamente locales
+/_backup_tildes_20260924_193840/
+/experiments/
+/model_evaluation_antes_ddof0.ipynb
+/model_evaluation_ddof0_validado.ipynb
+/results/generalization_diagnostics.csv
+/results/generalization_nonoverlap_30h.csv
+/results_ddof1_backup/
+/scripts/test_generalization.py
+/scripts/test_nonoverlap_30h.py
+
+# No agregar nuevas predicciones; las ya versionadas requieren exclusion explicita
+/results/volatility_predictions/*.npz
