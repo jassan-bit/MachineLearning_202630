@@ -1,6 +1,6 @@
 # Pronóstico de Volatilidad en Mercados de Criptomonedas mediante MLP Multisalida
 
-**Autor:** Jassan Alberto Arteta Chavarro
+**Autor:** Jassan Alberto Arteta Chavarro — Mateo Bernal
 
 Este libro presenta un proyecto de pronóstico de volatilidad con datos reales de **Binance Spot**, a frecuencia de **una hora (1h)**, para **BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT**. Cada activo se procesa por separado, respetando el orden temporal y los segmentos continuos de negociación.
 
