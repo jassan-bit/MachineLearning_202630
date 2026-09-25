@@ -129,10 +129,14 @@ def main():
             for fold in range(1, 6):
                 key = (symbol, window, fold)
                 with np.load(prediction_dir / f'{symbol}_w{window}_fold{fold}.npz', allow_pickle=False) as saved:
-                    assert set(saved.files) == {'pred_train', 'pred_val', 'pred_test',
-                                                'train_indices', 'validation_indices', 'test_indices'}
+                    # Both historical archives and the self-contained master's
+                    # archives (which also store y_true) share these fields.
+                    assert {'pred_train', 'pred_val', 'pred_test',
+                            'train_indices', 'validation_indices', 'test_indices'}.issubset(saved.files)
                     indices = saved['test_indices']
                     prediction = saved['pred_test'].copy()
+                    if 'y_test' in saved.files:
+                        np.testing.assert_array_equal(saved['y_test'], observed_y[indices])
                 assert indices.ndim == 1 and np.issubdtype(indices.dtype, np.integer)
                 assert len(indices) > 1 and np.all(np.diff(indices) > 0)
                 assert indices.min() >= 0 and indices.max() < len(observed_y)

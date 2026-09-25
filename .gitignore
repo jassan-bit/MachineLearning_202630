@@ -23,7 +23,7 @@ __pycache__/
 # Variables privadas
 .env
 
-# Notebook maestro local
-model_evaluation.ipynb
+# Entorno local de reproducción
+vol_venv/
 
 Microsoft/
