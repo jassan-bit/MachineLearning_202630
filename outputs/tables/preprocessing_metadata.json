@@ -1,0 +1,12 @@
+{
+  "source": "data/splits/development_80.csv",
+  "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "validation_anchor_start": "2024-07-09 20:00:00+00:00",
+  "demonstration_window": 1,
+  "final_window_selected": false,
+  "imputation": false,
+  "outliers_removed": false,
+  "predictive_model_trained": false,
+  "test_read": false,
+  "sklearn": "1.7.2"
+}

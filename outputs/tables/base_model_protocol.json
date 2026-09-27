@@ -1,0 +1,29 @@
+{
+  "window_closes": 168,
+  "horizon_hours": 24,
+  "volatility_returns": 24,
+  "ddof": 0,
+  "target_scale": "percent",
+  "folds": 5,
+  "C": [
+    0.01,
+    0.1,
+    1.0
+  ],
+  "epsilon": [
+    0.01,
+    0.1
+  ],
+  "estimator": "LinearSVR",
+  "loss": "squared_epsilon_insensitive",
+  "dual": false,
+  "tol": 1e-05,
+  "max_iter": 20000,
+  "seed": 42,
+  "selection": "mean RMSE across 5 assets and 5 folds, shared C and epsilon",
+  "bootstrap_reps": 499,
+  "bootstrap_block_hours": 168,
+  "test_policy": "reserved pending user response",
+  "negative_predictions": "retained, report count; no post-hoc clipping",
+  "budget": "6 configurations x 5 folds x 5 assets; sequential CPU; no adaptive search extension"
+}

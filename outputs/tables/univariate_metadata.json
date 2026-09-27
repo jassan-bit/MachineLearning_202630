@@ -1,0 +1,16 @@
+{
+  "source": "data/splits/development_80.csv",
+  "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "rows": 214165,
+  "std_ddof": 1,
+  "quantiles": "linear",
+  "kurtosis": "Exceso de Fisher corregido por sesgo; referencia normal 0",
+  "normality_tests": "No aplicados: normalidad marginal no requerida; dependencia temporal no compatible con interpretación iid convencional.",
+  "treatment": "Conservar registros sin transformar ni imputar",
+  "target_recalculated": false,
+  "versions": {
+    "pandas": "2.3.3",
+    "numpy": "1.26.4",
+    "matplotlib": "3.10.9"
+  }
+}

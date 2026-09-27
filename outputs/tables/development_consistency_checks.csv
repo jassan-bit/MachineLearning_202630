@@ -1,0 +1,33 @@
+check,evaluated,not_evaluated,flagged
+No numérico o no finito: open,214165,0,0
+No numérico o no finito: high,214165,0,0
+No numérico o no finito: low,214165,0,0
+No numérico o no finito: close,214165,0,0
+No numérico o no finito: volume,214165,0,0
+No numérico o no finito: quote_asset_volume,214165,0,0
+No numérico o no finito: taker_buy_base_asset_volume,214165,0,0
+No numérico o no finito: taker_buy_quote_asset_volume,214165,0,0
+No numérico o no finito: number_of_trades,214165,0,0
+Precio negativo,214165,0,0
+Precio igual a cero,214165,0,0
+Volumen negativo,214165,0,0
+high < low,214165,0,0
+"open fuera de [low, high]",214165,0,0
+"close fuera de [low, high]",214165,0,0
+Número de operaciones negativo o no entero,214165,0,0
+Timestamp inválido: open_time,214165,0,0
+Zona UTC no explícita: open_time,214165,0,0
+Timestamp inválido: close_time,214165,0,0
+Zona UTC no explícita: close_time,214165,0,0
+Apertura fuera de DEVELOPMENT,214165,0,0
+Apertura no alineada a hora exacta,214165,0,0
+Cierre distinto de apertura + 1h - 1ms,214165,0,28
+Cierre fuera del intervalo horario,214165,0,0
+Símbolo no esperado,214165,0,0
+"Precio implícito fuera de [low, high]: total",214155,10,0
+Volumen base cero con cotizado no cero: total,10,214155,0
+"Precio implícito fuera de [low, high]: taker",214155,10,0
+Volumen base cero con cotizado no cero: taker,10,214155,0
+Volumen comprador supera total: taker_buy_base_asset_volume,214165,0,0
+Volumen comprador supera total: taker_buy_quote_asset_volume,214165,0,0
+Cero operaciones con volumen no cero,10,214155,0

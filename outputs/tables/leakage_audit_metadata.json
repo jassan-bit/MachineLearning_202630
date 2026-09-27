@@ -1,0 +1,11 @@
+{
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "validation_anchor_start": "2024-07-09 20:00:00+00:00",
+  "development_end": "2025-07-01 18:00:00+00:00",
+  "duplicate_rows_development": 0,
+  "duplicate_keys_development": 0,
+  "test_read": false,
+  "cross_partition_evidence": "Existing split metadata only; no fresh TEST scan",
+  "diagnostic": "OLS close only, intercept, chronological 80/20 within DEVELOPMENT, purge by target end, training-only scale",
+  "target": "100 * future rolling std of 24 hourly log returns, ddof=0"
+}

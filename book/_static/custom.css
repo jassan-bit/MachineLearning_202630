@@ -1,0 +1,7 @@
+/* Justificar los párrafos sin afectar títulos, tablas ni bloques de código. */
+article p:not(:where(table *, pre *, code *)),
+main p:not(:where(table *, pre *, code *)),
+.content p:not(:where(table *, pre *, code *)) {
+  text-align: justify;
+  text-justify: inter-word;
+}

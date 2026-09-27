@@ -1,0 +1,12 @@
+{
+  "selected_C": 0.01,
+  "selected_epsilon": 0.01,
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "test_read": false,
+  "eligible_common_per_asset": 40717,
+  "validation_rows_per_asset": 34912,
+  "seconds": 207.75167200015858,
+  "sklearn": "1.7.2",
+  "selection_bias": "CI conditional on selected configuration; not independent final test",
+  "fits": 170
+}

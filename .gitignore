@@ -49,3 +49,7 @@ finish_book.py
 
 # No agregar nuevas predicciones; las ya versionadas requieren exclusion explicita
 /results/volatility_predictions/*.npz
+
+# Datos y artefactos locales de la versión SVR
+data/splits/
+outputs/models/

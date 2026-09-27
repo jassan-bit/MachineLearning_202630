@@ -1,0 +1,13 @@
+variable,type,cardinality,missing
+open_time,Temporal,42833,0
+open,Numérica continua,136971,0
+high,Numérica continua,129249,0
+low,Numérica continua,130210,0
+close,Numérica continua,136956,0
+volume,Numérica continua,214107,0
+close_time,Temporal,42852,0
+quote_asset_volume,Numérica continua,214156,0
+number_of_trades,Numérica discreta,92879,0
+taker_buy_base_asset_volume,Numérica continua,214041,0
+taker_buy_quote_asset_volume,Numérica continua,214156,0
+symbol,Categórica nominal,5,0

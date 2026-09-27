@@ -1,0 +1,58 @@
+PARTICIÓN CRONOLÓGICA COMPLETADA
+Fuente: C:\Users\Lenovo\Proyectos.py\MachineLearning\data\processed\crypto_binance_master_1h.csv
+SHA-256 del maestro: f7c9ea187d0d2c98b2d0b9c5324b6cb5dd6ff81c102e32a059cdb810f528d8e6
+Unidad de partición: timestamps únicos observados reales, ordenados en UTC.
+Regla: split_index = int(numero_de_timestamps_unicos * 0.80)
+Total timestamps: 53542
+Development timestamps: 42833
+Test timestamps: 10709
+
+DEVELOPMENT:
+Inicio: 2020-08-11T06:00:00+00:00
+Fin: 2025-07-01T18:00:00+00:00
+Filas: 214165
+Porcentaje real de timestamps: 79.9988793844%
+Filas por activo:
+  BNBUSDT: 42833
+  BTCUSDT: 42833
+  ETHUSDT: 42833
+  SOLUSDT: 42833
+  XRPUSDT: 42833
+
+TEST:
+Inicio: 2025-07-01T19:00:00+00:00
+Fin: 2026-09-20T23:00:00+00:00
+Filas: 53545
+Porcentaje real de timestamps: 20.0011206156%
+Filas por activo:
+  BNBUSDT: 10709
+  BTCUSDT: 10709
+  ETHUSDT: 10709
+  SOLUSDT: 10709
+  XRPUSDT: 10709
+
+Último timestamp de DEVELOPMENT: 2025-07-01T18:00:00+00:00
+Primer timestamp de TEST: 2025-07-01T19:00:00+00:00
+Fecha de corte (primer timestamp de TEST, inclusivo): 2025-07-01T19:00:00+00:00
+Overlap temporal: 0
+Shuffle utilizado: False
+Verificado: max(open_time DEVELOPMENT) < min(open_time TEST).
+Verificado: los cinco activos utilizan exactamente el mismo corte temporal.
+Verificado: todas las filas y columnas originales se conservan.
+Los huecos existentes se conservan: no se imputan ni se generan horas nuevas.
+
+RESERVA METODOLÓGICA DEL TEST:
+TEST queda reservado hasta la evaluación final.
+No usar TEST para EDA que determine decisiones de modelado, selección de variables,
+rezagos, ventanas, escalado, selección de hiperparámetros o validación cruzada.
+La validación cruzada temporal se realizará SOLO dentro de DEVELOPMENT.
+Posteriormente se aplicará TimeSeriesSplit con cinco folds dentro de DEVELOPMENT.
+Esta etapa no ejecuta EDA, features, retornos, volatilidad, rezagos, ventanas,
+escalado, TimeSeriesSplit ni entrenamiento de modelos.
+
+Archivos creados:
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\splits\development_80.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\splits\test_20.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\outputs\tables\chronological_split_audit.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\outputs\tables\chronological_split_by_symbol.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\outputs\tables\chronological_split_metadata.txt

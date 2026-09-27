@@ -1,0 +1,6 @@
+symbol,n_rows,start_time,end_time,exact_duplicates,duplicate_timestamps,missing_hourly_timestamps,hourly_gap_ranges,unexpected_timestamps,expected_hourly_timestamps,status,error
+BTCUSDT,53542,2020-08-11T06:00:00+00:00,2026-09-20T23:00:00+00:00,0,0,20,10,0,53562,ok,
+ETHUSDT,53542,2020-08-11T06:00:00+00:00,2026-09-20T23:00:00+00:00,0,0,20,10,0,53562,ok,
+BNBUSDT,53542,2020-08-11T06:00:00+00:00,2026-09-20T23:00:00+00:00,0,0,20,10,0,53562,ok,
+XRPUSDT,53542,2020-08-11T06:00:00+00:00,2026-09-20T23:00:00+00:00,0,0,20,10,0,53562,ok,
+SOLUSDT,53542,2020-08-11T06:00:00+00:00,2026-09-20T23:00:00+00:00,0,0,20,10,0,53562,ok,

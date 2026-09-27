@@ -1,0 +1,10 @@
+{
+  "source": "data\\splits\\development_80.csv",
+  "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "start": "2020-08-11 06:00:00+00:00",
+  "end": "2025-07-01 18:00:00+00:00",
+  "test_read": false,
+  "statsmodels": "0.15.0",
+  "target_ddof": 0,
+  "imputation": false
+}

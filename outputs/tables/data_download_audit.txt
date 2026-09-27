@@ -1,0 +1,78 @@
+Auditoría de descarga Binance Spot - velas 1h
+Periodo solicitado de open_time (inclusivo): 2020-08-11T06:00:00+00:00 a 2026-09-20T23:00:00+00:00
+Timestamps horarios esperados por activo: 53562
+Duplicados: filas adicionales después de la primera ocurrencia.
+Huecos: rangos de horas faltantes, incluidos los extremos del periodo.
+No se imputan faltantes ni se eliminan duplicados.
+
+BTCUSDT: 53542 filas; periodo real: 2020-08-11 06:00:00+00:00 a 2026-09-20 23:00:00+00:00; duplicados exactos: 0; timestamps duplicados: 0; horas faltantes: 20; rangos de huecos: 10; timestamps inesperados: 0
+  Faltante: 2020-11-30T06:00:00+00:00 a 2020-11-30T06:00:00+00:00 (1 horas)
+  Faltante: 2020-12-21T14:00:00+00:00 a 2020-12-21T17:00:00+00:00 (4 horas)
+  Faltante: 2020-12-25T02:00:00+00:00 a 2020-12-25T02:00:00+00:00 (1 horas)
+  Faltante: 2021-02-11T04:00:00+00:00 a 2021-02-11T04:00:00+00:00 (1 horas)
+  Faltante: 2021-03-06T02:00:00+00:00 a 2021-03-06T02:00:00+00:00 (1 horas)
+  Faltante: 2021-04-20T02:00:00+00:00 a 2021-04-20T03:00:00+00:00 (2 horas)
+  Faltante: 2021-04-25T05:00:00+00:00 a 2021-04-25T07:00:00+00:00 (3 horas)
+  Faltante: 2021-08-13T02:00:00+00:00 a 2021-08-13T05:00:00+00:00 (4 horas)
+  Faltante: 2021-09-29T07:00:00+00:00 a 2021-09-29T08:00:00+00:00 (2 horas)
+  Faltante: 2023-03-24T13:00:00+00:00 a 2023-03-24T13:00:00+00:00 (1 horas)
+
+ETHUSDT: 53542 filas; periodo real: 2020-08-11 06:00:00+00:00 a 2026-09-20 23:00:00+00:00; duplicados exactos: 0; timestamps duplicados: 0; horas faltantes: 20; rangos de huecos: 10; timestamps inesperados: 0
+  Faltante: 2020-11-30T06:00:00+00:00 a 2020-11-30T06:00:00+00:00 (1 horas)
+  Faltante: 2020-12-21T14:00:00+00:00 a 2020-12-21T17:00:00+00:00 (4 horas)
+  Faltante: 2020-12-25T02:00:00+00:00 a 2020-12-25T02:00:00+00:00 (1 horas)
+  Faltante: 2021-02-11T04:00:00+00:00 a 2021-02-11T04:00:00+00:00 (1 horas)
+  Faltante: 2021-03-06T02:00:00+00:00 a 2021-03-06T02:00:00+00:00 (1 horas)
+  Faltante: 2021-04-20T02:00:00+00:00 a 2021-04-20T03:00:00+00:00 (2 horas)
+  Faltante: 2021-04-25T05:00:00+00:00 a 2021-04-25T07:00:00+00:00 (3 horas)
+  Faltante: 2021-08-13T02:00:00+00:00 a 2021-08-13T05:00:00+00:00 (4 horas)
+  Faltante: 2021-09-29T07:00:00+00:00 a 2021-09-29T08:00:00+00:00 (2 horas)
+  Faltante: 2023-03-24T13:00:00+00:00 a 2023-03-24T13:00:00+00:00 (1 horas)
+
+BNBUSDT: 53542 filas; periodo real: 2020-08-11 06:00:00+00:00 a 2026-09-20 23:00:00+00:00; duplicados exactos: 0; timestamps duplicados: 0; horas faltantes: 20; rangos de huecos: 10; timestamps inesperados: 0
+  Faltante: 2020-11-30T06:00:00+00:00 a 2020-11-30T06:00:00+00:00 (1 horas)
+  Faltante: 2020-12-21T14:00:00+00:00 a 2020-12-21T17:00:00+00:00 (4 horas)
+  Faltante: 2020-12-25T02:00:00+00:00 a 2020-12-25T02:00:00+00:00 (1 horas)
+  Faltante: 2021-02-11T04:00:00+00:00 a 2021-02-11T04:00:00+00:00 (1 horas)
+  Faltante: 2021-03-06T02:00:00+00:00 a 2021-03-06T02:00:00+00:00 (1 horas)
+  Faltante: 2021-04-20T02:00:00+00:00 a 2021-04-20T03:00:00+00:00 (2 horas)
+  Faltante: 2021-04-25T05:00:00+00:00 a 2021-04-25T07:00:00+00:00 (3 horas)
+  Faltante: 2021-08-13T02:00:00+00:00 a 2021-08-13T05:00:00+00:00 (4 horas)
+  Faltante: 2021-09-29T07:00:00+00:00 a 2021-09-29T08:00:00+00:00 (2 horas)
+  Faltante: 2023-03-24T13:00:00+00:00 a 2023-03-24T13:00:00+00:00 (1 horas)
+
+XRPUSDT: 53542 filas; periodo real: 2020-08-11 06:00:00+00:00 a 2026-09-20 23:00:00+00:00; duplicados exactos: 0; timestamps duplicados: 0; horas faltantes: 20; rangos de huecos: 10; timestamps inesperados: 0
+  Faltante: 2020-11-30T06:00:00+00:00 a 2020-11-30T06:00:00+00:00 (1 horas)
+  Faltante: 2020-12-21T14:00:00+00:00 a 2020-12-21T17:00:00+00:00 (4 horas)
+  Faltante: 2020-12-25T02:00:00+00:00 a 2020-12-25T02:00:00+00:00 (1 horas)
+  Faltante: 2021-02-11T04:00:00+00:00 a 2021-02-11T04:00:00+00:00 (1 horas)
+  Faltante: 2021-03-06T02:00:00+00:00 a 2021-03-06T02:00:00+00:00 (1 horas)
+  Faltante: 2021-04-20T02:00:00+00:00 a 2021-04-20T03:00:00+00:00 (2 horas)
+  Faltante: 2021-04-25T05:00:00+00:00 a 2021-04-25T07:00:00+00:00 (3 horas)
+  Faltante: 2021-08-13T02:00:00+00:00 a 2021-08-13T05:00:00+00:00 (4 horas)
+  Faltante: 2021-09-29T07:00:00+00:00 a 2021-09-29T08:00:00+00:00 (2 horas)
+  Faltante: 2023-03-24T13:00:00+00:00 a 2023-03-24T13:00:00+00:00 (1 horas)
+
+SOLUSDT: 53542 filas; periodo real: 2020-08-11 06:00:00+00:00 a 2026-09-20 23:00:00+00:00; duplicados exactos: 0; timestamps duplicados: 0; horas faltantes: 20; rangos de huecos: 10; timestamps inesperados: 0
+  Faltante: 2020-11-30T06:00:00+00:00 a 2020-11-30T06:00:00+00:00 (1 horas)
+  Faltante: 2020-12-21T14:00:00+00:00 a 2020-12-21T17:00:00+00:00 (4 horas)
+  Faltante: 2020-12-25T02:00:00+00:00 a 2020-12-25T02:00:00+00:00 (1 horas)
+  Faltante: 2021-02-11T04:00:00+00:00 a 2021-02-11T04:00:00+00:00 (1 horas)
+  Faltante: 2021-03-06T02:00:00+00:00 a 2021-03-06T02:00:00+00:00 (1 horas)
+  Faltante: 2021-04-20T02:00:00+00:00 a 2021-04-20T03:00:00+00:00 (2 horas)
+  Faltante: 2021-04-25T05:00:00+00:00 a 2021-04-25T07:00:00+00:00 (3 horas)
+  Faltante: 2021-08-13T02:00:00+00:00 a 2021-08-13T05:00:00+00:00 (4 horas)
+  Faltante: 2021-09-29T07:00:00+00:00 a 2021-09-29T08:00:00+00:00 (2 horas)
+  Faltante: 2023-03-24T13:00:00+00:00 a 2023-03-24T13:00:00+00:00 (1 horas)
+
+Total de filas del dataset consolidado: 267710
+
+Archivos creados en esta ejecución:
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\raw\BTCUSDT_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\raw\ETHUSDT_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\raw\BNBUSDT_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\raw\XRPUSDT_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\raw\SOLUSDT_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\data\processed\crypto_binance_master_1h.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\outputs\tables\data_download_audit.csv
+C:\Users\Lenovo\Proyectos.py\MachineLearning\outputs\tables\data_download_audit.txt

@@ -1,0 +1,10 @@
+{
+  "source": "data/splits/development_80.csv",
+  "rows": 214165,
+  "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "unique_flagged_rows": 28,
+  "unit_check_tolerance": "1e-8 absoluto + 1e-8 relativo; cero: 1e-8 absoluto",
+  "scope": "Consistencia interna; no certifica unidades ni exactitud frente a fuente externa.",
+  "pandas": "2.3.3",
+  "numpy": "1.26.4"
+}

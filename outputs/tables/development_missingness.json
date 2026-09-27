@@ -1,0 +1,213 @@
+{
+  "source": "data/splits/development_80.csv",
+  "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "rows": 214165,
+  "columns": [
+    "open_time",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "close_time",
+    "quote_asset_volume",
+    "number_of_trades",
+    "taker_buy_base_asset_volume",
+    "taker_buy_quote_asset_volume",
+    "symbol"
+  ],
+  "expected_per_asset": 42853,
+  "nulls": {
+    "BTCUSDT": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "ETHUSDT": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "BNBUSDT": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "XRPUSDT": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "SOLUSDT": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "coverage": [
+    {
+      "symbol": "BTCUSDT",
+      "observed": 42833,
+      "missing": 20,
+      "percent": 0.04667117821389401
+    },
+    {
+      "symbol": "ETHUSDT",
+      "observed": 42833,
+      "missing": 20,
+      "percent": 0.04667117821389401
+    },
+    {
+      "symbol": "BNBUSDT",
+      "observed": 42833,
+      "missing": 20,
+      "percent": 0.04667117821389401
+    },
+    {
+      "symbol": "XRPUSDT",
+      "observed": 42833,
+      "missing": 20,
+      "percent": 0.04667117821389401
+    },
+    {
+      "symbol": "SOLUSDT",
+      "observed": 42833,
+      "missing": 20,
+      "percent": 0.04667117821389401
+    }
+  ],
+  "gaps": [
+    {
+      "start": "2020-11-30 06:00:00 UTC",
+      "end": "2020-11-30 06:00:00 UTC",
+      "hours": 1
+    },
+    {
+      "start": "2020-12-21 14:00:00 UTC",
+      "end": "2020-12-21 17:00:00 UTC",
+      "hours": 4
+    },
+    {
+      "start": "2020-12-25 02:00:00 UTC",
+      "end": "2020-12-25 02:00:00 UTC",
+      "hours": 1
+    },
+    {
+      "start": "2021-02-11 04:00:00 UTC",
+      "end": "2021-02-11 04:00:00 UTC",
+      "hours": 1
+    },
+    {
+      "start": "2021-03-06 02:00:00 UTC",
+      "end": "2021-03-06 02:00:00 UTC",
+      "hours": 1
+    },
+    {
+      "start": "2021-04-20 02:00:00 UTC",
+      "end": "2021-04-20 03:00:00 UTC",
+      "hours": 2
+    },
+    {
+      "start": "2021-04-25 05:00:00 UTC",
+      "end": "2021-04-25 07:00:00 UTC",
+      "hours": 3
+    },
+    {
+      "start": "2021-08-13 02:00:00 UTC",
+      "end": "2021-08-13 05:00:00 UTC",
+      "hours": 4
+    },
+    {
+      "start": "2021-09-29 07:00:00 UTC",
+      "end": "2021-09-29 08:00:00 UTC",
+      "hours": 2
+    },
+    {
+      "start": "2023-03-24 13:00:00 UTC",
+      "end": "2023-03-24 13:00:00 UTC",
+      "hours": 1
+    }
+  ],
+  "comparison": [
+    {
+      "symbol": "BTCUSDT",
+      "gap_n": 10,
+      "observed_n": 42811,
+      "gap_median": 0.19030451991290787,
+      "observed_median": 0.24908391831065185
+    },
+    {
+      "symbol": "ETHUSDT",
+      "gap_n": 10,
+      "observed_n": 42811,
+      "gap_median": 0.37734919669961464,
+      "observed_median": 0.3284258788637377
+    },
+    {
+      "symbol": "BNBUSDT",
+      "gap_n": 10,
+      "observed_n": 42811,
+      "gap_median": 0.3228598333824111,
+      "observed_median": 0.31700595211021987
+    },
+    {
+      "symbol": "XRPUSDT",
+      "gap_n": 10,
+      "observed_n": 42811,
+      "gap_median": 0.50973334817581,
+      "observed_median": 0.39232220700422327
+    },
+    {
+      "symbol": "SOLUSDT",
+      "gap_n": 10,
+      "observed_n": 42811,
+      "gap_median": 0.6107500365062032,
+      "observed_median": 0.5680861244709231
+    }
+  ]
+}
