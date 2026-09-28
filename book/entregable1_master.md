@@ -80,46 +80,23 @@ $$
 
 Si la referencia reciente no puede calcularse con una ventana válida, no se sustituye por un valor futuro ni se completa utilizando TEST para tomar decisiones. La elegibilidad debe resolverse mediante la regla común de evaluación.
 
-#### MLP residual
+#### SVR Lineal
 
-El MLP residual conserva su metodología. Su objetivo interno puede ser la corrección:
+El SVR lineal predice directamente la volatilidad futura a 24 horas a partir del histórico de `close`. Se ajusta un modelo por activo. En el experimento de la sección 3, la entrada contiene 168 cierres horarios disponibles antes de predecir; cada columna se estandariza con parámetros calculados únicamente en el entrenamiento del fold.
 
-$$
-\Delta_{i,t+h}=\sigma_{i,t+h}-\sigma_{i,t},
-\qquad
-\widehat{\Delta}_{i,t+h}=f_\theta(X_{i,t}).
-$$
-
-La salida se reconstruye como:
+Sea $\mathbf{z}_{i,t}$ el vector de cierres históricos estandarizados y $y_{i,t}=100\sigma_{i,t+24}^{(24)}$ la volatilidad futura expresada en porcentaje. La predicción es:
 
 $$
-\widehat{\sigma}_{i,t+h}=\sigma_{i,t}+\widehat{\Delta}_{i,t+h}.
+\widehat y_{i,t}=\mathbf{w}_i^{\mathsf T}\mathbf{z}_{i,t}+b_i.
 $$
 
-La comparación final evalúa esta volatilidad reconstruida, no la corrección aislada. El modelo no se convierte en un MLP directo.
+Los coeficientes $\mathbf{w}_i$ y el intercepto $b_i$ se estiman mediante `LinearSVR` dentro de un pipeline con `StandardScaler`. La implementación utiliza pérdida epsilon-insensible al cuadrado y regularización, según la configuración documentada en la sección 3. El objetivo de ajuste es la volatilidad futura; no se aprende una corrección residual ni se añade la volatilidad pasada a la salida del SVR.
 
-#### MLP residual multivariado
+#### Evaluación del SVR Lineal por activo
 
-Se conserva la metodología multisalida/multihorizonte. Para los horizontes $h_1,\ldots,h_H$, el objetivo interno puede escribirse como:
+Las predicciones se comparan con la volatilidad futura observada del mismo activo, horizonte y timestamps. Se calculan RMSE, MAPE y $R^2$ por activo y fold; cualquier promedio entre activos se identifica como un resumen de métricas, no como un único ajuste sobre todas las criptomonedas.
 
-$$
-\mathbf{y}_{i,t}=\begin{bmatrix}
-\Delta_{i,t+h_1}\\
-\Delta_{i,t+h_2}\\
-\vdots\\
-\Delta_{i,t+h_H}
-\end{bmatrix},
-\qquad
-\Delta_{i,t+h}=\sigma_{i,t+h}-\sigma_{i,t}.
-$$
-
-La red estima $\widehat{\boldsymbol{\Delta}}_{i,t}=f_\theta(X_{i,t})$ y reconstruye cada componente mediante:
-
-$$
-\widehat{\sigma}_{i,t+h_j}=\sigma_{i,t}+\widehat{\Delta}_{i,t+h_j},\qquad j=1,\ldots,H.
-$$
-
-Esta regla no modifica su arquitectura residual. Cada horizonte se compara con el mismo horizonte de los demás modelos; no se mezclan horizontes distintos como si resolvieran el mismo problema.
+Persistencia mantiene su papel de referencia separada: predice la volatilidad futura mediante la volatilidad reciente disponible, con la misma definición y escala. Ambos métodos se evalúan sobre las mismas observaciones elegibles. Los resultados existentes son de validación cronológica en DEVELOPMENT; TEST permanece reservado para la evaluación final.
 
 ### Evaluación final común
 
@@ -164,7 +141,7 @@ No se exige el mismo número de capas a algoritmos diferentes. SVR no tiene capa
 
 La comparación distinguirá dos perspectivas: desempeño con una configuración de entrada común y desempeño de cada método tras una búsqueda acotada bajo el mismo protocolo de validación. No se mezclarán resultados por ventana fija con resultados de ventanas seleccionadas individualmente sin identificarlo. La configuración final de cada método se elegirá utilizando únicamente validación en DEVELOPMENT.
 
-Persistence conserva su regla simple y no se fuerza a utilizar toda la ventana $L$: toma la volatilidad reciente válida. El MLP residual y el residual multivariado conservan su referencia y sus correcciones. Esta referencia también podrá estar disponible como variable explicativa común para los modelos directos, de modo que el modelo residual no reciba información histórica privilegiada. Las salidas residuales siempre se reconstruyen antes de evaluar.
+Persistence conserva su regla simple y no se fuerza a utilizar toda la ventana $L$: toma la volatilidad reciente válida. El SVR lineal utiliza los cierres históricos de la ventana común para predecir directamente la volatilidad futura. En el experimento actual, la referencia de persistencia se calcula con cierres contenidos en esa ventana y se evalúa por separado.
 
 #### Particiones, ajuste y presupuesto
 
