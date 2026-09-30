@@ -9,3 +9,4 @@ data/splits/development_80.csv -text
 outputs/** -text
 src/** -text
 tests/** -text
+requirements*.txt -text

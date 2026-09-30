@@ -2,11 +2,11 @@
 
 Esta tabla coteja los requisitos con la versión local corregida. Distingue ejecución, justificación de no aplicabilidad y evidencia pendiente. No se asigna una nota ni se presenta como evaluación independiente del profesor. TEST permanece reservado.
 
-**CUMPLIDO: 179**; **NO APLICA: 26**; **PARCIALMENTE CUMPLIDO: 6**.
+**CUMPLIDO: 180**; **NO APLICA: 26**; **PARCIALMENTE CUMPLIDO: 5**.
 
 ## Prioridades antes de entregar
 
-1. Publicar la versión final corregida y verificar acceso al Book, datos y notebooks. La construcción local no publica cambios.
+1. Publicación verificada: consultar el registro de acceso y la versión comprobada. Conservar juntos el informe, el snapshot de DEVELOPMENT y los archivos de reproducción.
 2. Mantener explícitos los límites del mecanismo de faltantes, concept drift, localización de cambios y selección sobre los mismos folds. No usar TEST para resolver decisiones de desarrollo.
 
 ## Reproducción local de estas correcciones
@@ -43,7 +43,7 @@ Para repetir desde la raíz: crear un entorno con `python -m venv .venv-repro`, 
 
 Se ejecutaron además **6 notebooks** en la carpeta aislada, forzando el kernel del nuevo entorno y comprobando su ruta. Las celdas de la copia guardada no presentan errores. Para repetir esa comprobación tras el cálculo, ejecutar `.venv-repro/Scripts/python.exe src/25_validate_clean_notebooks.py`.
 
-El [sitio publicado](https://jassan-bit.github.io/MachineLearning_202630/) respondió HTTP 200 en una comprobación de acceso; esto no verifica que contenga las correcciones locales. [Registro de acceso](../../outputs/tables/publication_access_audit.json).
+El [sitio publicado](https://jassan-bit.github.io/MachineLearning_202630/) respondió HTTP 200 y se verificaron contenido corregido y descargas; el registro identifica la versión comprobada. [Registro de acceso](../../outputs/tables/publication_access_audit.json).
 
 ## Auditoría completa
 
@@ -244,7 +244,7 @@ El [sitio publicado](https://jassan-bit.github.io/MachineLearning_202630/) respo
 | 4.5 complejidad del dataset | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
 | 4.6 trivialidad del problema | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
 | 4.7 considerar dataset más desafiante | NO APLICA | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | El SVR no alcanza el desempeño alto que activa la sugerencia de cambiar a un dataset más desafiante. |
-| 5.1 Jupyter Book | PARCIALMENTE CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | El enlace público responde HTTP 200, pero las correcciones son locales y no se ha verificado su presencia en la versión publicada. Publicar y comprobar contenidos y descargas antes de entregar. |
+| 5.1 Jupyter Book | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Book corregido publicado; se verificaron contenido y descargas de la versión registrada en publication_access_audit.json. La disponibilidad futura del servidor no está garantizada. |
 | 5.2 base de datos/enlace | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
 | 5.3 requirements.txt | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
 | 5.4 semillas | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |

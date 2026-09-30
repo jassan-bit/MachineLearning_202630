@@ -1,8 +1,40 @@
 {
   "url": "https://jassan-bit.github.io/MachineLearning_202630/",
   "http_status": 200,
-  "checked_at_utc": "2026-09-30T14:23:11.595558+00:00",
-  "method": "HTTP HEAD via Invoke-WebRequest",
-  "corrected_version_published": false,
-  "content_version_verified": false
+  "checked_at_utc": "2026-09-30T14:52:40.035990+00:00",
+  "method": "GET of six pages, content markers, download SHA-256, successful Actions deployment",
+  "commit_verified": "98507036323752615f320df186c02fce0beb2caf",
+  "corrected_version_published": true,
+  "content_version_verified": true,
+  "pages_verified": [
+    "https://jassan-bit.github.io/MachineLearning_202630/",
+    "https://jassan-bit.github.io/MachineLearning_202630/base-datos/",
+    "https://jassan-bit.github.io/MachineLearning_202630/eda/",
+    "https://jassan-bit.github.io/MachineLearning_202630/modelo-base/",
+    "https://jassan-bit.github.io/MachineLearning_202630/auditoria/",
+    "https://jassan-bit.github.io/MachineLearning_202630/conclusiones/"
+  ],
+  "downloads_verified": [
+    {
+      "url": "https://jassan-bit.github.io/MachineLearning_202630/build/development_80-14ce1ae38b0229c838af6a723f5e7be5.csv",
+      "file": "data/splits/development_80.csv",
+      "bytes": 40982400,
+      "sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+      "comparison": "byte_for_byte"
+    },
+    {
+      "url": "https://jassan-bit.github.io/MachineLearning_202630/build/requirements-lock-wi-d983a4b65ced3986cd262abcd2fb372a.txt",
+      "file": "requirements-lock-windows-py310.txt",
+      "bytes": 1136,
+      "sha256": "3fa9638d65fa1b27630dfb2a17f4cda3c84a3a943314f658e52394d4db17ef75",
+      "comparison": "identical_text_allowing_CRLF_LF"
+    },
+    {
+      "url": "https://jassan-bit.github.io/MachineLearning_202630/build/18_base_model-6f043b0ebb7244dcd2c80af492bb05a7.ipynb",
+      "file": "notebooks/18_base_model.ipynb",
+      "bytes": 7672402,
+      "sha256": "7f605bad00ac299e117a597fdd639d4308bf69a1ceb2e4d7d50871956bcdbaf9",
+      "comparison": "byte_for_byte"
+    }
+  ]
 }
