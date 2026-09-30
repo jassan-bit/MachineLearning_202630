@@ -7,6 +7,7 @@ Informe de investigación para BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT con 
 - Informe: `book/entregable1_master.md` y `book/sections/`.
 - Conclusiones: `book/sections/05_conclusiones.md`.
 - Notebooks con resultados: `notebooks/`; modelo base: `18_base_model.ipynb`.
+- **Notebook completo para entregar:** [Entregable_1_Completo.ipynb](notebooks/Entregable_1_Completo.ipynb). Reúne el informe, las figuras incorporadas y el código de todas las etapas; al ejecutar todas las celdas recalcula los análisis y los 170 ajustes en una carpeta independiente usando solo DEVELOPMENT.
 - Sitio público: https://jassan-bit.github.io/MachineLearning_202630/ (consultar el registro de publicación para identificar la versión verificada).
 
 El SVR obtuvo RMSE medio 0,623259 frente a 0,389006 de Persistence, en puntos porcentuales. Son resultados de validación interna, no de TEST. La entrega conserva las limitaciones metodológicas detalladas en el informe.
@@ -24,6 +25,8 @@ python -m venv .venv-repro
 ```
 
 El script 24 crea una carpeta nueva, copia únicamente DEVELOPMENT y recalcula calidad, EDA, modelos y diagnósticos. Requiere Node para dos auditorías JavaScript. El script 25 ejecuta los seis notebooks de comprobación dentro de esa carpeta. El registro incluido documenta la ejecución ya realizada; las rutas absolutas en él identifican el equipo de origen. La igualdad numérica se comprueba con tolerancias, no se exige igualdad binaria entre plataformas.
+
+Para la entrega unificada, abrir `notebooks/Entregable_1_Completo.ipynb` con el kernel del entorno anterior y seleccionar **Restart Kernel and Run All Cells**. Para ejecutarlo automáticamente y guardar sus salidas: `.venv-repro/Scripts/python.exe src/29_execute_compiled_notebook.py`. El script `28_build_compiled_notebook.py` regenera su contenido desde el informe y el código; ejecutarlo borra las salidas del notebook, por lo que debe ir seguido del script 29. El registro de ejecución unificada queda en `outputs/tables/compiled_notebook_execution.json`.
 
 El snapshot `data/splits/development_80.csv` tiene SHA-256 `5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2`. El paquete reproducible no contiene TEST ni el archivo maestro. Los scripts de descarga y partición se conservan como procedencia; no son pasos de la reproducción de DEVELOPMENT. Los derechos y términos del proveedor se describen en la sección 1 del informe.
 

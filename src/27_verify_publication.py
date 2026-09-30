@@ -54,6 +54,7 @@ def main():
         ('development_80', 'data/splits/development_80.csv'),
         ('requirements-lock-wi', 'requirements-lock-windows-py310.txt'),
         ('18_base_model', 'notebooks/18_base_model.ipynb'),
+        ('Entregable_1_Complet', 'notebooks/Entregable_1_Completo.ipynb'),
     ]:
         links = [link for link in pages['conclusiones/'].links if filename in link]
         assert links, ('Missing download link', filename)

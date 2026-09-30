@@ -31,6 +31,8 @@ El diagnóstico de cambios y las ventanas alrededor de eventos son exploratorios
 
 ## Reproducibilidad y siguiente etapa
 
+**Notebook completo:** [Entregable_1_Completo.ipynb](../../notebooks/Entregable_1_Completo.ipynb). Incluye el informe, tablas, figuras incorporadas, interpretaciones y el código ejecutable de todas las etapas. Al ejecutar todas las celdas se repiten los cálculos y los 170 ajustes en una carpeta nueva, usando exclusivamente DEVELOPMENT. Para repetir la ejecución se necesita el repositorio completo y el entorno indicado en el notebook.
+
 La reproducción en un entorno limpio completó 17 etapas, incluidos 170 ajustes y 12 pruebas; se contrastaron 13 tablas numéricas con las tolerancias documentadas. Se ejecutaron además seis notebooks en el kernel del entorno nuevo. La reproducción comienza en el snapshot de DEVELOPMENT y no repite la descarga ni la partición original. [Registro de reproducción](../../outputs/tables/clean_reproduction_metadata.json).
 
 **Materiales de la entrega:** [snapshot de DEVELOPMENT](../../data/splits/development_80.csv), [dependencias](../../requirements-lock-windows-py310.txt), [notebook del modelo](../../notebooks/18_base_model.ipynb) y [repositorio de código y notebooks](https://github.com/jassan-bit/MachineLearning_202630). TEST y el archivo maestro no forman parte del paquete reproducible. El snapshot conserva la huella SHA-256 indicada en el registro; su distribución no implica una licencia abierta adicional sobre los datos del proveedor.

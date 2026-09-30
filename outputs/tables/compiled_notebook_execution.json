@@ -1,0 +1,11 @@
+{
+  "notebook": "notebooks/Entregable_1_Completo.ipynb",
+  "status": "passed",
+  "executed_code_cells": 18,
+  "embedded_figures": 57,
+  "seconds": 695.8038147999905,
+  "python": "3.10.21 | packaged by Anaconda, Inc. | (main, Aug 27 2026, 14:35:39) [MSC v.1942 64 bit (AMD64)]",
+  "interpreter": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+  "notebook_sha256": "8143c833ac2c7c1858b1c791f65ba9bd4d4cba6f3ff9f2f2bf85c9cd380b096f",
+  "test_read": false
+}
