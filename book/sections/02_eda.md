@@ -918,7 +918,7 @@ Para reproducir: `python -m unittest discover -s tests -v`, `python src/12_multi
 
 [Notebook multivariado con resultados ejecutados](../../notebooks/12_multivariate_scope_close.ipynb).
 
-## 2.5 Auditoría de fuga de datos (*Data Leakage*)
+## 2.5 Prevención de fuga de datos (*Data Leakage*)
 
 ### 2.5.1 Disponibilidad en el instante de predicción
 
@@ -944,7 +944,7 @@ Compartir el cierre de frontera entre el último dato observado y el primer reto
 
 Se reemplaza el diagnóstico limitado a close por **179 regresiones univariadas por activo y fold**: 168 cierres rezagados (`lag_0` es close), las otras ocho columnas numéricas originales, retorno horario, retorno absoluto y volatilidad histórica de 24 horas. Son **4.475 evaluaciones** en los mismos cinco folds cronológicos de la sección 3. Cada OLS con intercepto utiliza una única columna y escalado ajustado únicamente con TRAIN; no hay búsqueda de hiperparámetros. El modelo base sigue siendo el SVR con 168 cierres: estas OLS son diagnósticas.
 
-Se exige la misma elegibilidad y el mismo confinamiento temporal del modelo: historia de 168 cierres, objetivo y referencia completos dentro de cada bloque. Las muestras de entrenamiento y validación coinciden con la auditoría `base_folds.csv`. La referencia constante usa la media de y de TRAIN. RMSE se expresa en puntos porcentuales y R² compara con la media observada del bloque validado. AUC no aplica a regresión.
+Se exige la misma elegibilidad y el mismo confinamiento temporal del modelo: historia de 168 cierres, objetivo y referencia completos dentro de cada bloque. Las muestras de entrenamiento y validación coinciden con la verificación `base_folds.csv`. La referencia constante usa la media de y de TRAIN. RMSE se expresa en puntos porcentuales y R² compara con la media observada del bloque validado. AUC no aplica a regresión.
 
 | Activo | Evaluaciones de rezagos | RMSE mínimo–máximo | R² mínimo–máximo | Alertas R² ≥ 0,8 |
 | --- | --- | --- | --- | --- |
@@ -984,17 +984,17 @@ La volatilidad pasada comparte fórmula con el objetivo, pero utiliza otro inter
 
 La comprobación actual en DEVELOPMENT encuentra **0 filas duplicadas exactas** y **0 claves (`symbol`, `open_time`) duplicadas**. Los registros existentes de la partición sitúan su última apertura en **2025-07-01 18:00 UTC** y la primera de TEST en **2025-07-01 19:00 UTC**, con el mismo corte para los cinco activos y sin mezcla aleatoria.
 
-Según esos registros, los intervalos no se solapan; por tanto, no comparten claves temporales ni filas completas idénticas que incluyan esas fechas. Esta conclusión utiliza la auditoría guardada de la partición, no una nueva lectura de TEST. No se certifica aquí la ausencia de vectores de precios iguales o casi duplicados entre archivos ignorando la fecha. Un cierre repetido, por sí solo, no identifica un registro duplicado.
+Según esos registros, los intervalos no se solapan; por tanto, no comparten claves temporales ni filas completas idénticas que incluyan esas fechas. Esta conclusión utiliza la verificación guardada de la partición, no una nueva lectura de TEST. No se certifica aquí la ausencia de vectores de precios iguales o casi duplicados entre archivos ignorando la fecha. Un cierre repetido, por sí solo, no identifica un registro duplicado.
 
 BTC, ETH, BNB, XRP y SOL aparecen en ambas particiones. Esta repetición de entidades es coherente con pronosticar el futuro de los mismos activos; no evalúa generalización a criptomonedas desconocidas. Los activos de una misma hora deberán permanecer en el mismo bloque en la validación temporal.
 
-La separación de filas por fecha no basta para separar etiquetas futuras. En cada fold se purgan las etiquetas cuyo periodo objetivo invada la validación. Los folds del modelo base y sus preprocesadores se verifican mediante fechas reales y la auditoría de la sección 2.9. En este experimento se exige además que la historia completa de cada ejemplo esté contenida en su bloque; se aplica el mismo criterio a ambos modelos y a los prefijos de la curva de aprendizaje.
+La separación de filas por fecha no basta para separar etiquetas futuras. En cada fold se purgan las etiquetas cuyo periodo objetivo invada la validación. Los folds del modelo base y sus preprocesadores se verifican mediante fechas reales y la verificación de la sección 2.9. En este experimento se exige además que la historia completa de cada ejemplo esté contenida en su bloque; se aplica el mismo criterio a ambos modelos y a los prefijos de la curva de aprendizaje.
 
 ### 2.5.5 Transformaciones y alcance de la evidencia
 
 Escaladores, imputaciones, PCA, selección de variables, umbrales e hiperparámetros deberán ajustarse exclusivamente dentro del entrenamiento de cada fold. El EDA previo sobre DEVELOPMENT completo no equivale a una validación fuera de muestra: sus estadísticas y transformaciones auxiliares no deben reutilizarse como preprocesadores ya ajustados. Si sus conclusiones guían decisiones, las métricas internas tienen ese contexto exploratorio y TEST debe conservarse para la evaluación final.
 
-Se verificaron el orden temporal, la purga, la disponibilidad de las etiquetas dentro de DEVELOPMENT y el ajuste del escalado solo en entrenamiento. La auditoría de la sección 2.9 contrasta las 168 entradas en los 25 bloques activo-fold del pipeline del modelo base. Las pruebas de fronteras y perturbación de datos futuros complementan esta comprobación. El objetivo de la sección 2.1 y el modelo comparten la desviación estándar centrada con `ddof=0`. Los archivos históricos no permiten verificar la latencia de recepción en producción.
+Se verificaron el orden temporal, la purga, la disponibilidad de las etiquetas dentro de DEVELOPMENT y el ajuste del escalado solo en entrenamiento. La verificación de la sección 2.9 contrasta las 168 entradas en los 25 bloques activo-fold del pipeline del modelo base. Las pruebas de fronteras y perturbación de datos futuros complementan esta comprobación. El objetivo de la sección 2.1 y el modelo comparten la desviación estándar centrada con `ddof=0`. Los archivos históricos no permiten verificar la latencia de recepción en producción.
 
 ### 2.5.6 Interpretación y decisiones
 
@@ -1004,7 +1004,7 @@ Las comprobaciones realizadas no detectan infracciones de las reglas temporales 
 
 ### 2.5.7 Reproducibilidad
 
-Ejecutar `python src/13_feature_diagnostics.py` y `python src/13_render_feature_diagnostics.py`. Las tablas `leakage_all_features_scores.csv` y `leakage_feature_availability.csv` y los metadatos guardan el diagnóstico vigente y sus huellas. El script anterior `src/13_leakage_audit.py` se conserva como antecedente; su diagnóstico de un solo cierre no sustituye esta evaluación de todas las entradas. [Notebook de auditoría individual](../../notebooks/13_feature_diagnostics.ipynb).
+Ejecutar `python src/13_feature_diagnostics.py` y `python src/13_render_feature_diagnostics.py`. Las tablas `leakage_all_features_scores.csv` y `leakage_feature_availability.csv` y los metadatos guardan el diagnóstico vigente y sus huellas. El script anterior `src/13_leakage_audit.py` se conserva como antecedente; su diagnóstico de un solo cierre no sustituye esta evaluación de todas las entradas. [Notebook de verificación individual](../../notebooks/13_feature_diagnostics.ipynb).
 
 ## 2.6 Componente temporal
 
@@ -1540,7 +1540,7 @@ Se comprueban los 25 bloques de entrenamiento de la sección 3, con 168 entradas
 | SOLUSDT | 5 | 33575 | 6951 | 2.31e-14 |
 | XRPUSDT | 5 | 33575 | 6951 | 2.87e-14 |
 
-Los 25 controles se superan. Esto verifica propiedades concretas del preprocesamiento, no una garantía universal de ausencia de fuga. [Auditoría completa](../../outputs/tables/preprocessing_full_audit.csv).
+Los 25 controles se superan. Esto verifica propiedades concretas del preprocesamiento, no una garantía universal de ausencia de fuga. [Verificación completa](../../outputs/tables/preprocessing_full_audit.csv).
 
 ### 2.9.8 Reproducibilidad
 

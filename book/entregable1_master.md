@@ -14,177 +14,19 @@
 
 **Periodo académico:** 2026-30
 
-## Resumen del entregable ejecutado
+## Resumen
 
-Se pronostica la dispersión de los próximos 24 retornos logarítmicos horarios de cinco activos de Binance Spot. La desviación estándar se centra en la media de la ventana, usa divisor 24 (`ddof=0`) y se expresa como porcentaje, sin anualización. El análisis y la selección utilizan exclusivamente DEVELOPMENT; TEST permanece reservado.
+Este proyecto estudia el pronóstico de la volatilidad futura de BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT a partir de datos horarios de Binance Spot. La variable objetivo es la desviación estándar de los próximos 24 retornos logarítmicos horarios, centrados en su media, con divisor 24 (`ddof=0`) y expresada en porcentaje. No se anualiza ni se interpreta como la volatilidad acumulada del retorno de un día.
 
-Se compararon Persistence y SVR lineal con 168 cierres horarios, mediante cinco folds cronológicos de ventana creciente. El RMSE medio entre bloques activo-fold fue **0,389006** para Persistence y **0,623259** para SVR, en puntos porcentuales. El SVR no mejora la referencia temporal. El intervalo bootstrap por bloques del incremento de RMSE fue **[0,204497; 0,269379]**; está condicionado a la configuración seleccionada y no sustituye una evaluación independiente en TEST.
+Se comparan Persistence y SVR lineal mediante cinco folds cronológicos de ventana creciente dentro de DEVELOPMENT. El SVR recibe 168 cierres horarios consecutivos por activo. Cada ventana de entradas, referencia y etiqueta permanece contenida en su bloque, y el escalado se ajusta únicamente con entrenamiento. TEST permanece reservado para una evaluación independiente posterior.
 
-El informe incorpora auditorías de calidad y disponibilidad temporal, EDA univariado, bivariado y multivariado, diagnóstico de residuos de ambos modelos, incertidumbre, curva de aprendizaje y reproducción en un entorno limpio. Las [conclusiones](sections/05_conclusiones.md) distinguen los resultados de sus limitaciones; la [auditoría completa](sections/04_auditoria.md) desglosa los requisitos de la guía.
+El RMSE medio entre los 25 bloques activo-fold es **0,389006 puntos porcentuales** para Persistence y **0,623259** para SVR. El SVR no supera la referencia temporal en las condiciones evaluadas. La diferencia de RMSE es **0,234253 puntos porcentuales**, con intervalo bootstrap por bloques del 95 % **[0,204497; 0,269379]**. Esta incertidumbre está condicionada a la configuración seleccionada y no elimina el posible optimismo de la selección en los mismos folds.
 
-**Alcance de las extensiones.** Los modelos distintos de Persistence y SVR mencionados a continuación son propuestas para etapas posteriores; no se presentan como entrenados o evaluados en este entregable. Su inclusión no cambia las entradas, las ventanas ni el protocolo de la comparación ejecutada.
+## Organización del informe
 
-## Criterio común de comparabilidad entre modelos
+1. [Base de datos](sections/01_base_datos.md): problema, selección de la fuente, diccionario, estructura, calidad y representatividad.
+2. [Análisis exploratorio](sections/02_eda.md): distribuciones, relaciones entre variables, estructura multivariada, dependencia temporal, disponibilidad de información y preprocesamiento.
+3. [Modelo base](sections/03_modelo_base.md): formulación del objetivo, partición cronológica, validación con separación temporal, Persistence, SVR, métricas, residuos, incertidumbre y curva de aprendizaje.
+4. [Conclusiones](sections/05_conclusiones.md): resultados, limitaciones, reproducibilidad y continuidad del proyecto.
 
-Todos los modelos predictivos de regresión utilizarán una definición común de volatilidad basada en los retornos logarítmicos horarios y en la desviación de dichos retornos dentro de una ventana temporal fija. Esta definición se mantendrá constante entre modelos para garantizar que las diferencias de desempeño provengan de la metodología predictiva y no de cambios en la variable objetivo.
-
-Cada algoritmo conservará su formulación matemática, arquitectura, procedimiento de entrenamiento y función de pérdida. En los modelos residuales, la red podrá aprender una corrección respecto de una referencia temporal; sin embargo, la predicción final será reconstruida en términos de la misma volatilidad utilizada por los demás modelos.
-
-La comparación final se realizará únicamente entre modelos evaluados sobre la misma variable objetivo, el mismo horizonte, los mismos timestamps del conjunto de prueba y las mismas métricas.
-
-### Retorno logarítmico horario
-
-Para cada activo $i$ y hora $t$:
-
-$$
-r_{i,t}=\ln\left(\frac{P_{i,t}}{P_{i,t-1}}\right),
-$$
-
-donde $P_{i,t}$ es el precio de cierre del activo en la hora $t$ y $P_{i,t-1}$ es el cierre de la hora anterior. El retorno solo es válido cuando ambas observaciones corresponden a horas consecutivas. No se construyen retornos a través de huecos temporales.
-
-### Volatilidad común
-
-La volatilidad histórica/realizada se define como la desviación de los retornos respecto de su media dentro de una ventana de $n$ horas:
-
-$$
-\bar r_{i,t}=\frac{1}{n}\sum_{k=1}^{n}r_{i,t-k},
-\qquad
-\sigma_{i,t}=\sqrt{\frac{1}{n}\sum_{k=1}^{n}\left(r_{i,t-k}-\bar r_{i,t}\right)^2}.
-$$
-
-Inicialmente se fija $n=24$:
-
-$$
-\bar r_{i,t}=\frac{1}{24}\sum_{k=1}^{24}r_{i,t-k},
-\qquad
-\sigma_{i,t}^{(24)}=\sqrt{\frac{1}{24}\sum_{k=1}^{24}\left(r_{i,t-k}-\bar r_{i,t}\right)^2}.
-$$
-
-El divisor es **24**, no 23: corresponde a una desviación estándar con `ddof=0`. La magnitud base se expresa en unidades decimales de retorno horario, sin anualización ni multiplicación por $\sqrt{24}$. La ventana contiene 24 retornos, pero su desviación estándar no es la volatilidad acumulada de un retorno de 24 horas. Si se presenta como porcentaje, se multiplica por 100 tanto el valor observado como la predicción y se utiliza esa misma escala para todos los modelos y métricas.
-
-Para evitar ambigüedad temporal, $t$ identifica el instante de referencia posterior a la disponibilidad del cierre de la hora $t-1$. Así, $\sigma_{i,t}$ utiliza únicamente los retornos $r_{i,t-24},\ldots,r_{i,t-1}$, ya disponibles. El objetivo a horizonte $h$ es $\sigma_{i,t+h}^{(24)}$. Para $h=24$, utiliza $r_{i,t},\ldots,r_{i,t+23}$, cuya realización es futura respecto del instante de referencia. El tamaño de ventana $n$ y el horizonte $h$ son conceptos distintos, aunque ambos sean inicialmente 24 horas.
-
-La ventana debe contar con 24 retornos horarios válidos, construidos a partir de 25 cierres consecutivos. Toda regla de elegibilidad relativa a huecos o cierres irregulares debe ser común a los modelos, documentarse antes de la evaluación y no ajustarse a partir de TEST.
-
-### Formulación por tipo de modelo
-
-La definición financiera permanece fija. Entre modelos pueden cambiar la función predictiva, la arquitectura, la pérdida, la regularización, la construcción de la predicción, los hiperparámetros y el tratamiento residual propio del método. La salida final evaluada siempre será $\widehat{\sigma}_{i,t+h}$ frente a $\sigma_{i,t+h}$.
-
-#### Predicción directa
-
-SVR lineal, Ridge, Lasso, k-NN Regression, Random Forest, XGBoost, SVR con kernel, MLP directo, LSTM y Transformer podrán plantearse como:
-
-$$
-X_{i,t}\longrightarrow\widehat{\sigma}_{i,t+h}.
-$$
-
-En particular, SVR directo estima la volatilidad futura común a partir de información disponible en $t$, conservando su formulación y procedimiento de entrenamiento. Esta regla no modifica las ecuaciones internas de ninguno de los algoritmos ni obliga a utilizar la misma función de pérdida durante su entrenamiento.
-
-#### Persistence
-
-Persistence mantiene su papel de línea base temporal: utiliza la volatilidad reciente disponible como predicción de la futura, con la misma definición y ventana:
-
-$$
-\widehat{\sigma}^{\mathrm{Persistence}}_{i,t+h}=\sigma_{i,t}.
-$$
-
-Si la referencia reciente no puede calcularse con una ventana válida, no se sustituye por un valor futuro ni se completa utilizando TEST para tomar decisiones. La elegibilidad debe resolverse mediante la regla común de evaluación.
-
-#### SVR Lineal
-
-El SVR lineal predice directamente la volatilidad futura a 24 horas a partir del histórico de `close`. Se ajusta un modelo por activo. En el experimento de la sección 3, la entrada contiene 168 cierres horarios disponibles antes de predecir; cada columna se estandariza con parámetros calculados únicamente en el entrenamiento del fold.
-
-Sea $\mathbf{z}_{i,t}$ el vector de cierres históricos estandarizados y $y_{i,t}=100\sigma_{i,t+24}^{(24)}$ la volatilidad futura expresada en porcentaje. La predicción es:
-
-$$
-\widehat y_{i,t}=\mathbf{w}_i^{\mathsf T}\mathbf{z}_{i,t}+b_i.
-$$
-
-Los coeficientes $\mathbf{w}_i$ y el intercepto $b_i$ se estiman mediante `LinearSVR` dentro de un pipeline con `StandardScaler`. La implementación utiliza pérdida epsilon-insensible al cuadrado y regularización, según la configuración documentada en la sección 3. El objetivo de ajuste es la volatilidad futura; no se aprende una corrección residual ni se añade la volatilidad pasada a la salida del SVR.
-
-#### Evaluación del SVR Lineal por activo
-
-Las predicciones se comparan con la volatilidad futura observada del mismo activo, horizonte y timestamps. Se calculan RMSE, MAPE y $R^2$ por activo y fold; cualquier promedio entre activos se identifica como un resumen de métricas, no como un único ajuste sobre todas las criptomonedas.
-
-Persistencia mantiene su papel de referencia separada: predice la volatilidad futura mediante la volatilidad reciente disponible, con la misma definición y escala. Ambos métodos se evalúan sobre las mismas observaciones elegibles. Los resultados existentes son de validación cronológica en DEVELOPMENT; TEST permanece reservado para la evaluación final.
-
-### Evaluación final común
-
-La comparación entre regresores exige simultáneamente:
-
-- La misma definición y escala de volatilidad.
-- El mismo horizonte $h$ y la misma ventana $n$.
-- Los mismos activos, timestamps y observaciones válidas.
-- El mismo conjunto TEST, reservado para la evaluación final.
-- Las mismas métricas y el mismo procedimiento de agregación entre activos.
-
-Las métricas comunes serán **RMSE, MAPE y $R^2$**, calculadas sobre la volatilidad final reconstruida cuando corresponda. El análisis de residuos, su ACF y los intervalos de confianza podrán complementar la comparación. Los residuos se definirán de manera uniforme como $e_{i,t+h}=\sigma_{i,t+h}-\widehat{\sigma}_{i,t+h}$ y su análisis deberá considerar la dependencia temporal.
-
-MAPE no está definido cuando el valor observado es cero y puede ser inestable cerca de cero. Esa limitación se informará expresamente: no se introducirán denominadores artificiales ni se excluirán filas de forma diferente para cada modelo. Si existen ceros en el conjunto común, no se reportará un MAPE finito como si fuera el MAPE convencional del conjunto completo; cualquier evaluación complementaria deberá identificarse y usar una regla común previamente fijada. Del mismo modo, $R^2$ requiere variabilidad en los valores observados del conjunto evaluado.
-
-La elegibilidad y la agregación se fijarán antes de la evaluación final, sin seleccionar timestamps por los errores obtenidos por cada algoritmo. No se permitirá que cada modelo mejore artificialmente su comparación al evaluar solo sus propias filas más favorables. Las transformaciones y parámetros aprendidos se estimarán dentro de cada entrenamiento cronológico; TEST no se utilizará para seleccionarlos.
-
-### Protocolo de comparación en condiciones comunes
-
-De la guía del proyecto MLP se adoptan los principios de ventanas temporales, validación cronológica, escalado dentro del entrenamiento, evaluación por horizonte y análisis de residuos. Los ejemplos de frecuencia, arquitectura, descarga y despliegue no sustituyen las decisiones ya establecidas para este proyecto. La comparación busca aproximar las condiciones de información y evaluación entre modelos, conservando sus diferencias metodológicas.
-
-#### Parámetros temporales del experimento
-
-| Parámetro | Significado | Regla común |
-|-----------|-------------|-------------|
-| Frecuencia | Separación entre observaciones | Una hora. |
-| Ventana de volatilidad $n$ | Retornos usados para calcular cada valor de volatilidad | 24 retornos horarios; definición del profesor con divisor 24. |
-| Horizonte $h$ | Distancia desde el instante de predicción hasta el objetivo | Comparación principal a 24 horas. |
-| Ventana de entrada $L$ | Historia disponible para construir los predictores | Misma longitud y mismas variables de origen para los modelos entrenables de cada experimento. |
-
-Los tamaños de entrada de 7, 14, 21 y 28 **días** del ejemplo equivalen a 168, 336, 504 y 672 **horas**. No equivalen a 7, 14, 21 y 28 observaciones de este dataset. Se registran como una posible rejilla común, no como una selección definitiva ni como experimentos ya ejecutados. La rejilla y su coste deberán fijarse antes de comparar modelos mediante validación en DEVELOPMENT.
-
-Cada longitud $L$ describe la historia de los predictores y no modifica $n=24$. Si una variable de entrada es a su vez una volatilidad móvil, deberá contabilizarse también el historial adicional necesario para calcularla: $L$ valores de una variable derivada pueden requerir más de $L$ precios originales.
-
-Si posteriormente se incorporan siete horizontes diarios, deberán identificarse explícitamente como $h\in\{24,48,72,96,120,144,168\}$ horas. Siete pasos horarios serían otra tarea. Esa ampliación no se adopta en esta decisión: el horizonte principal continúa siendo $h=24$. En una evaluación multihorizonte se comparará cada modelo en los mismos horizontes; un promedio de siete horizontes no se enfrentará al resultado de un modelo evaluado únicamente a 24 horas.
-
-#### Información de entrada y arquitectura
-
-Los modelos entrenables compartirán, dentro de cada experimento, las variables de origen, los rezagos, la ventana histórica y el instante de disponibilidad. Un modelo tabular podrá recibir los mismos datos aplanados en un vector y uno secuencial como una matriz temporal. El cambio de representación no deberá incorporar observaciones adicionales ni información futura. Si se ensayan distintos conjuntos de variables, se identificarán como experimentos separados.
-
-No se exige el mismo número de capas a algoritmos diferentes. SVR no tiene capas neuronales y la profundidad de un bosque no equivale a la de un MLP. Incluso entre MLP, LSTM y Transformer, igualar capas no iguala capacidad ni coste. Se registrarán las capas y unidades cuando correspondan, el número de parámetros entrenables en redes, los hiperparámetros propios de cada método y el tiempo de entrenamiento e inferencia.
-
-La comparación distinguirá dos perspectivas: desempeño con una configuración de entrada común y desempeño de cada método tras una búsqueda acotada bajo el mismo protocolo de validación. No se mezclarán resultados por ventana fija con resultados de ventanas seleccionadas individualmente sin identificarlo. La configuración final de cada método se elegirá utilizando únicamente validación en DEVELOPMENT.
-
-Persistence conserva su regla simple y no se fuerza a utilizar toda la ventana $L$: toma la volatilidad reciente válida. El SVR lineal utiliza los cierres históricos de la ventana común para predecir directamente la volatilidad futura. En el experimento actual, la referencia de persistencia se calcula con cierres contenidos en esa ventana y se evalúa por separado.
-
-#### Particiones, ajuste y presupuesto
-
-Todos los modelos utilizarán las mismas fronteras temporales de entrenamiento y validación, con los cinco activos alineados por timestamp. Se mantendrá la partición DEVELOPMENT/TEST existente. Los bloques internos utilizados para elegir configuraciones pertenecen a DEVELOPMENT, aunque un ejemplo de código externo los denomine test; no se confundirá ese nombre con el TEST final reservado.
-
-Se eliminará de cada entrenamiento cualquier etiqueta cuyo periodo objetivo invada el bloque de validación, verificando sus fechas reales. La separación deberá cubrir el mayor horizonte evaluado y respetar la disponibilidad de las etiquetas. Los escaladores, PCA, imputaciones y demás transformaciones aprendidas se ajustarán solo sobre el entrenamiento de cada fold. Un modelo que no necesite escalado podrá conservar su procedimiento propio; recibirá la misma información de origen.
-
-El experimento de la sección 3 aplica además confinamiento estricto: para un bloque con aperturas extremas A y B, solo admite anclas s con `s − 167 horas ≥ A` y `s + 24 horas ≤ B`. Así, el historial de 168 cierres, la referencia pasada y el objetivo futuro pertenecen al mismo bloque. Esta política se fija antes de repetir la selección y se aplica también a cada prefijo de la curva de aprendizaje. El TEST futuro deberá respetar la misma regla y formar su historial dentro de TEST; permanece reservado. Se distinguen los límites del calendario de las primeras y últimas anclas evaluables.
-
-Antes de ejecutar búsquedas se documentará un presupuesto comparable: mismos folds y criterio de selección, límite común de configuraciones evaluadas y un límite de recursos explícito. Se registrará el presupuesto realmente consumido; el mismo número de pruebas no garantiza idéntico coste computacional. No se permitirá una búsqueda extensa para un método y una configuración arbitraria sin ajustar para otro. Persistence queda exento de una búsqueda de hiperparámetros que su formulación no requiere.
-
-Para métodos estocásticos se fijará una lista común de semillas y se reportará la variabilidad de sus resultados; no se elegirá la mejor semilla según TEST. El número de épocas y las reglas de parada podrán ser propios de cada arquitectura, dentro del presupuesto declarado, y cualquier parada temprana utilizará validación interna de DEVELOPMENT.
-
-#### Observaciones y selección del modelo
-
-La tabla comparativa principal utilizará un conjunto común de observaciones elegibles, determinado por disponibilidad de datos e historial requerido, nunca por la magnitud del error. Al comparar diferentes ventanas $L$, se utilizarán timestamps comunes para evitar que una ventana parezca mejor por evaluarse en un periodo más fácil. Se informarán las observaciones descartadas y su motivo. Una ausencia de predicciones o un fallo numérico no autoriza a eliminar silenciosamente las filas afectadas.
-
-Para elegir configuraciones en DEVELOPMENT se establece como criterio principal el **RMSE medio entre activos con igual ponderación**, calculado sobre la volatilidad final y a $h=24$. Se reportarán también MAPE y $R^2$, con las limitaciones ya documentadas, y podrán añadirse MAE y MSE como métricas complementarias de la guía MLP. MSE y RMSE no se tratarán como dos evidencias independientes, pues una es el cuadrado de la otra en el mismo conjunto.
-
-Los resultados se presentarán por activo y por horizonte antes de resumirlos. En validación se informarán las métricas por fold y su media y dispersión, sin interpretar automáticamente esa dispersión como un intervalo de confianza entre observaciones independientes. Los diagnósticos de residuos y su ACF complementarán las métricas; la prueba BDS de la guía podrá incorporarse como diagnóstico adicional y no como criterio automático para declarar un ganador.
-
-La configuración final y el criterio de clasificación quedarán fijados antes de evaluar TEST. Este se utilizará para comparar los procedimientos ya fijados, sin volver a ajustar el modelo que obtenga peor resultado. Se distinguirá el menor RMSE observado de una superioridad estadísticamente sustentada. Si se estiman intervalos para diferencias de error, deberán respetar la dependencia temporal y entre activos. Los costes y la estabilidad se reportarán junto con la precisión.
-
-La tabla final identificará, como mínimo, modelo, ventana $L$, horizonte $h$, activos, número de predicciones sobre timestamps comunes, RMSE, MAPE, $R^2$ y coste computacional. Las capas solo aparecerán donde sean aplicables. No se incorporan en esta etapa obligaciones de API, Docker o despliegue del ejemplo MLP, ya que no determinan la comparabilidad predictiva.
-
-### Métodos que no son regresores finales equivalentes
-
-PCA puede emplearse para reducción de dimensionalidad, exploración o preprocesamiento, pero no es por sí mismo un modelo predictivo final de regresión. Si forma parte de un pipeline, se evaluará el regresor completo, no PCA como predictor independiente.
-
-Clustering es aprendizaje no supervisado y no se compara directamente mediante RMSE, MAPE o $R^2$. Un clasificador bayesiano que convierta la volatilidad continua en clases resuelve otro problema y tampoco es directamente comparable. Estos métodos no se incluirán en una tabla final de RMSE como si fueran regresores equivalentes.
-
-### Definición aplicada y resultados existentes
-
-El objetivo de la sección 2.1, sus tablas, figuras y notebook se recalcularon con la fórmula del profesor: desviación estándar de 24 retornos horarios futuros centrados en su media, divisor 24 (`ddof=0`) y escala porcentual. Esta definición coincide con el objetivo de las secciones 2.3 y 3 y con la referencia pasada de Persistence.
-
-Se sustituye el cálculo anterior basado en la raíz de la suma de retornos al cuadrado. Esa magnitud difiere en el centrado y el divisor; sus cifras no se conservan como resultados de la definición vigente. La actualización utiliza exclusivamente DEVELOPMENT, conserva los datos originales y no requiere consultar TEST ni repetir el ajuste del SVR. Las diferencias de cobertura entre EDA y modelado se deben a los históricos adicionales y a la intersección de timestamps elegibles, no a otra definición del objetivo.
+Los resultados corresponden a validación interna en DEVELOPMENT. Las conclusiones se limitan a los cinco activos, el proveedor y los periodos estudiados.

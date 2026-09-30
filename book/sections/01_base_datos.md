@@ -201,7 +201,7 @@ Las cifras del periodo completo corresponden a los hallazgos previamente confirm
 | XRPUSDT | 53,562 | 53,542 | 20 | 0.03734% |
 | SOLUSDT | 53,562 | 53,542 | 20 | 0.03734% |
 
-Los mismos 20 timestamps faltan en los cinco activos. No se imputaron y los datos originales permanecen intactos. Estas cifras describen ausencias de velas en la cuadrícula horaria esperada; no equivalen a una auditoría de valores nulos dentro de las filas presentes.
+Los mismos 20 timestamps faltan en los cinco activos. No se imputaron y los datos originales permanecen intactos. Estas cifras describen ausencias de velas en la cuadrícula horaria esperada; no equivalen a una verificación de valores nulos dentro de las filas presentes.
 
 ### 1.7.2 Patrón de faltantes
 
@@ -356,7 +356,7 @@ Las fechas localizan los registros que requieren revisión; no identifican por s
 
 #### Tratamiento
 
-Se conservan todas las observaciones. No se eliminan, recortan, winsorizan ni sustituyen los valores señalados. En series financieras, un extremo puede representar un movimiento real del mercado y no necesariamente un error de medición. Antes de corregir un registro se requerirá contrastarlo con la auditoría de consistencia y la fuente original.
+Se conservan todas las observaciones. No se eliminan, recortan, winsorizan ni sustituyen los valores señalados. En series financieras, un extremo puede representar un movimiento real del mercado y no necesariamente un error de medición. Antes de corregir un registro se requerirá contrastarlo con la verificación de consistencia y la fuente original.
 
 Los umbrales globales en niveles de precio y volumen pueden reflejar cambios de régimen durante DEVELOPMENT; por ello no se interpretan automáticamente como límites de validez. Si más adelante se adopta algún tratamiento para modelar, sus parámetros deberán estimarse dentro de cada partición de entrenamiento, sin utilizar información futura ni TEST.
 
@@ -364,7 +364,7 @@ El procedimiento está en `src/06_outliers_development.py`. Los resultados se gu
 
 ### 1.7.6 Valores imposibles o inconsistentes
 
-La auditoría abarca las 214,165 filas de DEVELOPMENT. Se comprueban los valores numéricos, las relaciones entre campos y la estructura temporal, sin corregir ni eliminar registros. Los conteos siguientes corresponden a filas señaladas por cada regla; una misma fila podría incumplir más de una.
+La verificación abarca las 214,165 filas de DEVELOPMENT. Se comprueban los valores numéricos, las relaciones entre campos y la estructura temporal, sin corregir ni eliminar registros. Los conteos siguientes corresponden a filas señaladas por cada regla; una misma fila podría incumplir más de una.
 
 | Verificación | Filas evaluadas | Filas señaladas |
 |--------------|----------------:|----------------:|

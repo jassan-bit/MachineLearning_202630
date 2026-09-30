@@ -1,12 +1,11 @@
 # Entregable 1: pronóstico de volatilidad en criptomonedas
 
-Informe corregido para BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT con datos horarios de Binance Spot. Compara Persistence y SVR lineal mediante validación temporal. TEST permanece reservado.
+Informe de investigación para BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT con datos horarios de Binance Spot. Compara Persistence y SVR lineal mediante validación temporal. TEST permanece reservado.
 
 ## Lectura
 
 - Informe: `book/entregable1_master.md` y `book/sections/`.
 - Conclusiones: `book/sections/05_conclusiones.md`.
-- Auditoría completa: `outputs/tables/entregable1_checklist.csv`.
 - Notebooks con resultados: `notebooks/`; modelo base: `18_base_model.ipynb`.
 - Sitio público: https://jassan-bit.github.io/MachineLearning_202630/ (consultar el registro de publicación para identificar la versión verificada).
 
@@ -36,7 +35,7 @@ npm exec --yes --package=mystmd@1.11.0 -- myst build --html
 python -m http.server 8000 --directory _build/html
 ```
 
-Abrir `http://localhost:8000`. El HTML necesita un servidor local para resolver correctamente rutas y recursos. La compilación puede descargar MyST y su plantilla; se verificó con Node 24.19.0. Los generadores de secciones deben ejecutarse secuencialmente; los comandos detallados están en la auditoría del Book.
+Abrir `http://localhost:8000`. El HTML necesita un servidor local para resolver correctamente rutas y recursos. La compilación puede descargar MyST y su plantilla; se verificó con Node 24.19.0. Los generadores de secciones deben ejecutarse secuencialmente; cada sección documenta su procedimiento de reproducción.
 
 ## Organización
 

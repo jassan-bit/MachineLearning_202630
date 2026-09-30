@@ -40,11 +40,12 @@ def main():
     runs = response.json()['workflow_runs']
     assert any(r['head_sha'] == args.commit and r['conclusion'] == 'success' for r in runs), 'Deployment not yet successful'
     pages = {}
-    for route in ['', 'base-datos/', 'eda/', 'modelo-base/', 'auditoria/', 'conclusiones/']:
+    for route in ['', 'base-datos/', 'eda/', 'modelo-base/', 'conclusiones/']:
         response = session.get(urljoin(BASE, route), timeout=60)
         response.raise_for_status()
         pages[route] = Page(response.content.decode('utf-8'))
-    assert 'Resumen del entregable ejecutado' in ' '.join(pages[''].words)
+    assert 'Organización del informe' in ' '.join(pages[''].words)
+    assert not any('/auditoria' in link for link in pages[''].links)
     conclusions = ' '.join(pages['conclusiones/'].words)
     assert '0,623259' in conclusions and '0,389006' in conclusions
     assert '4.475' in ' '.join(pages['eda/'].words)
@@ -69,7 +70,7 @@ def main():
             assert digest == hashlib.sha256(expected).hexdigest(), ('Download mismatch', local)
         downloads.append({'url': url, 'file': local, 'bytes': len(response.content), 'sha256': digest, 'comparison': mode})
     result = dict(url=BASE, http_status=200, checked_at_utc=datetime.now(timezone.utc).isoformat(),
-        method='GET of six pages, content markers, download SHA-256, successful Actions deployment',
+        method='GET of five pages, content markers, download SHA-256, successful Actions deployment',
         commit_verified=args.commit, corrected_version_published=True, content_version_verified=True,
         pages_verified=[urljoin(BASE, p) for p in pages], downloads_verified=downloads)
     if args.record:

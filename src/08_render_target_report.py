@@ -104,15 +104,6 @@ Las frecuencias y el desbalance de clases no aplican: el problema es de regresi�
     base = base[:a] + '#### Rango de la variable objetivo\n\nCalculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviación estándar centrada de 24 retornos horarios futuros, divisor 24 (`ddof=0`), expresada en porcentaje. La construcción y distribución se documentan en la sección 2.1.\n\n'+ranges+'\n\n'+base[b:]
     base_path.write_text(base,encoding='utf-8')
 
-    master_path = ROOT/'book/entregable1_master.md'
-    master = master_path.read_text(encoding='utf-8')
-    master = re.split(r'### (?:Alcance de esta decisión|Definición aplicada) y resultados existentes', master)[0] + '''### Definición aplicada y resultados existentes
-
-El objetivo de la sección 2.1, sus tablas, figuras y notebook se recalcularon con la fórmula del profesor: desviación estándar de 24 retornos horarios futuros centrados en su media, divisor 24 (`ddof=0`) y escala porcentual. Esta definición coincide con el objetivo de las secciones 2.3 y 3 y con la referencia pasada de Persistence.
-
-Se sustituye el cálculo anterior basado en la raíz de la suma de retornos al cuadrado. Esa magnitud difiere en el centrado y el divisor; sus cifras no se conservan como resultados de la definición vigente. La actualización utiliza exclusivamente DEVELOPMENT, conserva los datos originales y no requiere consultar TEST ni repetir el ajuste del SVR. Las diferencias de cobertura entre EDA y modelado se deben a los históricos adicionales y a la intersección de timestamps elegibles, no a otra definición del objetivo.
-'''
-    master_path.write_text(master,encoding='utf-8')
     model_path = ROOT/'book/sections/03_modelo_base.md'
     model_text = model_path.read_text(encoding='utf-8').replace('Las cifras antiguas de 2.1 no se reutilizan para construir el objetivo.', 'La sección 2.1 utiliza la misma definición del objetivo; cada experimento conserva sus propias reglas de cobertura e historial disponible.')
     model_path.write_text(model_text,encoding='utf-8')

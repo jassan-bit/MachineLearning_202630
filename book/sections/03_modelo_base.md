@@ -49,7 +49,7 @@ $$
 
 La primera condición contiene los 168 cierres de entrada y los 25 cierres de Persistence; la segunda contiene los 24 retornos futuros. Además, todos los cierres deben ser consecutivos y convencionales. Se aplican las mismas reglas en entrenamiento, validación y en cada prefijo de la curva de aprendizaje. El ajuste final utiliza ventanas contenidas en DEVELOPMENT. La evaluación futura de TEST deberá formar su historial dentro de TEST y excluir sus últimas 24 anclas, sin utilizar contexto de DEVELOPMENT.
 
-La regla elimina las primeras 167 anclas potenciales de cada validación y las últimas 24. Los conteos adicionales sobre filas ya elegibles pueden ser menores por huecos o por exclusiones que ya existían en el extremo de DEVELOPMENT. La auditoría distingue ambos motivos. Los timestamps excluidos se fijan por disponibilidad y fronteras, nunca por errores de los modelos.
+La regla elimina las primeras 167 anclas potenciales de cada validación y las últimas 24. Los conteos adicionales sobre filas ya elegibles pueden ser menores por huecos o por exclusiones que ya existían en el extremo de DEVELOPMENT. La verificación distingue ambos motivos. Los timestamps excluidos se fijan por disponibilidad y fronteras, nunca por errores de los modelos.
 
 El entrenamiento termina antes del inicio del bloque validado: sus últimas 24 anclas se purgan para que ninguna etiqueta atraviese la frontera. La separación se comprueba en horas reales; no se interpreta como independencia estadística. Las fechas de los bloques son aperturas de velas: la predicción se emite alrededor de s+1 hora y la etiqueta se conoce alrededor de s+25 horas, tras los cierres respectivos.
 
@@ -75,7 +75,7 @@ La tabla distingue el bloque de calendario de las anclas efectivamente evaluadas
 
 Sobre las filas previamente elegibles, se excluyen 835 anclas por historial y 96 por horizonte, por activo. Se evalúan 33,981 anclas por activo y 169,905 predicciones por método. La pérdida inicial de historial no es una imputación ni se rellena con TRAIN.
 
-Las exclusiones no garantizan que los periodos conservados representen a los descartados. Estos resultados sustituyen las métricas previas calculadas con otras fronteras; no se comparan como si procedieran de las mismas observaciones.
+Las exclusiones no garantizan que los periodos conservados representen a los descartados. La comparación utiliza las mismas observaciones elegibles y las mismas fronteras para ambos modelos.
 
 ## 3.4 Pipeline, formulación y búsqueda acotada
 
@@ -122,7 +122,7 @@ La media y desviación se calculan sobre 25 combinaciones activo-fold con pesos 
 | XRPUSDT | persistence | 0.5113 | 41.84 | -0.0704 |
 | XRPUSDT | svr | 0.7348 | 116.67 | -1.2035 |
 
-El RMSE medio es **0.3890** para Persistence y **0.6233** para SVR; la diferencia SVR menos Persistence es **0.2343 puntos porcentuales**. El SVR no supera la referencia en este experimento. Se registran **8 predicciones negativas** del SVR. Los resultados corresponden a las nuevas ventanas contenidas y no deben mezclarse con las métricas de la versión anterior.
+El RMSE medio es **0.3890** para Persistence y **0.6233** para SVR; la diferencia SVR menos Persistence es **0.2343 puntos porcentuales**. El SVR no supera la referencia en este experimento. Se registran **8 predicciones negativas** del SVR. Los resultados corresponden a ventanas completamente contenidas en sus respectivos bloques.
 
 No se recortan predicciones negativas después de observar su desempeño. Se contabilizan y se reconocen como valores incompatibles con la no negatividad de la volatilidad. Cualquier restricción posterior deberá definirse como parte de un procedimiento distinto antes de evaluarlo.
 
@@ -226,7 +226,7 @@ La autocorrelación residual representa información temporal no capturada o dep
 
 ## 3.8 Curvas de aprendizaje
 
-Se ajusta la configuración seleccionada con el 25 %, 50 % y 100 % inicial del **calendario de entrenamiento** del último fold. Dentro de cada prefijo se exige que historial y objetivo estén completos y contenidos en él; el porcentaje no se aplica a filas ya filtradas. La validación permanece fija y el escalador se ajusta de nuevo en cada caso. Son prefijos cronológicos, no submuestras aleatorias. La auditoría de la curva registra inicio del historial, fin del objetivo y fronteras del prefijo.
+Se ajusta la configuración seleccionada con el 25 %, 50 % y 100 % inicial del **calendario de entrenamiento** del último fold. Dentro de cada prefijo se exige que historial y objetivo estén completos y contenidos en él; el porcentaje no se aplica a filas ya filtradas. La validación permanece fija y el escalador se ajusta de nuevo en cada caso. Son prefijos cronológicos, no submuestras aleatorias. La verificación de la curva registra inicio del historial, fin del objetivo y fronteras del prefijo.
 
 | Activo | Fracción calendario train | n train | RMSE train | RMSE validación |
 | --- | --- | --- | --- | --- |
@@ -294,7 +294,7 @@ Los coeficientes se guardan para los pipelines finales ajustados sobre DEVELOPME
 
 La tabla muestra el rezago con mayor coeficiente absoluto estandarizado por activo, no una selección de variables. Dada la fuerte correlación entre cierres consecutivos, los signos y magnitudes individuales pueden ser inestables y mantener otros rezagos fijos puede describir combinaciones poco habituales. No se interpretan como efectos causales ni como importancias robustas. La regularización ayuda a controlar coeficientes, pero no elimina la redundancia de la entrada.
 
-## 3.10 Auditoría crítica y limitaciones
+## 3.10 Diagnóstico y limitaciones
 
 El máximo R² del SVR entre las 25 evaluaciones es 0.0300. No alcanza la alerta de 0,8–0,9 de la guía; un desempeño bajo tampoco demuestra ausencia de fuga.
 

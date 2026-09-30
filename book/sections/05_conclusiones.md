@@ -1,4 +1,4 @@
-# 5. Conclusiones y alcance de la entrega
+# 4. Conclusiones
 
 ## Respuesta al problema de investigación
 
@@ -21,17 +21,17 @@ La dependencia temporal, la redundancia de los cierres y los cambios de distribu
 
 El diagnóstico de cambios y las ventanas alrededor de eventos son exploratorios. No atribuyen causalidad a los eventos. Los cambios marginales de volatilidad tampoco demuestran por sí solos un cambio en la relación condicional entre predictores y objetivo. La sensibilidad al tamaño del bloque y la incertidumbre en las fechas de cambio se presentan en la sección 2.6.11.
 
-## Limitaciones que permanecen explícitas
+## Limitaciones
 
-- Los registros disponibles no identifican el mecanismo MCAR, MAR o MNAR de los huecos. No se inventa una causa ni se interpolan retornos a través de ellos.
-- La auditoría conservada de la partición acredita cortes y claves temporales disjuntas; no certifica la ausencia de vectores casi idénticos entre DEVELOPMENT y TEST al omitir fechas.
+- Los registros disponibles no identifican el mecanismo MCAR, MAR o MNAR de los huecos. No se atribuye una causa específica ni se interpolan retornos a través de ellos.
+- La verificación conservada de la partición acredita cortes y claves temporales disjuntas; no certifica la ausencia de vectores casi idénticos entre DEVELOPMENT y TEST al omitir fechas.
 - El EDA y la selección se realizaron sobre DEVELOPMENT. La validación interna no reemplaza una evaluación final independiente y no permite garantizar ausencia universal de sobreajuste.
 - La disponibilidad de las velas es nominal tras su cierre; no se dispone de registros de latencia operativa.
 - La evidencia corresponde a cinco activos, un proveedor y los periodos observados. No demuestra generalización a otros mercados ni una estrategia rentable de inversión.
 
 ## Reproducibilidad y siguiente etapa
 
-La reproducción en un entorno limpio completó 17 etapas, incluidos 170 ajustes y 12 pruebas; se contrastaron 13 tablas numéricas con las tolerancias documentadas. Se ejecutaron además seis notebooks en el kernel del entorno nuevo. La reproducción comienza en el snapshot de DEVELOPMENT y no repite la descarga ni la partición original. [Registro de reproducción](../../outputs/tables/clean_reproduction_metadata.json) y [verificación integrada](../../outputs/tables/correction_validation.json).
+La reproducción en un entorno limpio completó 17 etapas, incluidos 170 ajustes y 12 pruebas; se contrastaron 13 tablas numéricas con las tolerancias documentadas. Se ejecutaron además seis notebooks en el kernel del entorno nuevo. La reproducción comienza en el snapshot de DEVELOPMENT y no repite la descarga ni la partición original. [Registro de reproducción](../../outputs/tables/clean_reproduction_metadata.json).
 
 **Materiales de la entrega:** [snapshot de DEVELOPMENT](../../data/splits/development_80.csv), [dependencias](../../requirements-lock-windows-py310.txt), [notebook del modelo](../../notebooks/18_base_model.ipynb) y [repositorio de código y notebooks](https://github.com/jassan-bit/MachineLearning_202630). TEST y el archivo maestro no forman parte del paquete reproducible. El snapshot conserva la huella SHA-256 indicada en el registro; su distribución no implica una licencia abierta adicional sobre los datos del proveedor.
 

@@ -116,7 +116,9 @@ def main():
     if published:
         text=text.replace('1. Publicar la versión final corregida y verificar acceso al Book, datos y notebooks. La construcción local no publica cambios.', '1. Publicación verificada: consultar el registro de acceso y la versión comprobada. Conservar juntos el informe, el snapshot de DEVELOPMENT y los archivos de reproducción.')
         text=text.replace('respondió HTTP 200 en una comprobación de acceso; esto no verifica que contenga las correcciones locales.', 'respondió HTTP 200 y se verificaron contenido corregido y descargas; el registro identifica la versión comprobada.')
-    (ROOT/'book/sections/04_auditoria.md').write_text(text,encoding='utf-8')
+    internal=ROOT/'outputs/revision_interna'
+    internal.mkdir(exist_ok=True)
+    (internal/'04_auditoria.md').write_text(text,encoding='utf-8')
     print(dict(counts))
 
 
