@@ -1,13 +1,13 @@
 {
   "notebook": "notebooks/Entregable_1_Completo.ipynb",
   "status": "passed",
-  "executed_code_cells": 18,
+  "executed_code_cells": 76,
   "embedded_figures": 57,
-  "seconds": 695.8038147999905,
+  "independent_working_directory": "C:\\Users\\Lenovo\\AppData\\Local\\Temp\\notebook_validation_d8m__66c",
+  "standalone_inputs": true,
+  "seconds": 673.358621600084,
   "python": "3.10.21 | packaged by Anaconda, Inc. | (main, Aug 27 2026, 14:35:39) [MSC v.1942 64 bit (AMD64)]",
   "interpreter": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
-  "notebook_sha256": "c0faa9cbf72b6a5c9ad51d56bea6c21bb0542cc694c6605b1e5e4520d58de9e0",
-  "test_read": false,
-  "executed_notebook_sha256": "8143c833ac2c7c1858b1c791f65ba9bd4d4cba6f3ff9f2f2bf85c9cd380b096f",
-  "post_execution_edit": "Markdown clarification of individual notebooks; executable cells and outputs unchanged"
+  "notebook_sha256": "6a1baf8c2880012b7a1af9835483f5cf51f9eddc9d56f085d69a9ac7600d5d27",
+  "test_read": false
 }

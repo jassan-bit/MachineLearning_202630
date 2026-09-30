@@ -3,6 +3,7 @@ from pathlib import Path
 import base64
 import json
 import re
+import runpy
 import textwrap
 import nbformat
 
@@ -192,6 +193,7 @@ print('Ejecución completa: 170 ajustes, 13 tablas concordantes y TEST reservado
     nb.metadata['project']=dict(title='Entregable 1 completo',test_reserved=True,default_execution='full_recomputation')
     nbformat.validate(nb)
     nbformat.write(nb,TARGET)
+    runpy.run_path(str(ROOT/'src/30_make_notebook_portable.py'))['make_portable'](TARGET)
     print(json.dumps(dict(notebook=str(TARGET),cells=len(cells),code_cells=sum(c.cell_type=='code' for c in cells),embedded_figures=sum(bool(c.get('attachments')) for c in cells)),indent=2))
 
 

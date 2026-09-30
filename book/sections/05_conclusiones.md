@@ -31,7 +31,7 @@ El diagnóstico de cambios y las ventanas alrededor de eventos son exploratorios
 
 ## Reproducibilidad y siguiente etapa
 
-**Notebook completo:** [Entregable_1_Completo.ipynb](../../notebooks/Entregable_1_Completo.ipynb). Incluye el informe, tablas, figuras incorporadas, interpretaciones y el código ejecutable de todas las etapas. Al ejecutar todas las celdas se repiten los cálculos y los 170 ajustes en una carpeta nueva, usando exclusivamente DEVELOPMENT. Para repetir la ejecución se necesita el repositorio completo y el entorno indicado en el notebook.
+**Notebook completo:** [Entregable_1_Completo.ipynb](../../notebooks/Entregable_1_Completo.ipynb). Incluye el informe, tablas, figuras, código y las entradas necesarias incorporadas al archivo. Puede abrirse desde cualquier carpeta. Al ejecutar todas las celdas se recuperan las entradas en una carpeta temporal y se repiten los cálculos y los 170 ajustes, usando exclusivamente DEVELOPMENT. No requiere descargar el repositorio; sí necesita Python con las dependencias indicadas y Node.js. TEST no está incluido.
 
 La reproducción en un entorno limpio completó 17 etapas, incluidos 170 ajustes y 12 pruebas; se contrastaron 13 tablas numéricas con las tolerancias documentadas. Se ejecutaron además seis notebooks en el kernel del entorno nuevo. La reproducción comienza en el snapshot de DEVELOPMENT y no repite la descarga ni la partición original. [Registro de reproducción](../../outputs/tables/clean_reproduction_metadata.json).
 

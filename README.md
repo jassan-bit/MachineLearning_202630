@@ -7,7 +7,7 @@ Informe de investigación para BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT con 
 - Informe: `book/entregable1_master.md` y `book/sections/`.
 - Conclusiones: `book/sections/05_conclusiones.md`.
 - Notebooks con resultados: `notebooks/`; modelo base: `18_base_model.ipynb`.
-- **Notebook completo para entregar:** [Entregable_1_Completo.ipynb](notebooks/Entregable_1_Completo.ipynb). Reúne el informe, las figuras incorporadas y el código de todas las etapas; al ejecutar todas las celdas recalcula los análisis y los 170 ajustes en una carpeta independiente usando solo DEVELOPMENT.
+- **Notebook completo para entregar:** [Entregable_1_Completo.ipynb](notebooks/Entregable_1_Completo.ipynb). Reúne el informe, figuras como salidas Jupyter, código y archivos de entrada incorporados. Puede ejecutarse desde Descargas sin la carpeta del repositorio: recupera las entradas en un directorio temporal y recalcula los análisis y los 170 ajustes usando solo DEVELOPMENT. Requiere Python con las dependencias y Node.js.
 - Sitio público: https://jassan-bit.github.io/MachineLearning_202630/ (consultar el registro de publicación para identificar la versión verificada).
 
 El SVR obtuvo RMSE medio 0,623259 frente a 0,389006 de Persistence, en puntos porcentuales. Son resultados de validación interna, no de TEST. La entrega conserva las limitaciones metodológicas detalladas en el informe.
