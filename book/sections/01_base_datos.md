@@ -1,14 +1,25 @@
-# 1. Base de Datos
+---
+title: Pronóstico de la Volatilidad Realizada a 24 Horas de BTC, ETH, BNB, XRP y SOL mediante SVR Lineal con Datos Horarios de Binance Spot (2020–2026)
+short_title: 1. Base de Datos
+---
+
+**Estudiantes:** Jassan Arteta - Mateo Bernal  
+**Profesor:** Lihki Rubio  
+**Asignatura:** Machine Learning  
+**Universidad del Norte**  
+**2026**
+
+## 1. Base de Datos
 
 Esta sección documenta la selección, procedencia, estructura, tamaño, calidad y consideraciones éticas del dataset antes de iniciar el análisis exploratorio de datos (EDA). Las cifras de cobertura, faltantes, duplicados y partición corresponden a los resultados previamente confirmados del proyecto; aquí no se realizan nuevos análisis estadísticos ni se construye la variable objetivo.
 
-## 1.1 Definición clara del problema de investigación
+### 1.1 Definición clara del problema de investigación
 
-### Pregunta de la guía
+#### Pregunta de la guía
 
 ¿Cuál es el problema de investigación?
 
-### Respuesta
+#### Respuesta
 
 El proyecto busca pronosticar la volatilidad realizada futura a 24 horas de los siguientes pares, utilizando datos horarios históricos de Binance Spot:
 
@@ -22,13 +33,13 @@ La variable objetivo es cuantitativa continua, por lo que el problema correspond
 
 En una etapa posterior se comparará el baseline Persistence con un modelo SVR lineal, sin presuponer la superioridad de ninguno. En esta sección no se ejecuta ni se entrena ninguno de estos modelos.
 
-## 1.2 Justificación de la selección del dataset
+### 1.2 Justificación de la selección del dataset
 
-### Pregunta de la guía
+#### Pregunta de la guía
 
 ¿Por qué se seleccionó este conjunto de datos?
 
-### Respuesta
+#### Respuesta
 
 La selección responde a los siguientes criterios:
 
@@ -43,17 +54,17 @@ La selección responde a los siguientes criterios:
 
 Como limitación inicial, se utiliza exclusivamente Binance Spot y solo se incluyen cinco activos. Por tanto, el dataset no representa automáticamente todo el mercado mundial de criptomonedas.
 
-## 1.3 Fuente de los datos y licencia de uso
+### 1.3 Fuente de los datos y licencia de uso
 
-### Fuente
+#### Fuente
 
 Binance Spot. Los datos fueron obtenidos mediante la API pública de Binance y las observaciones corresponden a velas horarias. El dataset maestro se encuentra en `data/processed/crypto_binance_master_1h.csv`.
 
-### Periodo
+#### Periodo
 
 Del 11 de agosto de 2020, 06:00 UTC, al 20 de septiembre de 2026, 23:00 UTC. Los extremos del periodo corresponden a la fecha y hora de apertura de las velas (`open_time`).
 
-### Licencia o condiciones de uso
+#### Licencia o condiciones de uso
 
 Los datos utilizados corresponden a información pública de mercado de Binance Spot, obtenida mediante las interfaces públicas proporcionadas por Binance. Binance ofrece acceso a datos históricos y de mercado mediante su API y mediante su portal oficial de datos públicos, data.binance.vision.
 
@@ -75,7 +86,7 @@ Por esta razón, en este proyecto los datos se utilizan exclusivamente con fines
 - Binance Terms of Use:
   [https://www.binance.com/en/terms](https://www.binance.com/en/terms)
 
-## 1.4 Diccionario de variables
+### 1.4 Diccionario de variables
 
 En el encabezado del CSV maestro se identifican 12 columnas. La siguiente tabla presenta su tipo, unidad, significado y rol inicial. Las fechas están expresadas en UTC. Los roles indicados aún no corresponden a una selección definitiva de predictores.
 
@@ -96,41 +107,41 @@ En el encabezado del CSV maestro se identifican 12 columnas. La siguiente tabla 
 
 Los campos que resumen la vela completa solo podrán utilizarse cuando dicha vela haya cerrado y la información esté disponible. La volatilidad realizada futura a 24 horas es una variable objetivo conceptual que todavía no forma parte de las columnas del dataset original.
 
-## 1.5 Estructura de los datos
+### 1.5 Estructura de los datos
 
-### Unidad de observación
+#### Unidad de observación
 
 Una vela horaria correspondiente a un activo y a un intervalo temporal.
 
-### Nivel de agregación
+#### Nivel de agregación
 
 1 hora.
 
-### Tipo de estructura
+#### Tipo de estructura
 
 Panel o longitudinal temporal. Existen cinco entidades, cada una observada repetidamente en el tiempo, y las observaciones tienen orden cronológico.
 
-### ¿Es transversal?
+#### ¿Es transversal?
 
 No. Las mismas entidades se observan repetidamente a través del tiempo, en lugar de registrarse únicamente en un corte temporal.
 
-### ¿Es serie temporal?
+#### ¿Es serie temporal?
 
 Sí, existe un componente temporal: cada activo cuenta con una secuencia de observaciones horarias ordenadas cronológicamente.
 
-### ¿Es panel/longitudinal?
+#### ¿Es panel/longitudinal?
 
 Sí. Hay múltiples activos observados repetidamente en el tiempo.
 
-### ¿Es espacial?
+#### ¿Es espacial?
 
 No. No existen variables de latitud ni longitud en el dataset.
 
-### ¿Es espacio-temporal?
+#### ¿Es espacio-temporal?
 
 No. Existe tiempo, pero no un componente geográfico.
 
-## 1.6 Tamaño de la muestra
+### 1.6 Tamaño de la muestra
 
 En las tablas se utiliza la coma como separador de miles y el punto como separador decimal.
 
@@ -145,7 +156,7 @@ En las tablas se utiliza la coma como separador de miles y el punto como separad
 
 El tamaño total cumple $267{,}710 > 20{,}000$, por lo que supera el mínimo advertido por la guía. DEVELOPMENT contiene 42,833 timestamps por activo y TEST contiene 10,709 timestamps por activo. Estas cantidades describen la partición previamente establecida; TEST permanece reservado.
 
-### 1.6.1 Número de variables y relación $n/p$
+#### 1.6.1 Número de variables y relación $n/p$
 
 Para el dataset original, $n = 267{,}710$ es el número total de filas previamente confirmado y $p = 12$ es el número total de columnas verificado mediante el encabezado del CSV maestro. Por tanto:
 
@@ -155,15 +166,15 @@ $$
 
 Esta relación corresponde al dataset original e incluye identificadores temporales y de entidad. Para la matriz efectiva del SVR, **p=168 rezagos de close por activo**. Los entrenamientos contienen entre 5,781 y 33,575 filas elegibles por activo, con n/p entre 34.41 y 199.85; el detalle por fold está en 2.4.1. Estos cocientes no miden tamaño muestral independiente: las ventanas se solapan y los activos pueden presentar dependencia transversal. TEST no interviene en el diagnóstico.
 
-### 1.6.2 Casos por clase o rango de la variable objetivo
+#### 1.6.2 Casos por clase o rango de la variable objetivo
 
-#### Casos por clase
+##### Casos por clase
 
 **NO APLICA.**
 
 El proyecto es de regresión temporal y la variable objetivo es continua, por lo que no existen clases.
 
-#### Rango de la variable objetivo
+##### Rango de la variable objetivo
 
 Calculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviación estándar centrada de 24 retornos horarios futuros, divisor 24 (`ddof=0`), expresada en porcentaje. La construcción y distribución se documentan en la sección 2.1.
 
@@ -175,7 +186,7 @@ Calculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviació
 | XRPUSDT | 0.1144 | 7.9232 | 42,564 |
 | SOLUSDT | 0.1853 | 7.0645 | 42,564 |
 
-### 1.6.3 Número de entidades
+#### 1.6.3 Número de entidades
 
 Número de entidades: **5**.
 
@@ -187,11 +198,11 @@ Número de entidades: **5**.
 
 Aunque existen cinco entidades diferentes, no debe asumirse automáticamente independencia estadística entre ellas: los mercados de criptomonedas pueden presentar movimientos comunes y dependencia transversal.
 
-## 1.7 Calidad de los datos
+### 1.7 Calidad de los datos
 
 Las cifras del periodo completo corresponden a los hallazgos previamente confirmados. La matriz de faltantes y la evaluación del mecanismo de ausencia se calculan exclusivamente sobre DEVELOPMENT. Los aspectos aún no evaluados se identifican expresamente como pendientes.
 
-### 1.7.1 Valores faltantes
+#### 1.7.1 Valores faltantes
 
 | Activo | Horas esperadas | Horas observadas | Timestamps faltantes | Porcentaje faltante aproximado |
 |--------|---------------:|----------------:|---------------------:|-------------------------------:|
@@ -203,7 +214,7 @@ Las cifras del periodo completo corresponden a los hallazgos previamente confirm
 
 Los mismos 20 timestamps faltan en los cinco activos. No se imputaron y los datos originales permanecen intactos. Estas cifras describen ausencias de velas en la cuadrícula horaria esperada; no equivalen a una verificación de valores nulos dentro de las filas presentes.
 
-### 1.7.2 Patrón de faltantes
+#### 1.7.2 Patrón de faltantes
 
 En DEVELOPMENT, del 11 de agosto de 2020 a las 06:00 UTC al 1 de julio de 2025 a las 18:00 UTC, se esperan 42,853 horas por activo. Se observan 42,833 y faltan 20, equivalentes al 0.04667%. Este porcentaje utiliza únicamente las horas esperadas de DEVELOPMENT como denominador; el 0.03734% de la subsección anterior corresponde al periodo completo.
 
@@ -232,7 +243,7 @@ Las veinte horas forman diez intervalos de ausencia:
 | 2021-09-29 07:00 | 2021-09-29 08:00 | 2 |
 | 2023-03-24 13:00 | 2023-03-24 13:00 | 1 |
 
-### 1.7.3 Mecanismo de ausencia: MCAR, MAR o MNAR
+#### 1.7.3 Mecanismo de ausencia: MCAR, MAR o MNAR
 
 El mecanismo de ausencia no puede determinarse con la evidencia disponible. MCAR supone que la ausencia no depende de valores observados ni no observados; MAR permite que dependa de información observada y MNAR contempla dependencia de valores no observados, incluso después de considerar la información disponible. Distinguir MAR de MNAR requiere supuestos o información adicional: los datos observados por sí solos no resuelven esa distinción. Véase [Drawing Inferences from Incomplete Data, National Research Council](https://www.ncbi.nlm.nih.gov/books/NBK209900/).
 
@@ -254,7 +265,7 @@ La coincidencia de las ausencias y su agrupación temporal son compatibles con i
 
 El procedimiento reproducible está en `src/04_missingness_development.cjs` y sus resultados en `outputs/tables/development_missingness.json`. Solo se leyó `data/splits/development_80.csv`; TEST no intervino en esta evaluación.
 
-### 1.7.4 Duplicados exactos y casi-duplicados
+#### 1.7.4 Duplicados exactos y casi-duplicados
 
 | Verificación | Resultado confirmado |
 |--------------|---------------------:|
@@ -290,13 +301,13 @@ No se detectaron candidatos bajo esta regla. El resultado se limita a velas cons
 
 La revisión es reproducible mediante `src/05_duplicates_development.cjs`; los resultados y la huella SHA-256 del archivo de entrada se guardan en `outputs/tables/development_duplicates.json`. Solo se utilizó DEVELOPMENT y se verificó que su contenido permaneciera intacto.
 
-### 1.7.5 Outliers
+#### 1.7.5 Outliers
 
 La detección se realiza exclusivamente sobre DEVELOPMENT, con 42,833 velas por activo. Se evalúan por separado las nueve variables numéricas originales: `open`, `high`, `low`, `close`, `volume`, `quote_asset_volume`, `number_of_trades`, `taker_buy_base_asset_volume` y `taker_buy_quote_asset_volume`. No se mezclan activos para calcular los umbrales.
 
 Como diagnóstico adicional del movimiento de precios se utiliza el retorno logarítmico horario $r_t=100\ln(C_t/C_{t-1})$, expresado en porcentaje. Solo se calcula entre velas separadas exactamente por una hora: quedan 42,822 retornos por activo. La primera vela y las diez velas inmediatamente posteriores a los huecos no tienen un retorno horario válido. No se imputan ni se calculan retornos que atraviesen esos huecos. Esta medida no es la variable objetivo de volatilidad futura.
 
-#### Criterio de detección
+##### Criterio de detección
 
 Para cada activo y variable se calculan los cuartiles con interpolación lineal y el rango intercuartílico $IQR=Q_3-Q_1$. Se señalan como candidatos a valores extremos las observaciones que cumplen:
 
@@ -306,7 +317,7 @@ $$
 
 Esta es la regla convencional de las cercas del boxplot descrita por [NIST](https://itl.nist.gov/div898/handbook/eda/section3/boxplot.htm). Los límites se calculan en las unidades originales; las escalas logarítmicas de algunas figuras solo facilitan su visualización. Se trata de un diagnóstico global de DEVELOPMENT, no de un filtro causal listo para aplicar en validación temporal.
 
-#### Resultados y distribuciones
+##### Resultados y distribuciones
 
 La siguiente tabla resume los retornos horarios y el volumen negociado en USDT. Los conteos se refieren a cada variable por separado y no deben sumarse como si fueran filas distintas.
 
@@ -334,7 +345,7 @@ Distribuciones con 80 intervalos de igual anchura y frecuencia en escala logarí
 
 Los gráficos muestran retornos extremos en ambas direcciones y una cola hacia volúmenes altos. El porcentaje señalado depende de la distribución de cada activo. Un conteo elevado bajo esta regla no demuestra contaminación: el criterio también puede señalar episodios reales de actividad intensa y cambios entre periodos de mercado.
 
-#### Contexto temporal
+##### Contexto temporal
 
 ```{figure} ../_static/figures/development_outliers_timeline.png
 :alt: Series temporales de retornos y volumen por activo en DEVELOPMENT; los valores fuera de los límites IQR aparecen en naranja.
@@ -354,7 +365,7 @@ Los mayores retornos en valor absoluto no ocurren todos en la misma fecha:
 
 Las fechas localizan los registros que requieren revisión; no identifican por sí solas la causa económica ni certifican la exactitud de la cotización. Los máximos de volumen y sus fechas también se incluyen en la [tabla de extremos observados](../../outputs/tables/development_outliers_extremes.csv).
 
-#### Tratamiento
+##### Tratamiento
 
 Se conservan todas las observaciones. No se eliminan, recortan, winsorizan ni sustituyen los valores señalados. En series financieras, un extremo puede representar un movimiento real del mercado y no necesariamente un error de medición. Antes de corregir un registro se requerirá contrastarlo con la verificación de consistencia y la fuente original.
 
@@ -362,7 +373,7 @@ Los umbrales globales en niveles de precio y volumen pueden reflejar cambios de 
 
 El procedimiento está en `src/06_outliers_development.py`. Los resultados se guardan en `outputs/tables/development_outliers_iqr.csv` y la trazabilidad en `outputs/tables/development_outliers_metadata.json`. Se verificó mediante SHA-256 que DEVELOPMENT permaneciera intacto; TEST no fue leído.
 
-### 1.7.6 Valores imposibles o inconsistentes
+#### 1.7.6 Valores imposibles o inconsistentes
 
 La verificación abarca las 214,165 filas de DEVELOPMENT. Se comprueban los valores numéricos, las relaciones entre campos y la estructura temporal, sin corregir ni eliminar registros. Los conteos siguientes corresponden a filas señaladas por cada regla; una misma fila podría incumplir más de una.
 
@@ -385,7 +396,7 @@ La verificación abarca las 214,165 filas de DEVELOPMENT. Se comprueban los valo
 | Símbolo distinto de los cinco pares previstos | 214,165 | 0 |
 | Volumen comprador taker superior al volumen total, en activo base o USDT | 214,165 | 0 |
 
-#### Cierres anteriores al final horario convencional
+##### Cierres anteriores al final horario convencional
 
 Se identifican 28 registros con un cierre anterior al último milisegundo de la hora, agrupados en seis horas de apertura. Ninguno tiene una fecha inválida ni un cierre fuera de su intervalo horario.
 
@@ -402,7 +413,7 @@ Por ejemplo, la vela BTCUSDT del 25 de abril de 2021 a las 04:00 UTC registra ci
 
 Cinco de estas seis horas preceden a intervalos de ausencia documentados en 1.7.2. Esa coincidencia justifica contrastar los registros con la fuente original, pero no demuestra una interrupción del mercado ni un error de adquisición. Las 28 velas se conservan y quedan identificadas en el [detalle de registros señalados](../../outputs/tables/development_consistency_flags.csv). Para construir retornos y ventanas analíticas, sus cierres se enmascaran sin modificar el archivo original; las ventanas afectadas quedan invalidadas según el protocolo común.
 
-#### Coherencia de unidades y volúmenes
+##### Coherencia de unidades y volúmenes
 
 Los pares se cotizan frente a USDT. Como comprobación interna, se divide `quote_asset_volume` entre `volume`: cuando el volumen base es positivo, el cociente expresa un precio medio implícito y se contrasta con [`low`, `high`]. Se realiza la misma comprobación con los dos campos de volumen comprador taker.
 
@@ -419,27 +430,27 @@ No se detectan contradicciones bajo estas reglas de unidades y volúmenes. Esto 
 
 El procedimiento está en `src/07_consistency_development.py`. La [tabla completa de comprobaciones](../../outputs/tables/development_consistency_checks.csv) distingue las filas evaluadas de aquellas a las que no aplica cada condición. La huella SHA-256 confirma que DEVELOPMENT permaneció intacto. TEST no fue leído.
 
-### 1.7.7 Sesgos de muestreo y representatividad
+#### 1.7.7 Sesgos de muestreo y representatividad
 
 Los datos provienen exclusivamente de Binance Spot y no incluyen otros exchanges. Solo se seleccionaron cinco activos, lo que introduce un posible sesgo de selección de activos. Además, el periodo observado está limitado a 2020–2026.
 
 Los resultados no deben generalizarse automáticamente a todas las criptomonedas, a todos los exchanges ni a todos los periodos de mercado. La evaluación de estas limitaciones deberá profundizarse en etapas posteriores.
 
-## 1.8 Consideraciones éticas
+### 1.8 Consideraciones éticas
 
-### Datos personales
+#### Datos personales
 
 **NO APLICA.** El dataset contiene datos agregados de mercado y no información personal identificable de individuos.
 
-### Anonimización
+#### Anonimización
 
 **NO APLICA.** No existen personas identificables que deban anonimizarse.
 
-### Riesgo de reidentificación
+#### Riesgo de reidentificación
 
 **NO APLICA.** No se utilizan datos individuales, biométricos, médicos, demográficos ni coordenadas personales.
 
-### Consideraciones adicionales
+#### Consideraciones adicionales
 
 Existe una responsabilidad en la interpretación y comunicación de los resultados: el modelo que se desarrolle será experimental y no constituirá asesoría financiera. Las predicciones contendrán incertidumbre y los resultados históricos no garantizan el comportamiento futuro.
 

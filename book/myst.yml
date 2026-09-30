@@ -6,6 +6,7 @@ project:
   toc:
     - file: entregable1_master.md
     - file: sections/01_base_datos.md
+      title: 1. Base de Datos
     - file: sections/02_eda.md
     - file: sections/03_modelo_base.md
     - file: sections/05_conclusiones.md

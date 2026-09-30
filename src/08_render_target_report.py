@@ -97,11 +97,15 @@ Las frecuencias y el desbalance de clases no aplican: el problema es de regresi�
 
     base_path = ROOT/'book/sections/01_base_datos.md'
     base = base_path.read_text(encoding='utf-8')
-    a = base.index('#### Rango de la variable objetivo')
-    b = base.index('### 1.6.3', a)
+    heading = re.search(r'^#{4,5} Rango de la variable objetivo', base, re.M)
+    assert heading is not None
+    a = heading.start()
+    end_heading = re.search(r'^#{3,4} 1\.6\.3', base[a:], re.M)
+    assert end_heading is not None
+    b = a + end_heading.start()
     ranges = markdown_table(['Activo','Mínimo (%)','Máximo (%)','Objetivos válidos'],
                             [[s,f'{r["min"]:.4f}',f'{r["max"]:.4f}',f'{int(r.n):,}'] for s,r in summary.iterrows()])
-    base = base[:a] + '#### Rango de la variable objetivo\n\nCalculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviación estándar centrada de 24 retornos horarios futuros, divisor 24 (`ddof=0`), expresada en porcentaje. La construcción y distribución se documentan en la sección 2.1.\n\n'+ranges+'\n\n'+base[b:]
+    base = base[:a] + heading.group(0) + '\n\nCalculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviación estándar centrada de 24 retornos horarios futuros, divisor 24 (`ddof=0`), expresada en porcentaje. La construcción y distribución se documentan en la sección 2.1.\n\n'+ranges+'\n\n'+base[b:]
     base_path.write_text(base,encoding='utf-8')
 
     model_path = ROOT/'book/sections/03_modelo_base.md'

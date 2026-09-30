@@ -1,9 +1,6 @@
 version: 1
 project:
   title: Pronóstico de volatilidad de criptomonedas con SVR lineal
-  authors:
-    - name: Jassan Alberto Arteta Chavarro
-    - name: Mateo Bernal
   toc:
     - file: book/entregable1_master.md
       title: Inicio
