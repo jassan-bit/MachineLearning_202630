@@ -37,6 +37,7 @@ COMPARISONS = {
 def report_cells(path):
     source=path.read_text(encoding='utf-8')
     source=re.sub(r'^---\n.*?\n---\n', '', source, count=1, flags=re.S)
+    source=source.replace('El notebook carga', 'El notebook individual enlazado carga')
     # Convertir enlaces del Book a enlaces relativos al notebook.
     def link(match):
         label,url=match.groups()
