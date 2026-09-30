@@ -8,6 +8,8 @@ project:
     - file: sections/01_base_datos.md
     - file: sections/02_eda.md
     - file: sections/03_modelo_base.md
+    - file: sections/04_auditoria.md
+    - file: sections/05_conclusiones.md
   # description:
   # keywords: []
   # github:

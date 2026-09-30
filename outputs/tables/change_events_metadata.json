@@ -1,0 +1,25 @@
+{
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "test_read": false,
+  "protocol_sha256": "48abe5efe900f5936064ced53ff907591580fb952b630ca26b89852184913f78",
+  "model_changed": false,
+  "events": [
+    {
+      "date": "2022-09-15",
+      "name": "The Merge de Ethereum",
+      "source": "https://ethereum.org/roadmap/merge/"
+    },
+    {
+      "date": "2023-06-05",
+      "name": "Anuncio de cargos de la SEC contra Binance",
+      "source": "https://www.sec.gov/newsroom/press-releases/2023-101-sec-files-13-charges-against-binance-entities-founder-changpeng-zhao"
+    },
+    {
+      "date": "2024-01-10",
+      "name": "Aprobación de cotización de ETP spot de bitcoin",
+      "source": "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"
+    }
+  ],
+  "bootstrap_reps": 499,
+  "seed": 42
+}

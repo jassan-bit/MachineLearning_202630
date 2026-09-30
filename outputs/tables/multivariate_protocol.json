@@ -1,0 +1,17 @@
+{
+  "scope": "Descriptive diagnostics of the actual 168 lag columns, fitted separately on each asset and TRAIN fold only",
+  "window_closes": 168,
+  "folds": 5,
+  "scaling": "StandardScaler fitted separately within each TRAIN",
+  "pca_solver": "full",
+  "variance_thresholds": [0.90, 0.95, 0.99],
+  "isolation_trees": 200,
+  "isolation_max_samples": 256,
+  "anomaly_quantile": 0.99,
+  "anomaly_rule": "negative score_samples strictly above training quantile; descriptive ranking, no row removal",
+  "seed": 42,
+  "plot_fold": 5,
+  "plot_max_points": 5000,
+  "clustering": "not fitted; inspect known assets and calendar years, without declaring discovered regimes",
+  "test_policy": "not read; no TEST or validation fit, no model selection or changes to SVR"
+}

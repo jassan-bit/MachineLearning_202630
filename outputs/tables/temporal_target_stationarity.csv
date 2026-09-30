@@ -1,0 +1,6 @@
+symbol,n,adf_stat,adf_p,adf_lags,kpss_stat,kpss_p,kpss_lags,kpss_warning
+BNBUSDT,19901,-9.30100044318716,1.1125858064384791e-15,48,1.1255989750705084,0.01,85,The test statistic is outside of the range of p-values available in the look-up table. The actual p-value is smaller than the p-value returned.
+BTCUSDT,19901,-10.482177350001974,1.205758996761025e-18,48,1.891163369252916,0.01,85,The test statistic is outside of the range of p-values available in the look-up table. The actual p-value is smaller than the p-value returned.
+ETHUSDT,19901,-9.273062231038244,1.3109585039171665e-15,48,6.587981544605912,0.01,85,The test statistic is outside of the range of p-values available in the look-up table. The actual p-value is smaller than the p-value returned.
+SOLUSDT,19901,-9.00744099953861,6.2561227130668876e-15,48,0.46259310076608523,0.05017538760082534,85,
+XRPUSDT,19901,-9.53041457269495,2.900952180903577e-16,48,2.0597685207350582,0.01,85,The test statistic is outside of the range of p-values available in the look-up table. The actual p-value is smaller than the p-value returned.

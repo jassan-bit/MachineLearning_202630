@@ -153,7 +153,7 @@ $$
 \frac{n}{p} = \frac{267{,}710}{12} \approx 22{,}309.17.
 $$
 
-Esta relación corresponde al dataset original e incluye todas sus columnas, también los identificadores temporales y de entidad. No representa la relación entre observaciones y predictores de una matriz de modelado ni implica independencia estadística entre filas. Cuando se construya la matriz final de predictores, $p$ cambiará y deberá recalcularse la relación $n/p$ con las filas y los predictores efectivamente disponibles para modelar. TEST no se utilizará para tomar esas decisiones.
+Esta relación corresponde al dataset original e incluye identificadores temporales y de entidad. Para la matriz efectiva del SVR, **p=168 rezagos de close por activo**. Los entrenamientos contienen entre 5,781 y 33,575 filas elegibles por activo, con n/p entre 34.41 y 199.85; el detalle por fold está en 2.4.1. Estos cocientes no miden tamaño muestral independiente: las ventanas se solapan y los activos pueden presentar dependencia transversal. TEST no interviene en el diagnóstico.
 
 ### 1.6.2 Casos por clase o rango de la variable objetivo
 
@@ -165,9 +165,15 @@ El proyecto es de regresión temporal y la variable objetivo es continua, por lo
 
 #### Rango de la variable objetivo
 
-**PENDIENTE.**
+Calculado únicamente sobre DEVELOPMENT con la fórmula del profesor: desviación estándar centrada de 24 retornos horarios futuros, divisor 24 (`ddof=0`), expresada en porcentaje. La construcción y distribución se documentan en la sección 2.1.
 
-La variable objetivo todavía no ha sido calculada; solo está definida conceptualmente como volatilidad realizada futura a 24 horas. Por tanto, no se informa un rango ni se calcula en esta sección.
+| Activo | Mínimo (%) | Máximo (%) | Objetivos válidos |
+| --- | --- | --- | --- |
+| BTCUSDT | 0.0445 | 3.3765 | 42,539 |
+| ETHUSDT | 0.0542 | 5.1053 | 42,539 |
+| BNBUSDT | 0.0787 | 5.9566 | 42,539 |
+| XRPUSDT | 0.1144 | 7.9232 | 42,564 |
+| SOLUSDT | 0.1853 | 7.0645 | 42,564 |
 
 ### 1.6.3 Número de entidades
 
@@ -394,7 +400,7 @@ Se identifican 28 registros con un cierre anterior al último milisegundo de la 
 
 Por ejemplo, la vela BTCUSDT del 25 de abril de 2021 a las 04:00 UTC registra cierre a las 04:00:58.146 UTC. Las cinco velas del 13 de agosto de 2021 a las 01:00 UTC registran cierre a las 01:59:59 UTC, con una diferencia de 999 milisegundos frente al cierre convencional. La lectura admite fechas ISO 8601 con o sin fracción de segundo.
 
-Cinco de estas seis horas preceden a intervalos de ausencia documentados en 1.7.2. Esa coincidencia justifica contrastar los registros con la fuente original, pero no demuestra una interrupción del mercado ni un error de adquisición. Las 28 velas se conservan y quedan identificadas en el [detalle de registros señalados](../../outputs/tables/development_consistency_flags.csv). Antes de construir ventanas de volatilidad deberá resolverse cómo interpretar estos cierres; esta auditoría no cambia los cálculos ni los resultados de las subsecciones anteriores.
+Cinco de estas seis horas preceden a intervalos de ausencia documentados en 1.7.2. Esa coincidencia justifica contrastar los registros con la fuente original, pero no demuestra una interrupción del mercado ni un error de adquisición. Las 28 velas se conservan y quedan identificadas en el [detalle de registros señalados](../../outputs/tables/development_consistency_flags.csv). Para construir retornos y ventanas analíticas, sus cierres se enmascaran sin modificar el archivo original; las ventanas afectadas quedan invalidadas según el protocolo común.
 
 #### Coherencia de unidades y volúmenes
 

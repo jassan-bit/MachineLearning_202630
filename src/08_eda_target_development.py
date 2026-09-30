@@ -43,7 +43,8 @@ def main():
         # Retornos en la cuadrícula horaria: los huecos y cierres irregulares dan NaN.
         log_close = np.log(g.close.where(valid_close))
         r = log_close.diff()
-        y = 100*np.sqrt(r.pow(2).rolling(24, min_periods=24).sum().shift(-24))
+        # Fórmula del profesor: desviación centrada, divisor 24, en porcentaje.
+        y = 100*r.rolling(24, min_periods=24).std(ddof=0).shift(-24)
         y = y.where(forward_count(valid_close).eq(25))
         edge = pd.Series(g.index+pd.Timedelta(hours=24) > end, index=g.index)
         holes = ~edge & forward_count(observed).lt(25)
@@ -52,14 +53,16 @@ def main():
         assert int(observed.sum()) == int((observed & edge).sum() + (observed & holes).sum() + (observed & irregular).sum() + usable.sum())
         # Verificación directa de cada ventana válida: ni desalineación ni futuro fuera de DEVELOPMENT.
         windows = np.lib.stride_tricks.sliding_window_view(g.close.to_numpy(), 25)
-        expected = 100*np.sqrt(np.square(np.diff(np.log(windows), axis=1)).sum(axis=1))
+        future_returns = np.diff(np.log(windows), axis=1)
+        expected = 100*np.sqrt(np.mean(
+            (future_returns-future_returns.mean(axis=1, keepdims=True))**2, axis=1))
         selected = usable.iloc[:-24].to_numpy()
         assert np.allclose(y.iloc[:-24].to_numpy()[selected], expected[selected], rtol=1e-11, atol=1e-11)
         assert not usable.iloc[-24:].any()
         assert (g.index[usable]+pd.Timedelta(hours=24) <= end).all()
         g['rv_future_24h_pct'] = y
         g['return_1h_pct'] = 100*r
-        g['rv_past_24h_pct'] = 100*np.sqrt(r.pow(2).rolling(24, min_periods=24).sum())
+        g['rv_past_24h_pct'] = 100*r.rolling(24, min_periods=24).std(ddof=0)
         groups[symbol] = g
         x = y.dropna()
         q1, q3 = x.quantile([.25,.75])
@@ -76,7 +79,7 @@ def main():
                            boundary=int((observed & edge).sum()), missing_window=int((observed & holes).sum()),
                            irregular_window=int((observed & irregular).sum())))
         # Sensibilidad descriptiva: aceptar cierres irregulares, manteniendo huecos y borde.
-        loose = 100*np.sqrt(np.log(g.close).diff().pow(2).rolling(24, min_periods=24).sum().shift(-24))
+        loose = 100*np.log(g.close).diff().rolling(24, min_periods=24).std(ddof=0).shift(-24)
         sensitivity.append(dict(symbol=symbol, strict_n=len(x), relaxed_n=int(loose.notna().sum()),
                                 strict_mean=x.mean(), relaxed_mean=loose.mean(), strict_p99=x.quantile(.99),
                                 relaxed_p99=loose.quantile(.99), strict_max=x.max(), relaxed_max=loose.max()))
@@ -154,7 +157,12 @@ def main():
     assert fingerprint == hashlib.sha256(SOURCE.read_bytes()).hexdigest()
     (TABLES/'eda_target_metadata.json').write_text(json.dumps({
         'source':'data/splits/development_80.csv','sha256':fingerprint,
-        'target':'100 * sqrt(sum(log(C[t+j]/C[t+j-1])**2 for j in 1..24))',
+        'target':'100 * std(log(C[s+j]/C[s+j-1]) for j in 1..24, ddof=0)',
+        'definition':'Desviación estándar centrada en la media de los 24 retornos; fórmula del profesor adaptada a horas',
+        'ddof':0, 'horizon_hours':24, 'volatility_returns':24,
+        'scale':'percent',
+        'past_reference':'100 * std(r[s-23], ..., r[s], ddof=0)',
+        'verification':'Cada objetivo válido contrastado con cálculo directo centrado sobre 25 cierres; sin objetivos fuera de DEVELOPMENT',
         'anchor':'open_time de la vela t; predicción tras su cierre',
         'conventional_close':'open_time + 1h - 1ms',
         'window':'25 cierres horarios consecutivos convencionales; sin imputación',

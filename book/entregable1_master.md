@@ -14,6 +14,16 @@
 
 **Periodo académico:** 2026-30
 
+## Resumen del entregable ejecutado
+
+Se pronostica la dispersión de los próximos 24 retornos logarítmicos horarios de cinco activos de Binance Spot. La desviación estándar se centra en la media de la ventana, usa divisor 24 (`ddof=0`) y se expresa como porcentaje, sin anualización. El análisis y la selección utilizan exclusivamente DEVELOPMENT; TEST permanece reservado.
+
+Se compararon Persistence y SVR lineal con 168 cierres horarios, mediante cinco folds cronológicos de ventana creciente. El RMSE medio entre bloques activo-fold fue **0,389006** para Persistence y **0,623259** para SVR, en puntos porcentuales. El SVR no mejora la referencia temporal. El intervalo bootstrap por bloques del incremento de RMSE fue **[0,204497; 0,269379]**; está condicionado a la configuración seleccionada y no sustituye una evaluación independiente en TEST.
+
+El informe incorpora auditorías de calidad y disponibilidad temporal, EDA univariado, bivariado y multivariado, diagnóstico de residuos de ambos modelos, incertidumbre, curva de aprendizaje y reproducción en un entorno limpio. Las [conclusiones](sections/05_conclusiones.md) distinguen los resultados de sus limitaciones; la [auditoría completa](sections/04_auditoria.md) desglosa los requisitos de la guía.
+
+**Alcance de las extensiones.** Los modelos distintos de Persistence y SVR mencionados a continuación son propuestas para etapas posteriores; no se presentan como entrenados o evaluados en este entregable. Su inclusión no cambia las entradas, las ventanas ni el protocolo de la comparación ejecutada.
+
 ## Criterio común de comparabilidad entre modelos
 
 Todos los modelos predictivos de regresión utilizarán una definición común de volatilidad basada en los retornos logarítmicos horarios y en la desviación de dichos retornos dentro de una ventana temporal fija. Esta definición se mantendrá constante entre modelos para garantizar que las diferencias de desempeño provengan de la metodología predictiva y no de cambios en la variable objetivo.
@@ -118,7 +128,7 @@ La elegibilidad y la agregación se fijarán antes de la evaluación final, sin 
 
 De la guía del proyecto MLP se adoptan los principios de ventanas temporales, validación cronológica, escalado dentro del entrenamiento, evaluación por horizonte y análisis de residuos. Los ejemplos de frecuencia, arquitectura, descarga y despliegue no sustituyen las decisiones ya establecidas para este proyecto. La comparación busca aproximar las condiciones de información y evaluación entre modelos, conservando sus diferencias metodológicas.
 
-#### Tres parámetros temporales distintos
+#### Parámetros temporales del experimento
 
 | Parámetro | Significado | Regla común |
 |-----------|-------------|-------------|
@@ -149,6 +159,8 @@ Todos los modelos utilizarán las mismas fronteras temporales de entrenamiento y
 
 Se eliminará de cada entrenamiento cualquier etiqueta cuyo periodo objetivo invada el bloque de validación, verificando sus fechas reales. La separación deberá cubrir el mayor horizonte evaluado y respetar la disponibilidad de las etiquetas. Los escaladores, PCA, imputaciones y demás transformaciones aprendidas se ajustarán solo sobre el entrenamiento de cada fold. Un modelo que no necesite escalado podrá conservar su procedimiento propio; recibirá la misma información de origen.
 
+El experimento de la sección 3 aplica además confinamiento estricto: para un bloque con aperturas extremas A y B, solo admite anclas s con `s − 167 horas ≥ A` y `s + 24 horas ≤ B`. Así, el historial de 168 cierres, la referencia pasada y el objetivo futuro pertenecen al mismo bloque. Esta política se fija antes de repetir la selección y se aplica también a cada prefijo de la curva de aprendizaje. El TEST futuro deberá respetar la misma regla y formar su historial dentro de TEST; permanece reservado. Se distinguen los límites del calendario de las primeras y últimas anclas evaluables.
+
 Antes de ejecutar búsquedas se documentará un presupuesto comparable: mismos folds y criterio de selección, límite común de configuraciones evaluadas y un límite de recursos explícito. Se registrará el presupuesto realmente consumido; el mismo número de pruebas no garantiza idéntico coste computacional. No se permitirá una búsqueda extensa para un método y una configuración arbitraria sin ajustar para otro. Persistence queda exento de una búsqueda de hiperparámetros que su formulación no requiere.
 
 Para métodos estocásticos se fijará una lista común de semillas y se reportará la variabilidad de sus resultados; no se elegirá la mejor semilla según TEST. El número de épocas y las reglas de parada podrán ser propios de cada arquitectura, dentro del presupuesto declarado, y cualquier parada temprana utilizará validación interna de DEVELOPMENT.
@@ -171,10 +183,8 @@ PCA puede emplearse para reducción de dimensionalidad, exploración o preproces
 
 Clustering es aprendizaje no supervisado y no se compara directamente mediante RMSE, MAPE o $R^2$. Un clasificador bayesiano que convierta la volatilidad continua en clases resuelve otro problema y tampoco es directamente comparable. Estos métodos no se incluirán en una tabla final de RMSE como si fueran regresores equivalentes.
 
-### Alcance de esta decisión y resultados existentes
+### Definición aplicada y resultados existentes
 
-Esta decisión es exclusivamente documental. La definición común aquí establecida sustituye, para el trabajo posterior, la raíz de la suma de retornos futuros al cuadrado utilizada en la sección 2.1 existente. Ambas magnitudes difieren por el centrado en la media y por el divisor de la ventana; no deben tratarse como objetivos equivalentes ni sustituirse mediante un simple cambio de nombre.
+El objetivo de la sección 2.1, sus tablas, figuras y notebook se recalcularon con la fórmula del profesor: desviación estándar de 24 retornos horarios futuros centrados en su media, divisor 24 (`ddof=0`) y escala porcentual. Esta definición coincide con el objetivo de las secciones 2.3 y 3 y con la referencia pasada de Persistence.
 
-Los resultados, tablas, figuras y notebooks previos se conservan sin cambios como resultados de la definición anterior. No constituyen todavía evidencia calculada para la nueva variable objetivo y deberán actualizarse en una tarea posterior expresamente autorizada. Asimismo, la propuesta anterior de MAE y RMSE no reemplaza el conjunto común de métricas fijado aquí: RMSE, MAPE y $R^2$.
-
-No se recalcula volatilidad, no se ejecutan modelos ni validación cruzada y no se modifica ningún dataset ni TEST al registrar esta decisión.
+Se sustituye el cálculo anterior basado en la raíz de la suma de retornos al cuadrado. Esa magnitud difiere en el centrado y el divisor; sus cifras no se conservan como resultados de la definición vigente. La actualización utiliza exclusivamente DEVELOPMENT, conserva los datos originales y no requiere consultar TEST ni repetir el ajuste del SVR. Las diferencias de cobertura entre EDA y modelado se deben a los históricos adicionales y a la intersección de timestamps elegibles, no a otra definición del objetivo.

@@ -13,6 +13,10 @@ project:
       title: 2. Análisis Exploratorio de Datos (EDA)
     - file: book/sections/03_modelo_base.md
       title: 3. Modelo base
+    - file: book/sections/04_auditoria.md
+      title: 4. Auditoria y reproducibilidad
+    - file: book/sections/05_conclusiones.md
+      title: 5. Conclusiones
 site:
   template: book-theme
   options:

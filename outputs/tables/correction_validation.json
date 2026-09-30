@@ -1,0 +1,21 @@
+{
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "test_read": false,
+  "python": "3.10.21",
+  "independent_OLS_checks": 4,
+  "executed_notebooks": [
+    "09_univariate_development",
+    "13_feature_diagnostics",
+    "14_temporal_target",
+    "17_preprocessing_close",
+    "18_base_model",
+    "22_change_events"
+  ],
+  "executed_code_cells": 37,
+  "checked_local_links": 99,
+  "coverage_matches_target": true,
+  "residual_cases": 50,
+  "feature_evaluations": 4475,
+  "daily_labels_match_hourly_definition": true,
+  "clean_environment_rebuild": true
+}

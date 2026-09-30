@@ -1,0 +1,7 @@
+{
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "test_read": false,
+  "folds_sha256": "26fc24592fd650fe970ae7816e22faed475b456c9134efed80c12f9608d5c8c3",
+  "checks": 25,
+  "features": 168
+}

@@ -5,3 +5,7 @@
 results/** -text
 notebooks/figs/** -text
 *.ipynb -text
+data/splits/development_80.csv -text
+outputs/** -text
+src/** -text
+tests/** -text

@@ -1,0 +1,368 @@
+{
+  "python": "3.10.21 | packaged by Anaconda, Inc. | (main, Aug 27 2026, 14:35:39) [MSC v.1942 64 bit (AMD64)]",
+  "interpreter": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+  "isolated_environment": true,
+  "test_copied": false,
+  "test_read": false,
+  "status": "passed",
+  "stages": [
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 2.3445413999725133,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\00.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 16.67556230002083,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\01.txt"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "src/04_missingness_development.cjs"
+      ],
+      "exit_code": 0,
+      "seconds": 2.330317199928686,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\02.txt"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.EXE",
+        "src/05_duplicates_development.cjs"
+      ],
+      "exit_code": 0,
+      "seconds": 6.344118499895558,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\03.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/06_outliers_development.py"
+      ],
+      "exit_code": 0,
+      "seconds": 47.50212759990245,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\04.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/07_consistency_development.py"
+      ],
+      "exit_code": 0,
+      "seconds": 12.196560299955308,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\05.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/08_eda_target_development.py"
+      ],
+      "exit_code": 0,
+      "seconds": 37.312391499988735,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\06.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/09_univariate_development.py"
+      ],
+      "exit_code": 0,
+      "seconds": 47.54810930020176,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\07.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/11_bivariate_close.py"
+      ],
+      "exit_code": 0,
+      "seconds": 50.47609180002473,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\08.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/14_temporal_close.py"
+      ],
+      "exit_code": 0,
+      "seconds": 31.181319000199437,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\09.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/18_base_model.py"
+      ],
+      "exit_code": 0,
+      "seconds": 230.66231109993532,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\10.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/12_multivariate_close.py"
+      ],
+      "exit_code": 0,
+      "seconds": 80.98229729989544,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\11.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/13_feature_diagnostics.py"
+      ],
+      "exit_code": 0,
+      "seconds": 15.034535499988124,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\12.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/14_temporal_target.py"
+      ],
+      "exit_code": 0,
+      "seconds": 89.12807510001585,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\13.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/17_validate_pipeline.py"
+      ],
+      "exit_code": 0,
+      "seconds": 15.082924599992111,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\14.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/19_extended_diagnostics.py"
+      ],
+      "exit_code": 0,
+      "seconds": 69.78966429992579,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\15.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe",
+        "src/22_change_events.py"
+      ],
+      "exit_code": 0,
+      "seconds": 25.43251969991252,
+      "log": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction\\logs\\16.txt"
+    }
+  ],
+  "scope": "all_development_analysis_and_170_model_fits; source_download_and_original_split_not_repeated",
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "source_hashes": {
+    "src/01_download_binance_data.py": "f9de1eab04ad57923ae3c9a6dd1dd4a564b238e363ee0e45951667a54653139a",
+    "src/02_audit_missing_timestamps.py": "be1fdbf59e116a687b08fea732299cc38b99cfdc859d96b5b3fe2fd1484bd012",
+    "src/03_create_chronological_split.py": "973315ad71d5ca49cbe47c3d56b5aa7f9647e00c2e01801f3652a931715056d6",
+    "src/04_missingness_development.cjs": "4f6f6971b918e933cf2135c7a4e702e9e41a3dd4f76badd956c3b0cc80502e05",
+    "src/05_duplicates_development.cjs": "f2f9c8870aa0652d63daea7740a646055720a8a66228a60b592a9347362abe04",
+    "src/06_outliers_development.py": "2cf818ceea712d0323d0a47887c5f5ce60ca9e889598d49fdcfef5abc8ec703e",
+    "src/07_consistency_development.py": "a08e960c16c1d4c733a4ba3e10bae8254ac05fd520ce83221b4f6eadba651dca",
+    "src/08_eda_target_development.py": "753341febd380a5f818da2ed52e11e2e58a8c1019d5e92adec180a889f30aacf",
+    "src/08_render_target_report.py": "c4f88c0e13a7caead4faf5d74c2dbc167cdaf24c5bdc7ab21c993e169185844a",
+    "src/09_render_univariate_report.py": "b8288108436795be4403591a462888bdefbed71ad38d1513f3410e9a67098826",
+    "src/09_univariate_development.py": "69b6873881d77061bc29b3c6967481569c0c65cda2b1008754635c58c223f475",
+    "src/11_bivariate_close.py": "b9723a060ada456ea4af43bb22a17c45087e1e503ed6a5a051b70d445de76ca2",
+    "src/12_multivariate_close.py": "dfdb28391ee5ab057d829623af7896e752f007c536368387167974f904273058",
+    "src/12_render_multivariate_report.py": "04eb5754915ee4e752967e53273589f13391e28864667be7d6fc267b634beb3d",
+    "src/13_feature_diagnostics.py": "8ab60f928c9cb0dcb8e9053f221a88f741492ef685debb994eb5634237f41ce5",
+    "src/13_leakage_audit.py": "6627c304c35c043b0087796ab92962093b496ef3dad24e27555ed545b31a2333",
+    "src/13_render_feature_diagnostics.py": "65bc192d2350edd18c57645dc5fee9c3187bddebbd78289f4beeb4e82f5ff4fe",
+    "src/14_render_target_temporal.py": "a0d3c912774097da2d86631a7caf4b05a3af712c9cde17b57bb16128b8ee53a6",
+    "src/14_temporal_close.py": "14a137173d5864be9e352f49aa531ce6becc509baebc2ce3d9439e210aef4cb0",
+    "src/14_temporal_target.py": "1afab24de770672314b629ff241be0954fbee48097dba54c81f978dd7ec9fa08",
+    "src/17_preprocessing_close.py": "d90ef5e4a88336b04cda2901d0d37bee32d1c56d272f4570a16aba21aaab63b6",
+    "src/17_validate_pipeline.py": "0ebb521797c48f14dd8f075cbd5038d1394cc3d426544d1bb9ffabfdac82a856",
+    "src/18_base_model.py": "ce6347bb772723d1e449af1181a998e6caf36c463e43a5ed5797f18bf867c6e5",
+    "src/18_render_base_report.py": "368516e4e660c9851d46f07eac3db2d6338a03429f4b88a3213fbb112bb1c7c3",
+    "src/19_extended_diagnostics.py": "f0dbcce990ee7012722b5a60c963c42b40dd75af63557ceb1c8bd7d5cda650c7",
+    "src/20_sync_audit.py": "d7d72ee324e2793628d41ad2e3e9a19bbd9490b057109cf1573bfd95c35eb9b6",
+    "src/21_validate_corrections.py": "aa4e894b67c54932914646a0dee460b54550669e55d64d141a7f05ba8e8dbd71",
+    "src/22_change_events.py": "efba1f48de73cc5c3e480911738b94c7a06a28d8218739eff431cbfe6305fe6e",
+    "src/23_render_change_events.py": "b6351612b4db2bc100e18db65d89a120d3d6401c8bb402b717d84a543adc1427",
+    "src/24_clean_reproduction.py": "5e6a3c4b0f69b6034fcc805d70aeef3a41926ea91c3f53b8e24385f8f3f43472"
+  },
+  "comparisons": [
+    {
+      "file": "base_selection.csv",
+      "rows": 6,
+      "columns": [
+        "mean_rmse"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "base_metrics_by_fold.csv",
+      "rows": 50,
+      "columns": [
+        "rmse",
+        "mape",
+        "r2"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "base_confidence_intervals.csv",
+      "rows": 3,
+      "columns": [
+        "estimate",
+        "low",
+        "high"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "base_learning_curve.csv",
+      "rows": 15,
+      "columns": [
+        "train_rmse",
+        "validation_rmse"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "eda_target_summary.csv",
+      "rows": 5,
+      "columns": [
+        "mean",
+        "median",
+        "std"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "univariate_summary.csv",
+      "rows": 45,
+      "columns": [
+        "mean",
+        "median",
+        "std"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "multivariate_summary.csv",
+      "rows": 25,
+      "columns": [
+        "pc1_ratio",
+        "effective_rank"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "leakage_all_features_scores.csv",
+      "rows": 4475,
+      "columns": [
+        "rmse",
+        "r2"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "temporal_target_stationarity.csv",
+      "rows": 5,
+      "columns": [
+        "adf_stat",
+        "kpss_stat"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "base_residual_diagnostics_all.csv",
+      "rows": 50,
+      "columns": [
+        "mean_residual",
+        "acf_1h"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "base_bootstrap_sensitivity.csv",
+      "rows": 9,
+      "columns": [
+        "estimate",
+        "low",
+        "high"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "change_points.csv",
+      "rows": 15,
+      "columns": [
+        "gain_ratio",
+        "p_raw",
+        "p_holm"
+      ],
+      "max_abs_difference": 0.0
+    },
+    {
+      "file": "event_windows.csv",
+      "rows": 15,
+      "columns": [
+        "mean_before",
+        "mean_after"
+      ],
+      "max_abs_difference": 0.0
+    }
+  ],
+  "workspace": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\outputs\\clean_reproduction",
+  "report_source_hashes": {
+    "09_render_univariate_report.py": "e107fa22a2300939c651773b90f2792232fa8567c4e45d24642ef6f90b3f30af",
+    "13_render_feature_diagnostics.py": "65bc192d2350edd18c57645dc5fee9c3187bddebbd78289f4beeb4e82f5ff4fe",
+    "14_render_target_temporal.py": "c72f9e32c2d8c7880cea5899ba1656ce2f18cf606a8af12dd16ecf95fda98a6b",
+    "18_render_base_report.py": "368516e4e660c9851d46f07eac3db2d6338a03429f4b88a3213fbb112bb1c7c3",
+    "23_render_change_events.py": "b6351612b4db2bc100e18db65d89a120d3d6401c8bb402b717d84a543adc1427"
+  },
+  "clean_notebooks": [
+    {
+      "notebook": "09_univariate_development",
+      "code_cells": 13,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    },
+    {
+      "notebook": "13_feature_diagnostics",
+      "code_cells": 2,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    },
+    {
+      "notebook": "14_temporal_target",
+      "code_cells": 7,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    },
+    {
+      "notebook": "17_preprocessing_close",
+      "code_cells": 2,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    },
+    {
+      "notebook": "18_base_model",
+      "code_cells": 12,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    },
+    {
+      "notebook": "22_change_events",
+      "code_cells": 7,
+      "kernel": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\.venv-repro\\Scripts\\python.exe"
+    }
+  ]
+}

@@ -34,10 +34,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24.x
+          node-version: 24.19.0
 
       - name: Install MyST Markdown
-        run: npm install -g mystmd
+        run: npm install -g mystmd@1.11.0
 
       - name: Build HTML Assets
         run: |

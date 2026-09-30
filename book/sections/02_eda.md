@@ -1,6 +1,6 @@
 # 2. Análisis Exploratorio de Datos (EDA)
 
-El análisis exploratorio utiliza exclusivamente DEVELOPMENT, del 11 de agosto de 2020 a las 06:00 UTC al 1 de julio de 2025 a las 18:00 UTC. TEST permanece reservado desde la partición cronológica inicial. Los resultados describen los datos disponibles para desarrollar el modelo; no se entrenan modelos ni se evalúa el conjunto de prueba.
+El análisis exploratorio utiliza exclusivamente DEVELOPMENT, del 11 de agosto de 2020 a las 06:00 UTC al 1 de julio de 2025 a las 18:00 UTC. TEST permanece reservado desde la partición cronológica inicial. Los resultados describen los datos disponibles para desarrollar el modelo. Los ajustes diagnósticos se restringen al entrenamiento temporal de cada análisis; la comparación del SVR con Persistence se presenta en la sección 3. TEST no se evalúa.
 
 Las decisiones posteriores de imputación, transformación, escalado, selección de variables o tratamiento de extremos deberán ajustarse únicamente con la porción de entrenamiento de cada partición temporal. Las estadísticas globales de DEVELOPMENT que se presentan aquí son descriptivas y no constituyen parámetros de preprocesamiento para validación.
 
@@ -8,34 +8,26 @@ Las decisiones posteriores de imputación, transformación, escalado, selección
 
 ### 2.1.1 Definición y disponibilidad temporal
 
-La variable objetivo es la **volatilidad realizada futura a 24 horas**, una magnitud cuantitativa continua. Por tratarse de regresión, las frecuencias por clase, el desbalance de clases y el tamaño de la clase minoritaria no aplican.
+La variable objetivo es la **desviación estándar de los retornos horarios de las próximas 24 horas**, una magnitud continua. Se adopta la fórmula de volatilidad del profesor, adaptando la frecuencia de días a horas y fijando una ventana de 24 retornos. No es la volatilidad acumulada del retorno de un día.
 
-Se utiliza la **definición de volatilidad**, adaptada de días a horas. Sea $P_{i,t}$ el precio de cierre (`close`) del activo $i$ en la hora $t$. El retorno logarítmico horario es:
-
-$$
-r_{i,t}=\ln\left(\frac{P_{i,t}}{P_{i,t-1}}\right).
-$$
-
-Para una ventana de $n=24$ retornos horarios, la media y la volatilidad son:
+Sea $C_{i,s}$ el cierre de la vela del activo $i$ cuya apertura UTC es $s$. Se define:
 
 $$
-\bar r_{i,t}=\frac{1}{24}\sum_{k=1}^{24}r_{i,t-k},
-\qquad
-\sigma_{i,t}^{(24)}=\sqrt{\frac{1}{24}\sum_{k=1}^{24}\left(r_{i,t-k}-\bar r_{i,t}\right)^2}.
+r_{i,s}=\ln\left(\frac{C_{i,s}}{C_{i,s-1}}\right),\qquad
+\bar r^+_{i,s}=\frac1{24}\sum_{j=1}^{24}r_{i,s+j},
 $$
 
-La volatilidad es la **desviación estándar de los retornos dentro de la ventana**, centrada en su media y con divisor **24** (`ddof=0`), no 23. No se anualiza ni se multiplica por $\sqrt{24}$. La fórmula está expresada en unidades decimales; para presentarla como porcentaje se multiplica por 100, utilizando la misma escala para las observaciones y las predicciones de todos los modelos.
-
-El instante de referencia $t$ se sitúa después de la disponibilidad del cierre de la hora $t-1$. La volatilidad reciente $\sigma_{i,t}^{(24)}$ utiliza los retornos $r_{i,t-24},\ldots,r_{i,t-1}$, ya disponibles. Para un horizonte de 24 horas, el objetivo es la misma magnitud calculada sobre los retornos futuros:
-
 $$
-\bar r_{i,t+24}=\frac{1}{24}\sum_{j=0}^{23}r_{i,t+j},
-\qquad
-y_{i,t}=\sigma_{i,t+24}^{(24)}
-=\sqrt{\frac{1}{24}\sum_{j=0}^{23}\left(r_{i,t+j}-\bar r_{i,t+24}\right)^2}.
+\boxed{y_{i,s}=100\sqrt{\frac1{24}\sum_{j=1}^{24}(r_{i,s+j}-\bar r^+_{i,s})^2}}.
 $$
 
-Su valor solo se conoce al terminar el horizonte futuro. Los retornos deben corresponder a horas consecutivas, sin atravesar huecos temporales. Las variables explicativas deben estar disponibles en el instante de predicción o antes. Esta convención coincide con el criterio metodológico común; en los resultados anteriores, la referencia temporal se etiquetaba mediante la apertura de la última vela observada.
+El divisor es **24**, no 23: se utiliza `ddof=0`. El factor 100 expresa el resultado en porcentaje; no se anualiza ni se multiplica por $\sqrt{24}$. Esta es la misma definición y escala del objetivo de las secciones 2.3 y 3.
+
+La predicción se emite **después del cierre de la vela ancla $s$ y una vez disponible ese cierre**, alrededor de $s+1$ hora. El objetivo utiliza los retornos $r_{i,s+1},\ldots,r_{i,s+24}$, construidos a partir de los 25 cierres $C_{i,s},\ldots,C_{i,s+24}$. Solo se conoce después del cierre de la última vela del horizonte, alrededor de $s+25$ horas. Por ejemplo, para el ancla de apertura 10:00 se predice alrededor de las 11:00 y se evalúan los 24 retornos posteriores. No se predice a la apertura de la vela ancla usando su cierre futuro.
+
+En la notación del profesor, $\sigma_t$ usa los retornos $r_{t-24},\ldots,r_{t-1}$. Con $t=s+1$, la referencia histórica disponible es $\sigma_{s+1}$ y el objetivo aquí almacenado es $y_{i,s}=100\sigma_{i,s+25}$. Así se reconcilia la notación de la fórmula con el índice `open_time` del código sin desplazar las observaciones una hora por error.
+
+Las frecuencias y el desbalance de clases no aplican: el problema es de regresión temporal. Las variables explicativas utilizan únicamente la vela ya cerrada o información anterior.
 
 ### 2.1.2 Ventanas válidas y cobertura
 
@@ -53,19 +45,19 @@ También se excluyen las últimas 24 horas de referencia de DEVELOPMENT, porque 
 
 En total se obtienen **212,745 objetivos válidos**; 1,420 velas de referencia quedan sin objetivo: 120 por el borde final, 1,200 por huecos y 100 adicionales por cierres irregulares. Una misma vela irregular afecta a varias ventanas solapadas.
 
-Como sensibilidad, aceptar cierres irregulares manteniendo las demás condiciones produciría 42,569 objetivos por activo. Frente a la definición conservadora, añadiría 30 ventanas en BTC, ETH y BNB, y 5 en XRP y SOL. El cambio absoluto en la media es inferior a 0.0006 puntos porcentuales por activo y los máximos no cambian. Esta comparación no prueba la validez de los cierres irregulares; se mantiene la definición conservadora. Los resultados completos están en la [tabla de sensibilidad](../../outputs/tables/eda_target_sensitivity.csv).
+Como sensibilidad, aceptar cierres irregulares manteniendo las demás condiciones produciría 42,569 objetivos por activo. Añadiría 30 ventanas en BTC, ETH y BNB, y 5 en XRP y SOL. La diferencia absoluta máxima entre las medias estricta y relajada es 0.000121 puntos porcentuales; los máximos no cambian. Se mantiene la regla conservadora por consistencia temporal, no porque esta sensibilidad demuestre la validez de los cierres irregulares. Véase la [tabla de sensibilidad](../../outputs/tables/eda_target_sensitivity.csv).
 
 ### 2.1.3 Distribución, asimetría y valores extremos
 
 | Activo | Mínimo (%) | Mediana (%) | Media (%) | P95 (%) | P99 (%) | Máximo (%) |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| BTCUSDT | 0.2192 | 2.4239 | 2.7522 | 5.9095 | 8.8148 | 16.5971 |
-| ETHUSDT | 0.2659 | 3.0945 | 3.5639 | 7.5489 | 12.0423 | 25.1058 |
-| BNBUSDT | 0.3879 | 2.7903 | 3.4342 | 7.9181 | 13.6605 | 29.7777 |
-| XRPUSDT | 0.5611 | 3.3650 | 4.3678 | 10.9599 | 18.6078 | 39.0647 |
-| SOLUSDT | 0.9167 | 4.7852 | 5.6996 | 12.3089 | 19.6207 | 34.6655 |
+| --- | --- | --- | --- | --- | --- | --- |
+| BTCUSDT | 0.0445 | 0.4854 | 0.5507 | 1.1818 | 1.7748 | 3.3765 |
+| ETHUSDT | 0.0542 | 0.6196 | 0.7129 | 1.5124 | 2.4151 | 5.1053 |
+| BNBUSDT | 0.0787 | 0.5589 | 0.6875 | 1.5804 | 2.6840 | 5.9566 |
+| XRPUSDT | 0.1144 | 0.6767 | 0.8756 | 2.1890 | 3.6531 | 7.9232 |
+| SOLUSDT | 0.1853 | 0.9605 | 1.1413 | 2.4680 | 3.9244 | 7.0645 |
 
-No se observan objetivos iguales a cero. SOL presenta la mayor mediana (4.7852%) y BTC la menor (2.4239%). XRP alcanza el máximo más alto (39.0647%), aunque su mediana es inferior a la de SOL. Por ello, el nivel habitual de volatilidad y la intensidad de los episodios extremos deben distinguirse. Los cuartiles y la desviación estándar están en el [resumen completo](../../outputs/tables/eda_target_summary.csv).
+No se observan objetivos iguales a cero. SOL presenta la mayor mediana (0.9605%) y BTC la menor (0.4854%). XRP alcanza el máximo más alto (7.9232%), aunque su mediana es inferior a la de SOL. El nivel habitual y la intensidad de los episodios extremos deben distinguirse. Los cuartiles y la desviación estándar están en el [resumen completo](../../outputs/tables/eda_target_summary.csv). Las pequeñas diferencias de XRP y SOL respecto de 2.3.4 obedecen a que aquí se usan todas las etiquetas válidas de cada activo y allí la intersección de timestamps de los cinco.
 
 ```{figure} ../_static/figures/eda_target_distribution.png
 :alt: Histogramas, boxplots y distribución del logaritmo de la volatilidad futura a 24 horas, separados por activo y calculados solo en DEVELOPMENT.
@@ -74,14 +66,14 @@ Distribución del objetivo por activo. La primera columna muestra frecuencias en
 ```
 
 | Activo | Asimetría | Exceso de curtosis | Señalados por IQR | Porcentaje |
-| --- | ---: | ---: | ---: | ---: |
-| BTCUSDT | 2.000 | 7.101 | 2,058 | 4.84% |
-| ETHUSDT | 2.208 | 8.878 | 1,965 | 4.62% |
-| BNBUSDT | 3.225 | 17.727 | 2,429 | 5.71% |
-| XRPUSDT | 3.171 | 15.266 | 3,261 | 7.66% |
-| SOLUSDT | 2.607 | 11.012 | 2,246 | 5.28% |
+| --- | --- | --- | --- | --- |
+| BTCUSDT | 2.036 | 7.440 | 2,109 | 4.96% |
+| ETHUSDT | 2.228 | 9.064 | 2,006 | 4.72% |
+| BNBUSDT | 3.221 | 17.822 | 2,467 | 5.80% |
+| XRPUSDT | 3.162 | 15.250 | 3,242 | 7.62% |
+| SOLUSDT | 2.608 | 10.972 | 2,294 | 5.39% |
 
-La asimetría es positiva en todos los activos y la media supera la mediana. Los excesos de curtosis positivos, entre 7.101 y 17.727, y los valores extremos visibles indican colas empíricas pronunciadas frente a una referencia normal. Estas estadísticas no demuestran una ley de colas específica ni prueban normalidad o independencia. BNB y XRP presentan los mayores excesos de curtosis; XRP también tiene la mayor proporción señalada por IQR.
+La asimetría es positiva en todos los activos y la media supera la mediana. El exceso de curtosis va de 7.440 a 17.822, compatible con colas empíricas pronunciadas respecto de una referencia normal. No demuestra una ley de colas ni independencia. BNB y XRP presentan los mayores excesos de curtosis; XRP tiene la mayor proporción señalada por IQR.
 
 Los valores fuera de las cercas $Q_1-1.5\,IQR$ y $Q_3+1.5\,IQR$ son candidatos a extremos, no errores demostrados. Se conservan todos los objetivos válidos, incluidos los elevados. El IQR no se utiliza aquí para recortar ni winsorizar la variable objetivo.
 
@@ -90,12 +82,12 @@ Los valores fuera de las cercas $Q_1-1.5\,IQR$ y $Q_3+1.5\,IQR$ son candidatos a
 El logaritmo permite examinar si la escala positiva y la asimetría del objetivo se representan de forma más equilibrada. La tabla compara la asimetría y el exceso de curtosis antes y después del logaritmo, únicamente como diagnóstico.
 
 | Activo | Asimetría original | Asimetría de ln(y) | Exceso de curtosis original | Exceso de curtosis de ln(y) |
-| --- | ---: | ---: | ---: | ---: |
-| BTCUSDT | 2.000 | -0.280 | 7.101 | 0.564 |
-| ETHUSDT | 2.208 | -0.138 | 8.878 | 0.425 |
-| BNBUSDT | 3.225 | 0.176 | 17.727 | 0.259 |
-| XRPUSDT | 3.171 | 0.454 | 15.266 | 0.358 |
-| SOLUSDT | 2.607 | 0.304 | 11.012 | 0.280 |
+| --- | --- | --- | --- | --- |
+| BTCUSDT | 2.036 | -0.271 | 7.440 | 0.580 |
+| ETHUSDT | 2.228 | -0.126 | 9.064 | 0.437 |
+| BNBUSDT | 3.221 | 0.175 | 17.822 | 0.257 |
+| XRPUSDT | 3.162 | 0.454 | 15.250 | 0.356 |
+| SOLUSDT | 2.608 | 0.313 | 10.972 | 0.283 |
 
 Una menor asimetría no demuestra normalidad ni garantiza mejores pronósticos. No se adopta una transformación definitiva. Box–Cox es una alternativa para valores estrictamente positivos, pero su parámetro no se estima globalmente en esta etapa: si se evalúa posteriormente, deberá ajustarse dentro de cada partición de entrenamiento. Lo mismo aplica a cualquier desplazamiento utilizado si aparecen ceros en datos futuros.
 
@@ -110,22 +102,22 @@ Evolución del objetivo. El eje horizontal identifica la apertura de la vela de 
 ```
 
 | Activo | Apertura de referencia (UTC) | Máximo (%) |
-| --- | ---: | ---: |
-| BTCUSDT | 2021-05-19 00:00 | 16.5971 |
-| ETHUSDT | 2021-05-19 09:00 | 25.1058 |
-| BNBUSDT | 2021-05-19 02:00 | 29.7777 |
-| XRPUSDT | 2021-02-01 02:00 | 39.0647 |
-| SOLUSDT | 2022-11-09 14:00 | 34.6655 |
+| --- | --- | --- |
+| BTCUSDT | 2021-05-19 06:00 | 3.3765 |
+| ETHUSDT | 2021-05-19 09:00 | 5.1053 |
+| BNBUSDT | 2021-05-19 03:00 | 5.9566 |
+| XRPUSDT | 2021-02-01 02:00 | 7.9232 |
+| SOLUSDT | 2022-11-09 14:00 | 7.0645 |
 
 Los máximos de BTC, ETH y BNB corresponden a ventanas iniciadas el 19 de mayo de 2021; los de XRP y SOL ocurren en fechas diferentes. Las fechas identifican ventanas futuras de 24 horas y no un único retorno ni una causa económica comprobada. La evolución muestra episodios de distinta intensidad, lo que exige evaluar el desempeño en varios bloques cronológicos.
 
 | Activo | Correlación del objetivo a 1h | Correlación del objetivo a 24h |
-| --- | ---: | ---: |
-| BTCUSDT | 0.990 | 0.595 |
-| ETHUSDT | 0.991 | 0.650 |
-| BNBUSDT | 0.994 | 0.711 |
+| --- | --- | --- |
+| BTCUSDT | 0.989 | 0.596 |
+| ETHUSDT | 0.991 | 0.649 |
+| BNBUSDT | 0.993 | 0.709 |
 | XRPUSDT | 0.991 | 0.625 |
-| SOLUSDT | 0.992 | 0.689 |
+| SOLUSDT | 0.992 | 0.687 |
 
 Las correlaciones se calculan por pares disponibles sobre la cuadrícula horaria, sin comprimir los huecos. La elevada asociación a una hora está influida mecánicamente por el solapamiento de 23 retornos entre etiquetas. A 24 horas las ventanas de retornos ya no se solapan, aunque persiste asociación descriptiva. Ninguno de estos coeficientes sustituye una evaluación fuera de muestra.
 
@@ -133,7 +125,7 @@ No se realiza análisis espacial: el dataset carece de coordenadas geográficas.
 
 ### 2.1.6 Relación con las variables explicativas disponibles
 
-Como exploración inicial vinculada al análisis bivariado, se compara el objetivo con las nueve variables numéricas de la vela cerrada, el retorno de esa hora y la volatilidad realizada de las 24 horas anteriores, definida como $100\sqrt{\sum_{j=0}^{23}r_{i,t-j}^{2}}$. Esta última usa exclusivamente información pasada y se calcula con la misma regla de continuidad y cierres convencionales. No se ejecuta el baseline Persistence ni se evalúa un pronóstico.
+Como exploración inicial se compara el objetivo con las nueve variables numéricas de la vela cerrada, el retorno de esa hora y la volatilidad pasada $100\,\operatorname{std}(r_{i,s-23},\ldots,r_{i,s};\mathrm{ddof}=0)$. Esta última centra los retornos en su media, utiliza divisor 24 y requiere 25 cierres consecutivos convencionales. Es la referencia disponible de Persistence en la sección 3; aquí solo se estudia su asociación, sin evaluar pronósticos.
 
 Las fechas actúan como índices temporales y `symbol` identifica el activo. No se asignan códigos numéricos arbitrarios a los símbolos para calcular correlaciones. Las asociaciones se calculan por activo y con los pares disponibles para cada variable; por eso su tamaño de muestra puede variar. Las cifras completas se incluyen en la [tabla de correlaciones y tamaños de muestra](../../outputs/tables/eda_target_correlations.csv).
 
@@ -149,17 +141,17 @@ Pearson resume asociación lineal y Spearman asociación monótona. Los coeficie
 Relaciones con la volatilidad pasada y el volumen en USDT. Cada panel incorpora todos los pares disponibles; los hexágonos más oscuros indican mayor frecuencia, en escala logarítmica. Las escalas numéricas de los activos se muestran por separado.
 ```
 
-La volatilidad pasada de 24 horas muestra correlaciones de Pearson entre 0.595 y 0.711 con el objetivo, y de Spearman entre 0.579 y 0.697. Sus retornos no se solapan con los del objetivo futuro, aunque ambas ventanas comparten el cierre que actúa como frontera. Esta asociación motiva estudiar la persistencia más adelante, sin afirmar todavía el desempeño del baseline.
+La volatilidad pasada de 24 horas muestra correlaciones de Pearson entre 0.596 y 0.709, y de Spearman entre 0.582 y 0.697. Sus retornos no se solapan con los futuros, aunque comparten el cierre de frontera. La asociación motiva la referencia Persistence, cuyo desempeño se evalúa separadamente en la sección 3.
 
-El volumen en USDT presenta asociaciones distintas según el activo: Spearman es 0.384 para BTC, 0.503 para ETH, 0.529 para BNB, 0.562 para XRP y 0.029 para SOL. Los volúmenes taker presentan patrones similares a sus volúmenes totales. El número de operaciones también varía: Spearman va de 0.006 en SOL a 0.539 en XRP.
+El volumen en USDT presenta asociaciones Spearman distintas por activo (BTCUSDT: 0.387, ETHUSDT: 0.505, BNBUSDT: 0.531, XRPUSDT: 0.565, SOLUSDT: 0.030). Para el número de operaciones, Spearman va de 0.007 a 0.541. Estas diferencias no establecen utilidad predictiva fuera de muestra; las asociaciones de todos los campos de volumen se conservan en la tabla completa.
 
-Los cuatro precios OHLC muestran asociaciones parecidas dentro de cada activo y más débiles en valor absoluto que la volatilidad pasada. El retorno horario con signo tiene una correlación de Pearson cercana a cero en los cinco activos (entre -0.040 y 0.003); esto no descarta relaciones no lineales ni una posible relación con su magnitud absoluta. Los diagramas de densidad permiten observar dispersión y extremos que un coeficiente aislado no describe.
+Los precios OHLC tienen asociaciones descriptivas que pueden reflejar tendencias y regímenes; no se interpretan como causalidad. El retorno horario con signo presenta Pearson entre -0.041 y 0.002. Su asociación lineal pequeña no descarta relaciones no lineales ni relaciones con su magnitud absoluta. Los diagramas muestran dispersión y extremos que un coeficiente aislado no resume.
 
 Estos resultados no constituyen una selección definitiva de predictores ni un análisis multivariado condicional. Las asociaciones con precios y volúmenes pueden depender del periodo y de cambios de régimen; una correlación no implica causalidad ni capacidad predictiva fuera de muestra. La selección y las transformaciones deberán contrastarse después mediante validación temporal, sin TEST.
 
 ### 2.1.7 Implicaciones para métricas y validación
 
-Se propone reportar MAE y RMSE en puntos porcentuales de volatilidad, por activo y como promedio de las métricas de los cinco activos con igual ponderación. MAE describe el tamaño absoluto del error y RMSE da mayor peso a errores grandes, por lo que su lectura conjunta permite examinar el desempeño durante episodios de alta volatilidad. No se reportan valores de estas métricas porque todavía no se han generado pronósticos. Los errores porcentuales relativos requieren cautela cuando el objetivo se aproxima a cero.
+Las métricas comunes son RMSE, MAPE y $R^2$; MAE es complementaria. RMSE y MAE se expresan en puntos porcentuales de volatilidad, MAPE en porcentaje y $R^2$ es adimensional. Se reportan por activo y fold antes del promedio con pesos iguales. MAPE es indefinido con objetivos cero y sensible a valores cercanos a cero; no se añaden denominadores artificiales. $R^2$ requiere variabilidad del objetivo. Esta sección describe el objetivo; las métricas predictivas se presentan en la sección 3.
 
 La validación deberá ser cronológica, con ventanas de entrenamiento anteriores a las de validación, y mantener todos los activos de una misma fecha en el mismo bloque temporal. No se utilizará una partición aleatoria de filas. La [documentación de validación temporal de scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) describe la separación ordenada y el uso de un intervalo entre entrenamiento y evaluación; en este panel, ese intervalo debe aplicarse a timestamps globales, no a un número de filas mezcladas entre activos.
 
@@ -169,12 +161,12 @@ Todos los parámetros aprendidos de los datos deberán ajustarse de nuevo dentro
 
 ### 2.1.8 Reproducibilidad
 
-El cálculo está en `src/08_eda_target_development.py`. Los resultados, cobertura, sensibilidad y trazabilidad se guardan en `outputs/tables/eda_target_*.csv` y `outputs/tables/eda_target_metadata.json`. La tabla derivada se guarda separadamente en `outputs/tables/eda_target_development_derived.csv`: no se modifica el CSV maestro ni las particiones. Se verifica cada objetivo válido contra una suma directa de 24 retornos y se comprueba la conservación de DEVELOPMENT mediante SHA-256.
+El cálculo está en `src/08_eda_target_development.py`; `src/08_render_target_report.py` sincroniza estas tablas e interpretaciones con los resultados guardados. Ejecutar ambos scripts en ese orden desde el entorno de `requirements.txt`. Los resultados y metadatos se guardan en `outputs/tables/eda_target_*`; la tabla derivada permanece separada de los datos originales. Cada objetivo válido se contrasta con el cálculo directo centrado de sus 24 retornos, con divisor 24; se verifica el borde de DEVELOPMENT y su SHA-256. El notebook ejecuta el cálculo y muestra las cuatro figuras. No se consulta TEST ni se reentrenan modelos para esta corrección.
 
 
-## 2.2 Análisis unidimensional de close
+## 2.2 Análisis unidimensional de las variables originales
 
-El análisis se centra en el precio de cierre (`close`) de los cinco activos, usando exclusivamente DEVELOPMENT: 214,165 observaciones, con 42,833 por activo. De esta variable se obtienen los retornos logarítmicos necesarios para construir la volatilidad futura, que continúa siendo la variable objetivo del pronóstico. Las demás columnas no se analizan en esta sección; las fechas y los símbolos se utilizan únicamente para identificar las observaciones y separar los activos.
+El análisis se centra en el precio de cierre (`close`) de los cinco activos, usando exclusivamente DEVELOPMENT: 214,165 observaciones, con 42,833 por activo. De esta variable se obtienen los retornos logarítmicos necesarios para construir la volatilidad futura, que continúa siendo la variable objetivo del pronóstico. Los apartados 2.2.1–2.2.7 detallan close; los apartados siguientes completan el análisis de las demás columnas, incluidas las fechas y los símbolos.
 
 ### 2.2.1 Tipo de variable
 
@@ -236,8 +228,297 @@ Para construir retornos se emplean cierres de horas consecutivas, sin atravesar 
 
 ### 2.2.7 Reproducibilidad
 
-Los resultados corresponden al cálculo previo sobre DEVELOPMENT realizado mediante `src/09_univariate_development.py`. Se conservan sus filas de `close` en `outputs/tables/univariate_close_summary.csv`, sin recalcular estadísticas. La figura es `book/_static/figures/univariate_close.png`. El [notebook centrado en close](../../notebooks/10_close_univariate.ipynb) carga y presenta esos resultados guardados con su interpretación. Los archivos del análisis más amplio se conservan como antecedentes; no forman parte de la presentación de esta sección.
+Los resultados corresponden al cálculo previo sobre DEVELOPMENT realizado mediante `src/09_univariate_development.py`. Se conservan sus filas de `close` en `outputs/tables/univariate_close_summary.csv`, sin recalcular estadísticas. La figura es `book/_static/figures/univariate_close.png`. El [notebook centrado en close](../../notebooks/10_close_univariate.ipynb) carga y presenta esos resultados guardados con su interpretación. Los resultados de las restantes columnas se incorporan a continuación como parte del EDA completo.
 
+### 2.2.8 Cobertura de las doce columnas originales
+
+El EDA univariado cubre las nueve columnas numéricas, las dos marcas temporales y `symbol`. La inclusión de una variable en el EDA no implica incorporarla al SVR. Todos los resúmenes corresponden a DEVELOPMENT antes de filtrar ventanas; no se leen valores de TEST.
+
+| Variable | Tipo | Cardinalidad global | Nulos |
+| --- | --- | --- | --- |
+| open_time | Temporal | 42833 | 0 |
+| open | Numérica continua | 136971 | 0 |
+| high | Numérica continua | 129249 | 0 |
+| low | Numérica continua | 130210 | 0 |
+| close | Numérica continua | 136956 | 0 |
+| volume | Numérica continua | 214107 | 0 |
+| close_time | Temporal | 42852 | 0 |
+| quote_asset_volume | Numérica continua | 214156 | 0 |
+| number_of_trades | Numérica discreta | 92879 | 0 |
+| taker_buy_base_asset_volume | Numérica continua | 214041 | 0 |
+| taker_buy_quote_asset_volume | Numérica continua | 214156 | 0 |
+| symbol | Categórica nominal | 5 | 0 |
+
+Los resúmenes numéricos se separan por activo: tienen 42.833 observaciones cada uno. Se usa desviación estándar descriptiva con `ddof=1`, percentiles interpolados linealmente y exceso de curtosis de Fisher (referencia normal cero). El objetivo conserva `ddof=0`. Los histogramas tienen eje de frecuencias logarítmico; no se transforman las observaciones. Los boxplots usan 1,5 IQR. Los umbrales globales de DEVELOPMENT son descriptivos y no se reutilizan para limpiar los folds.
+
+[Tabla completa con mínimos, máximos, cuartiles, percentiles 1/5/95/99, ceros y límites IQR](../../outputs/tables/univariate_summary.csv). No se aplican pruebas marginales de normalidad: no son un supuesto del SVR y la dependencia temporal impide interpretar sus p-valores iid de manera convencional.
+
+#### Precio de apertura: `open`
+
+Unidad: USDT por unidad del activo.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 376.39 | 328 | 187.84 | 29.043 | 661.28 |
+| BTCUSDT | 45803 | 40552 | 25337 | 15372 | 98639 |
+| ETHUSDT | 2247.8 | 2110.2 | 967.6 | 450.02 | 3888.9 |
+| SOLUSDT | 82.965 | 46.313 | 70.698 | 2.4122 | 207.09 |
+| XRPUSDT | 0.80467 | 0.5577 | 0.6362 | 0.27124 | 2.356 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | -0.065 | -0.822 | 0 | 0.00 |
+| BTCUSDT | 0.803 | -0.188 | 0 | 0.00 |
+| ETHUSDT | 0.128 | -0.478 | 0 | 0.00 |
+| SOLUSDT | 0.556 | -1.021 | 0 | 0.00 |
+| XRPUSDT | 1.870 | 2.528 | 5807 | 13.56 |
+
+La mayor proporción señalada por IQR es 13.56 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Los niveles de precio mezclan periodos y regímenes; su dispersión no equivale a la volatilidad de retornos. Comparar precios absolutos entre activos no mide cuál tiene mayor riesgo.
+
+```{figure} ../_static/figures/univariate_open.png
+:alt: Histogramas y boxplots de open por activo.
+
+Precio de apertura: cinco activos, sin mezclar sus escalas.
+```
+
+#### Precio máximo: `high`
+
+Unidad: USDT por unidad del activo.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 378.26 | 329.7 | 188.62 | 29.215 | 664.17 |
+| BTCUSDT | 45997 | 40785 | 25423 | 15441 | 98988 |
+| ETHUSDT | 2260.1 | 2126.5 | 972.79 | 453.55 | 3910.4 |
+| SOLUSDT | 83.637 | 46.9 | 71.227 | 2.4495 | 208.99 |
+| XRPUSDT | 0.81068 | 0.5615 | 0.64155 | 0.27347 | 2.3731 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | -0.068 | -0.823 | 0 | 0.00 |
+| BTCUSDT | 0.799 | -0.194 | 0 | 0.00 |
+| ETHUSDT | 0.128 | -0.479 | 0 | 0.00 |
+| SOLUSDT | 0.556 | -1.017 | 0 | 0.00 |
+| XRPUSDT | 1.867 | 2.517 | 5846 | 13.65 |
+
+La mayor proporción señalada por IQR es 13.65 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Los niveles de precio mezclan periodos y regímenes; su dispersión no equivale a la volatilidad de retornos. Comparar precios absolutos entre activos no mide cuál tiene mayor riesgo.
+
+```{figure} ../_static/figures/univariate_high.png
+:alt: Histogramas y boxplots de high por activo.
+
+Precio máximo: cinco activos, sin mezclar sus escalas.
+```
+
+#### Precio mínimo: `low`
+
+Unidad: USDT por unidad del activo.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 374.34 | 326.2 | 186.98 | 28.864 | 658.01 |
+| BTCUSDT | 45601 | 40342 | 25252 | 15306 | 98300 |
+| ETHUSDT | 2234.7 | 2096.1 | 961.91 | 447.38 | 3864.1 |
+| SOLUSDT | 82.272 | 45.561 | 70.149 | 2.3751 | 205.25 |
+| XRPUSDT | 0.79832 | 0.55318 | 0.63072 | 0.26854 | 2.3389 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | -0.061 | -0.821 | 0 | 0.00 |
+| BTCUSDT | 0.807 | -0.180 | 0 | 0.00 |
+| ETHUSDT | 0.127 | -0.476 | 0 | 0.00 |
+| SOLUSDT | 0.556 | -1.024 | 0 | 0.00 |
+| XRPUSDT | 1.874 | 2.540 | 5751 | 13.43 |
+
+La mayor proporción señalada por IQR es 13.43 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Los niveles de precio mezclan periodos y regímenes; su dispersión no equivale a la volatilidad de retornos. Comparar precios absolutos entre activos no mide cuál tiene mayor riesgo.
+
+```{figure} ../_static/figures/univariate_low.png
+:alt: Histogramas y boxplots de low por activo.
+
+Precio mínimo: cinco activos, sin mezclar sus escalas.
+```
+
+#### Volumen base: `volume`
+
+Unidad: Unidades del activo base.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 50242 | 21400 | 87244 | 4166.1 | 1.8598e+05 |
+| BTCUSDT | 3330 | 1732.2 | 4743 | 386.57 | 11795 |
+| ETHUSDT | 25975 | 17412 | 28345 | 4588 | 75060 |
+| SOLUSDT | 1.8677e+05 | 1.2236e+05 | 2.1638e+05 | 33978 | 5.4414e+05 |
+| XRPUSDT | 1.9753e+07 | 1.2131e+07 | 2.9695e+07 | 3.1277e+06 | 5.9985e+07 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 6.200 | 67.183 | 4356 | 10.17 |
+| BTCUSDT | 4.815 | 45.974 | 4359 | 10.18 |
+| ETHUSDT | 4.173 | 31.259 | 3015 | 7.04 |
+| SOLUSDT | 5.031 | 46.883 | 3299 | 7.70 |
+| XRPUSDT | 10.628 | 274.125 | 3771 | 8.80 |
+
+La mayor proporción señalada por IQR es 10.18 % en BTCUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Las cantidades están en unidades de cada criptomoneda y no son directamente comparables entre activos. Los extremos pueden reflejar actividad concentrada; no se atribuyen a eventos sin evidencia adicional.
+
+```{figure} ../_static/figures/univariate_volume.png
+:alt: Histogramas y boxplots de volume por activo.
+
+Volumen base: cinco activos, sin mezclar sus escalas.
+```
+
+#### Volumen cotizado: `quote_asset_volume`
+
+Unidad: USDT.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 1.4218e+07 | 6.3251e+06 | 2.5222e+07 | 1.4148e+06 | 5.2555e+07 |
+| BTCUSDT | 1.0953e+08 | 7.39e+07 | 1.1777e+08 | 1.6823e+07 | 3.1795e+08 |
+| ETHUSDT | 5.2987e+07 | 3.6067e+07 | 5.8842e+07 | 7.7969e+06 | 1.5367e+08 |
+| SOLUSDT | 1.5268e+07 | 8.0076e+06 | 2.4689e+07 | 1.7394e+05 | 5.2677e+07 |
+| XRPUSDT | 1.5638e+07 | 7.6647e+06 | 2.8588e+07 | 1.4986e+06 | 5.5313e+07 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 6.940 | 98.251 | 4356 | 10.17 |
+| BTCUSDT | 3.933 | 31.362 | 2818 | 6.58 |
+| ETHUSDT | 4.484 | 40.357 | 2844 | 6.64 |
+| SOLUSDT | 6.914 | 101.087 | 3116 | 7.27 |
+| XRPUSDT | 7.695 | 100.455 | 4469 | 10.43 |
+
+La mayor proporción señalada por IQR es 10.43 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. La unidad USDT facilita comparar cantidades cotizadas; los cambios de precio y de actividad siguen afectando la distribución. El volumen comprador taker, cuando corresponde, es un subconjunto del volumen y no representa todo el flujo comprador.
+
+```{figure} ../_static/figures/univariate_quote_asset_volume.png
+:alt: Histogramas y boxplots de quote_asset_volume por activo.
+
+Volumen cotizado: cinco activos, sin mezclar sus escalas.
+```
+
+#### Número de operaciones: `number_of_trades`
+
+Unidad: Operaciones.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 23747 | 14177 | 29353 | 3949.6 | 75197 |
+| BTCUSDT | 1.0919e+05 | 66326 | 1.179e+05 | 20763 | 3.4355e+05 |
+| ETHUSDT | 56240 | 34227 | 69307 | 9677.4 | 1.788e+05 |
+| SOLUSDT | 31999 | 13664 | 56215 | 830.6 | 1.1879e+05 |
+| XRPUSDT | 26463 | 10827 | 51217 | 2536.6 | 99334 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 5.152 | 64.957 | 3472 | 8.11 |
+| BTCUSDT | 2.946 | 13.025 | 3579 | 8.36 |
+| ETHUSDT | 4.381 | 32.556 | 3798 | 8.87 |
+| SOLUSDT | 7.499 | 114.785 | 3700 | 8.64 |
+| XRPUSDT | 7.939 | 115.569 | 4772 | 11.14 |
+
+La mayor proporción señalada por IQR es 11.14 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Es un conteo horario discreto de operaciones, no de personas ni de participantes independientes. Su dispersión describe actividad, sin demostrar capacidad predictiva de volatilidad futura.
+
+```{figure} ../_static/figures/univariate_number_of_trades.png
+:alt: Histogramas y boxplots de number_of_trades por activo.
+
+Número de operaciones: cinco activos, sin mezclar sus escalas.
+```
+
+#### Volumen comprador taker base: `taker_buy_base_asset_volume`
+
+Unidad: Unidades del activo base.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 25212 | 10726 | 43942 | 2061.3 | 94309 |
+| BTCUSDT | 1647.6 | 850.17 | 2368.2 | 177.81 | 5856 |
+| ETHUSDT | 12922 | 8647.4 | 14083 | 2195.6 | 37538 |
+| SOLUSDT | 92854 | 60219 | 1.1002e+05 | 15892 | 2.7338e+05 |
+| XRPUSDT | 9.7901e+06 | 6.0241e+06 | 1.4789e+07 | 1.4841e+06 | 2.9685e+07 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 6.171 | 66.764 | 4431 | 10.34 |
+| BTCUSDT | 4.831 | 46.419 | 4381 | 10.23 |
+| ETHUSDT | 4.054 | 29.290 | 3043 | 7.10 |
+| SOLUSDT | 5.242 | 52.684 | 3284 | 7.67 |
+| XRPUSDT | 10.463 | 261.765 | 3761 | 8.78 |
+
+La mayor proporción señalada por IQR es 10.34 % en BNBUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. Las cantidades están en unidades de cada criptomoneda y no son directamente comparables entre activos. Los extremos pueden reflejar actividad concentrada; no se atribuyen a eventos sin evidencia adicional.
+
+```{figure} ../_static/figures/univariate_taker_buy_base_asset_volume.png
+:alt: Histogramas y boxplots de taker_buy_base_asset_volume por activo.
+
+Volumen comprador taker base: cinco activos, sin mezclar sus escalas.
+```
+
+#### Volumen comprador taker cotizado: `taker_buy_quote_asset_volume`
+
+Unidad: USDT.
+
+| Activo | Media | Mediana | DE | P5 | P95 |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 7.1451e+06 | 3.1711e+06 | 1.2658e+07 | 6.8719e+05 | 2.6467e+07 |
+| BTCUSDT | 5.4102e+07 | 3.6389e+07 | 5.8911e+07 | 7.8466e+06 | 1.5841e+08 |
+| ETHUSDT | 2.6365e+07 | 1.7948e+07 | 2.9158e+07 | 3.7794e+06 | 7.6567e+07 |
+| SOLUSDT | 7.6199e+06 | 3.9545e+06 | 1.2473e+07 | 78362 | 2.6519e+07 |
+| XRPUSDT | 7.7525e+06 | 3.7934e+06 | 1.4291e+07 | 7.0912e+05 | 2.7529e+07 |
+
+| Activo | Asimetría | Exceso curtosis | Señaladas IQR | % IQR |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 6.773 | 91.850 | 4392 | 10.25 |
+| BTCUSDT | 3.943 | 31.703 | 2799 | 6.53 |
+| ETHUSDT | 4.282 | 36.098 | 2853 | 6.66 |
+| SOLUSDT | 7.086 | 107.088 | 3200 | 7.47 |
+| XRPUSDT | 7.752 | 101.823 | 4513 | 10.54 |
+
+La mayor proporción señalada por IQR es 10.54 % en XRPUSDT. Estas marcas describen colas respecto al rango intercuartílico; no demuestran errores ni justifican eliminar registros. La unidad USDT facilita comparar cantidades cotizadas; los cambios de precio y de actividad siguen afectando la distribución. El volumen comprador taker, cuando corresponde, es un subconjunto del volumen y no representa todo el flujo comprador.
+
+```{figure} ../_static/figures/univariate_taker_buy_quote_asset_volume.png
+:alt: Histogramas y boxplots de taker_buy_quote_asset_volume por activo.
+
+Volumen comprador taker cotizado: cinco activos, sin mezclar sus escalas.
+```
+
+### 2.2.9 Identificador y marcas temporales
+
+| Activo | Frecuencia | % |
+| --- | --- | --- |
+| BTCUSDT | 42833 | 20.0 |
+| ETHUSDT | 42833 | 20.0 |
+| BNBUSDT | 42833 | 20.0 |
+| XRPUSDT | 42833 | 20.0 |
+| SOLUSDT | 42833 | 20.0 |
+
+Las cinco categorías tienen la misma frecuencia y no hay categorías raras. `symbol` identifica series y no es una clase objetivo. Se mantiene como clave de agrupación; no necesita codificación en los modelos separados por activo.
+
+```{figure} ../_static/figures/univariate_symbol.png
+:alt: Frecuencia de cada activo en DEVELOPMENT.
+
+Distribución de symbol.
+```
+
+| Activo | Campo | Cardinalidad | Inicio UTC | Fin UTC |
+| --- | --- | --- | --- | --- |
+| BTCUSDT | open_time | 42833 | 2020-08-11T06:00:00+00:00 | 2025-07-01T18:00:00+00:00 |
+| BTCUSDT | close_time | 42833 | 2020-08-11T06:59:59.999000+00:00 | 2025-07-01T18:59:59.999000+00:00 |
+| ETHUSDT | open_time | 42833 | 2020-08-11T06:00:00+00:00 | 2025-07-01T18:00:00+00:00 |
+| ETHUSDT | close_time | 42833 | 2020-08-11T06:59:59.999000+00:00 | 2025-07-01T18:59:59.999000+00:00 |
+| BNBUSDT | open_time | 42833 | 2020-08-11T06:00:00+00:00 | 2025-07-01T18:00:00+00:00 |
+| BNBUSDT | close_time | 42833 | 2020-08-11T06:59:59.999000+00:00 | 2025-07-01T18:59:59.999000+00:00 |
+| XRPUSDT | open_time | 42833 | 2020-08-11T06:00:00+00:00 | 2025-07-01T18:00:00+00:00 |
+| XRPUSDT | close_time | 42833 | 2020-08-11T06:59:59.999000+00:00 | 2025-07-01T18:59:59.999000+00:00 |
+| SOLUSDT | open_time | 42833 | 2020-08-11T06:00:00+00:00 | 2025-07-01T18:00:00+00:00 |
+| SOLUSDT | close_time | 42833 | 2020-08-11T06:59:59.999000+00:00 | 2025-07-01T18:59:59.999000+00:00 |
+
+Las fechas se interpretan como coordenadas temporales, no como magnitudes con media o normalidad marginal. La distribución mensual registra exposición: los meses extremos son parciales y los meses tienen distinta duración; sus conteos no demuestran estacionalidad del mercado. El análisis temporal audita los huecos y los cierres no convencionales. Estos resúmenes incluyen registros originales, mientras que el modelado excluye las ventanas afectadas.
+
+```{figure} ../_static/figures/univariate_time_coverage.png
+:alt: Número de velas observadas por mes y activo.
+
+Cobertura mensual; los conteos coinciden entre los cinco activos.
+```
+
+### 2.2.10 Reproducción del análisis completo
+
+Ejecutar `python src/09_univariate_development.py` y `python src/09_render_univariate_report.py`. Los metadatos registran la huella del archivo, versiones y convenciones estadísticas. El informe comprueba la huella antes de incorporar los resultados. [Notebook de las doce columnas](../../notebooks/09_univariate_development.ipynb). No se imputan ni eliminan valores por este análisis.
 
 ## 2.3 Análisis bidimensional
 
@@ -245,7 +526,7 @@ El análisis se centra en `close` y en variables construidas exclusivamente a pa
 
 ### 2.3.1 Variables, objetivo y alineación temporal
 
-El objetivo de esta sección se calcula con la desviación estándar de los 24 retornos futuros, centrados en su media y con divisor 24 (`ddof=0`). Se presenta en porcentaje, sin anualizar. Estos resultados son nuevos y no reutilizan las cifras de la definición anterior de 2.1.
+El objetivo de esta sección se calcula con la desviación estándar de los 24 retornos futuros, centrados en su media y con divisor 24 (`ddof=0`). Se presenta en porcentaje, sin anualizar. La definición coincide con la sección 2.1; las muestras descriptivas se especifican en cada comparación.
 
 Para precisar los índices, sea $s$ la hora de apertura de la última vela observada y $C_{i,s}$ su cierre. La predicción se sitúa después del cierre de esa vela, alrededor de $s+1$ hora. Con $r_{i,s}=\ln(C_{i,s}/C_{i,s-1})$:
 
@@ -471,39 +752,171 @@ La selección preliminar es una hipótesis de trabajo: cualquier comparación de
 
 El [notebook ejecutado del análisis bidimensional](../../notebooks/11_bivariate_close.ipynb) contiene el cálculo, los resultados y las figuras. El procedimiento también está en `src/11_bivariate_close.py`. Las tablas y trazabilidad se guardan en `outputs/tables/bivariate_*.csv` y `outputs/tables/bivariate_metadata.json`; las figuras se guardan en `book/_static/figures/bivariate_*.png`. Cada objetivo válido se verifica contra el cálculo directo de la desviación estándar de sus 24 retornos futuros. Se comprueban la alineación temporal y la conservación de DEVELOPMENT mediante SHA-256. Los datos originales y TEST permanecen intactos.
 
-## 2.4 Análisis multivariado
+## 2.4 Análisis multivariado de los 168 rezagos
 
-### 2.4.1 Alcance y dimensionalidad
+### 2.4.1 Matriz real y alcance temporal
 
-La única variable explicativa original es el precio de cierre, `close`. El alcance de esta sección considera una columna de cierre por activo; `symbol` identifica la criptomoneda y la fecha ordena las observaciones. La volatilidad futura es la variable objetivo y no se incorpora como entrada para reducir dimensionalidad, detectar anomalías o formar grupos de predictores.
+El modelo utiliza una variable de origen (`close`), pero **168 predictores distintos**: $X_{i,s}=(C_{i,s},C_{i,s-1},\ldots,C_{i,s-167})$. Por ello, la matriz sí requiere análisis multivariado. Se estudia cada activo por separado; no se mezclan precios nominales de criptomonedas distintas ni se incluyen `symbol`, timestamps, el objetivo futuro o Persistence como columnas del análisis.
 
-Con esta representación, el análisis de los predictores es unidimensional. Los derivados examinados en 2.3 permiten explorar asociaciones, pero no constituyen por sí mismos una decisión de incluirlos simultáneamente en los modelos. Por ello, no se construye aquí una matriz adicional de variables solo para aplicar técnicas multivariadas.
+Se reproducen exactamente las anclas de TRAIN de los cinco folds de la sección 3, incluida la intersección de elegibilidad entre activos y el confinamiento de historias y etiquetas al bloque. La elegibilidad verifica que el objetivo exista, pero **su valor no se utiliza para ajustar PCA, el escalador ni el detector de anomalías**. Cada ajuste usa solamente su TRAIN; no se ajusta ni se elige nada con VALIDATION o TEST. Los TRAIN son crecientes y se solapan entre folds; sus resultados no representan 25 muestras independientes.
 
-### 2.4.2 Reducción de dimensionalidad
+| Fold | Inicio anclas TRAIN UTC | Fin anclas TRAIN UTC | n por activo | p | n/p |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 2020-08-18 05:00 | 2021-06-03 20:00 | 5781 | 168 | 34.41 |
+| 2 | 2020-08-18 05:00 | 2022-03-28 10:00 | 12342 | 168 | 73.46 |
+| 3 | 2020-08-18 05:00 | 2023-01-20 00:00 | 19484 | 168 | 115.98 |
+| 4 | 2020-08-18 05:00 | 2023-11-13 14:00 | 26433 | 168 | 157.34 |
+| 5 | 2020-08-18 05:00 | 2024-09-06 04:00 | 33575 | 168 | 199.85 |
 
-PCA no aporta reducción de dimensionalidad sobre una única columna de `close`: si su varianza es positiva, solo puede obtenerse un componente, que concentra el 100 % de esa varianza. Esta es una propiedad matemática de una entrada unidimensional, no un resultado de un PCA ejecutado sobre los datos. No se aplican UMAP ni t-SNE, porque no existe una representación de alta dimensión que requiera resumirse visualmente en este alcance.
+La relación n/p describe filas por predictor, no observaciones estadísticamente independientes. Dos ventanas contiguas comparten 167 cierres. Se conservan los huecos del calendario, sin imputación ni eliminación de valores extremos. Los paneles detallados muestran TRAIN del fold 5 y las tablas de estabilidad comparan los cinco TRAIN.
 
-Si posteriormente se utilizan ventanas de varios cierres históricos, cada rezago será una columna distinta. En ese caso sí podrá evaluarse PCA sobre esa matriz, ajustando el escalado y los componentes exclusivamente con el entrenamiento de cada partición temporal y aplicándolos después a validación. La dimensión efectiva de esas ventanas no se determina en esta sección.
+### 2.4.2 Redundancia, rango y correlación
 
-### 2.4.3 Valores atípicos
+Se estandarizan las 168 columnas con `StandardScaler` ajustado de nuevo en cada TRAIN y activo. Se calcula su matriz de Pearson. Se informa la mediana del valor absoluto de las 14.028 correlaciones fuera de la diagonal y la proporción con $|r|>0.99$; ese umbral es descriptivo, no una regla de selección.
 
-Con una sola entrada no se evalúan anomalías multivariadas. En una dimensión y con varianza positiva, la distancia de Mahalanobis se reduce a la distancia absoluta a la media dividida por la desviación estándar. No añade un diagnóstico de relaciones entre variables al análisis unidimensional de `close` presentado en 2.2.
+La SVD de la matriz estandarizada y centrada permite distinguir rango numérico y redundancia: el rango cuenta los valores singulares mayores que $\max(n,p)\,\epsilon_{\mathrm{mach}}\,s_{max}$, donde $\epsilon_{\mathrm{mach}}$ es la precisión de máquina. El número de condición es $\kappa=s_{max}/s_{min}$ cuando el rango es completo. Un número elevado señala direcciones con escalas de variación muy distintas; no prueba fuga ni determina automáticamente qué rezagos eliminar. El VIF de los candidatos de 2.3 se complementa aquí con el espectro de la matriz completa, en lugar de añadir 168 regresiones auxiliares. Para anomalías se utiliza Isolation Forest, que no requiere invertir la covarianza como la distancia de Mahalanobis convencional.
 
-Isolation Forest puede utilizarse con una sola variable, pero ello sería una detección unidimensional adicional. No se ejecuta en esta sección ni se presentan resultados de ese método. Los precios extremos no se consideran automáticamente errores y no se eliminan observaciones a partir de este apartado.
+| Activo · TRAIN fold 5 | Mediana \|r\| | Pares con \|r\| > 0.99 (%) | Rango numérico | Número de condición |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 0.99130 | 55.69 | 168 | 1469.4 |
+| BTCUSDT | 0.99383 | 73.00 | 168 | 1699.3 |
+| ETHUSDT | 0.99054 | 52.45 | 168 | 1434.7 |
+| SOLUSDT | 0.99352 | 68.76 | 168 | 1724.9 |
+| XRPUSDT | 0.97949 | 24.52 | 168 | 965.2 |
 
-### 2.4.4 Grupos y subpoblaciones
+Las altas asociaciones entre niveles de precio rezagados pueden reflejar persistencia, tendencia y mezcla de periodos. La estandarización no elimina esa estructura ni vuelve estacionarias las series. La redundancia ayuda a explicar por qué los coeficientes individuales del SVR deben interpretarse con cautela.
 
-Los activos identificados por `symbol` constituyen grupos conocidos, no grupos descubiertos mediante clustering. Sus precios tienen escalas distintas; agrupar los cierres brutos mezclando criptomonedas podría reflejar principalmente esas diferencias de nivel, sin demostrar la existencia de regímenes de mercado.
+### 2.4.3 PCA y dimensión efectiva
 
-No se aplica clustering exploratorio en este alcance. La comparación por activo se conserva en los apartados anteriores. Identificar regímenes temporales exigiría definir una representación histórica adecuada y comprobar la estabilidad de los grupos; no se afirma que dichos regímenes hayan sido detectados.
+Se ejecuta [PCA de scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) con SVD completa (`svd_solver="full"`) sobre cada matriz estandarizada de TRAIN. PCA centra las columnas; el escalado se realiza explícitamente antes. Se conservan los 168 componentes para diagnosticar el espectro, sin introducir PCA en el SVR ni seleccionar variables a partir del resultado.
 
-### 2.4.5 Interpretación
+Se reporta el mínimo número de componentes para alcanzar 90 %, 95 % y 99 % de la varianza, con umbrales fijados en el protocolo antes del cálculo. Además, con $q_j=\lambda_j/\sum_k\lambda_k$, la dimensión efectiva por entropía es:
 
-Para una sola columna de `close`, la dimensión de entrada es uno y la multicolinealidad entre predictores no aplica. Esto no implica que los cierres sucesivos sean independientes ni que una ventana de rezagos esté libre de redundancia. Cuando varios cierres históricos se introducen simultáneamente como entradas, pueden estar fuertemente correlacionados aunque procedan de la misma variable original.
+$$
+d_{efectiva}=\exp\left(-\sum_{j:q_j>0}q_j\ln q_j\right).
+$$
 
-En consecuencia, se justifica la no aplicación de reducción de dimensionalidad, detección multivariada y clustering en la representación actual. Este apartado no selecciona ventanas, transforma datos ni modifica el protocolo común de comparación de modelos. Cualquier decisión posterior sobre representaciones temporales se evaluará dentro de DEVELOPMENT, manteniendo TEST reservado.
+Esta dimensión continua resume la concentración del espectro y no equivale al rango numérico ni a un número óptimo de predictores para pronosticar.
 
-El [notebook de alcance del análisis multivariado](../../notebooks/12_multivariate_scope_close.ipynb) recoge esta justificación metodológica. Es un documento sin celdas de cálculo; no requiere ejecutar análisis.
+| Activo · TRAIN fold 5 | PC1 (%) | PC2 (%) | k90 | k95 | k99 | Dimensión efectiva |
+| --- | --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 98.963 | 0.657 | 1 | 1 | 2 | 1.077 |
+| BTCUSDT | 99.304 | 0.417 | 1 | 1 | 1 | 1.055 |
+| ETHUSDT | 98.906 | 0.679 | 1 | 1 | 2 | 1.081 |
+| SOLUSDT | 99.237 | 0.472 | 1 | 1 | 1 | 1.059 |
+| XRPUSDT | 97.656 | 1.415 | 1 | 1 | 2 | 1.162 |
+
+En TRAIN del fold 5, PC1 concentra entre 97.656% y 99.304% de la varianza estandarizada. Para alcanzar 95 % se requieren entre 1 y 1 componentes; para 99 %, entre 1 y 2. La dimensión efectiva varía entre 1.055 y 1.162, mientras que el rango numérico se informa separadamente.
+
+La alineación absoluta de PC1 con el vector uniforme $\mathbf{1}/\sqrt{168}$ permite examinar si el primer componente representa principalmente el nivel conjunto de los cierres. Los pesos de PC1 y PC2 se grafican por rezago. El signo de un componente es arbitrario; para dibujarlo se orienta hacia suma de pesos no negativa, sin cambiar la varianza explicada.
+
+| Activo | \|coseno(PC1, nivel uniforme)\| |
+| --- | --- |
+| BNBUSDT | 0.999997 |
+| BTCUSDT | 0.999999 |
+| ETHUSDT | 0.999997 |
+| SOLUSDT | 0.999998 |
+| XRPUSDT | 0.999985 |
+
+La alineación mínima observada es 0.999985. La cercanía a uno respalda interpretar PC1 principalmente como un movimiento conjunto de nivel en estos entrenamientos, no como una medida de volatilidad futura.
+
+**Explicar varianza de precios no equivale a explicar volatilidad futura.** Las direcciones de baja varianza pueden contener información predictiva. No se interpreta un PC1 dominante como evidencia de que un único componente baste para el pronóstico ni como razón para cambiar ahora el modelo base.
+
+### 2.4.4 Estabilidad descriptiva entre entrenamientos
+
+| Activo | PC1 mín.–máx. (%) | k95 mín.–máx. | k99 mín.–máx. | Dimensión efectiva mín.–máx. |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 98.505–98.963 | 1–1 | 2–2 | 1.077–1.103 |
+| BTCUSDT | 98.911–99.304 | 1–1 | 1–2 | 1.055–1.082 |
+| ETHUSDT | 98.453–98.944 | 1–1 | 2–2 | 1.079–1.109 |
+| SOLUSDT | 98.499–99.237 | 1–1 | 1–2 | 1.059–1.114 |
+| XRPUSDT | 96.755–97.803 | 1–1 | 2–3 | 1.152–1.213 |
+
+Los rangos resumen los cinco TRAIN crecientes por activo. No son intervalos de confianza y no permiten una prueba de estabilidad independiente: los folds comparten historia y al ampliarlos cambian los periodos y regímenes representados. Cada PCA tiene su propia base; las coordenadas de componentes de distintos ajustes no se comparan directamente como si compartieran orientación.
+
+### 2.4.5 Anomalías multivariadas
+
+Se ajusta [Isolation Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html) directamente sobre las **168 columnas estandarizadas**, sin reducirlas antes mediante PCA. Se fijan 200 árboles, submuestras de 256 ventanas, todas las columnas disponibles, `contamination="auto"`, semilla 42 y ejecución secuencial. El puntaje usado es $a(X)=-\operatorname{score\_samples}(X)$: valores mayores representan mayor atipicidad según el detector.
+
+La señalización utiliza un umbral propio y explícito: percentil 99 de los puntajes del mismo TRAIN, con desigualdad estricta `score > umbral`. No se utiliza el umbral automático de `predict`. El percentil se fija como criterio descriptivo antes de observar los resultados; no es una probabilidad de error ni una tasa de falsos positivos calibrada. Señalar aproximadamente el 1 % de TRAIN es una consecuencia de esa regla, no un descubrimiento de que el 1 % de los datos sea erróneo.
+
+| Activo · TRAIN fold 5 | Umbral TRAIN | Anclas señaladas | Porcentaje | Secuencias consecutivas |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 0.64312 | 336 | 1.001 | 10 |
+| BTCUSDT | 0.60678 | 336 | 1.001 | 14 |
+| ETHUSDT | 0.65635 | 336 | 1.001 | 14 |
+| SOLUSDT | 0.67656 | 336 | 1.001 | 1 |
+| XRPUSDT | 0.71600 | 336 | 1.001 | 6 |
+
+Se agrupan anclas señaladas consecutivas separadas exactamente por una hora en secuencias descriptivas. Los huecos interrumpen las secuencias. Estas secuencias no identifican eventos económicos independientes: las ventanas se solapan y dos secuencias pueden compartir cierres.
+
+| Activo | Inicio secuencia UTC | Fin secuencia UTC | Anclas | Puntaje máximo |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 2024-06-07 11:00 | 2024-06-13 20:00 | 154 | 0.70798 |
+| BTCUSDT | 2024-03-14 14:00 | 2024-03-18 23:00 | 106 | 0.63051 |
+| ETHUSDT | 2021-11-07 22:00 | 2021-11-19 04:00 | 271 | 0.71224 |
+| SOLUSDT | 2021-11-06 11:00 | 2021-11-20 10:00 | 336 | 0.74273 |
+| XRPUSDT | 2021-04-16 06:00 | 2021-04-19 01:00 | 68 | 0.75560 |
+
+La tabla localiza, por activo, la secuencia que contiene el puntaje máximo de TRAIN del fold 5. No atribuye causas a las fechas. Los precios de nivel extremo, las transiciones de nivel o las trayectorias poco habituales pueden generar puntuaciones altas sin ser errores de cotización. Las ventanas señaladas se conservan; no se recortan ni se reentrena el SVR para mejorar métricas después de observarlas.
+
+| Activo | 2020 (% señalado) | 2021 (% señalado) | 2022 (% señalado) | 2023 (% señalado) | 2024 (% señalado) |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 0.00 | 2.41 | 0.00 | 0.00 | 2.61 |
+| BTCUSDT | 5.66 | 0.00 | 0.00 | 0.00 | 2.98 |
+| ETHUSDT | 0.00 | 4.49 | 0.00 | 0.00 | 0.00 |
+| SOLUSDT | 0.00 | 4.49 | 0.00 | 0.00 | 0.00 |
+| XRPUSDT | 0.00 | 4.49 | 0.00 | 0.00 | 0.00 |
+
+Los porcentajes anuales usan como denominador las anclas elegibles de cada año, con extremos parciales. Se calculan con un único detector ajustado sobre todo TRAIN del fold 5. Son una descripción retrospectiva, no detección en línea disponible en cada fecha histórica ni evidencia de deterioro futuro. Los puntajes tampoco están calibrados para comparar riesgo entre activos.
+
+### 2.4.6 Estructura, subpoblaciones y gráficos
+
+Los activos son grupos conocidos, tratados por separado. Las proyecciones PC1–PC2 se colorean por año UTC para examinar cómo se distribuyen los periodos en la representación. Solo para esa visualización se muestran hasta 5.000 anclas uniformemente espaciadas en orden temporal; PCA, correlaciones y anomalías utilizan todas las filas elegibles de TRAIN. Los gráficos por activo tienen bases propias y no permiten comparar directamente coordenadas entre criptomonedas.
+
+Las matrices de correlación y las curvas de varianza acumulada muestran escalas ampliadas, identificadas en sus ejes, para hacer visible la redundancia sin ocultar las diferencias entre rezagos. No parten necesariamente de cero; los valores completos se conservan en las tablas y matrices numéricas.
+
+La distribución temporal en la proyección puede reflejar niveles de precio y cambios de escala, sin demostrar clusters o regímenes discretos. No se ejecuta clustering, UMAP ni t-SNE: el objetivo de esta sección es caracterizar la matriz real, no elegir un número de regímenes sin un criterio temporal de estabilidad. El clustering de regímenes exigiría una representación pertinente, validación de estabilidad y una pregunta adicional; no se declaran grupos descubiertos a partir de estos gráficos.
+
+```{figure} ../_static/figures/multivariate_BNBUSDT.png
+:alt: Correlación de 168 rezagos, PCA y anomalías de BNBUSDT, solo TRAIN fold 5.
+
+BNBUSDT: matriz real de entrada, varianza acumulada, proyección por año, pesos y anomalías retrospectivas.
+```
+
+```{figure} ../_static/figures/multivariate_BTCUSDT.png
+:alt: Correlación de 168 rezagos, PCA y anomalías de BTCUSDT, solo TRAIN fold 5.
+
+BTCUSDT: matriz real de entrada, varianza acumulada, proyección por año, pesos y anomalías retrospectivas.
+```
+
+```{figure} ../_static/figures/multivariate_ETHUSDT.png
+:alt: Correlación de 168 rezagos, PCA y anomalías de ETHUSDT, solo TRAIN fold 5.
+
+ETHUSDT: matriz real de entrada, varianza acumulada, proyección por año, pesos y anomalías retrospectivas.
+```
+
+```{figure} ../_static/figures/multivariate_SOLUSDT.png
+:alt: Correlación de 168 rezagos, PCA y anomalías de SOLUSDT, solo TRAIN fold 5.
+
+SOLUSDT: matriz real de entrada, varianza acumulada, proyección por año, pesos y anomalías retrospectivas.
+```
+
+```{figure} ../_static/figures/multivariate_XRPUSDT.png
+:alt: Correlación de 168 rezagos, PCA y anomalías de XRPUSDT, solo TRAIN fold 5.
+
+XRPUSDT: matriz real de entrada, varianza acumulada, proyección por año, pesos y anomalías retrospectivas.
+```
+
+### 2.4.7 Consecuencias y reproducibilidad
+
+El análisis establece la dimensión nominal, la concentración de varianza, la redundancia y la atipicidad conjunta de la entrada utilizada. Motiva estudiar, en un experimento posterior, representaciones de retornos o reducción de dimensionalidad; no prueba que mejoren el pronóstico. Cualquier uso predictivo de PCA, selección de componentes o tratamiento de anomalías deberá ajustarse dentro del entrenamiento y elegirse con validación temporal, conservando TEST reservado. Los resultados del SVR y Persistence permanecen intactos.
+
+El protocolo previo está en `outputs/tables/multivariate_protocol.json`. El cálculo está en `src/12_multivariate_close.py`; `src/12_render_multivariate_report.py` sincroniza informe y notebook. Se guardan los 25 resúmenes, el espectro completo, parámetros de escalado, matrices de correlación, pesos de PC1/PC2, puntajes del fold 5 y secuencias señaladas en `outputs/tables/multivariate_*`. Los metadatos registran semillas, versiones, huellas y alcance de ajuste. Las pruebas verifican dimensiones conocidas, rechazo de la etiqueta como entrada y las fronteras temporales compartidas con el modelo.
+
+Para reproducir: `python -m unittest discover -s tests -v`, `python src/12_multivariate_close.py` y `python src/12_render_multivariate_report.py`. El notebook carga los resultados verificados por defecto; `RECALCULAR = True` repite los 25 diagnósticos.
+
+[Notebook multivariado con resultados ejecutados](../../notebooks/12_multivariate_scope_close.ipynb).
 
 ## 2.5 Auditoría de fuga de datos (*Data Leakage*)
 
@@ -527,21 +940,45 @@ El objetivo se calcula como 100 veces la desviación estándar de los 24 retorno
 
 Compartir el cierre de frontera entre el último dato observado y el primer retorno futuro no constituye fuga: ese precio ya se conoce al predecir. En cambio, usar cierres futuros, ventanas centradas, rellenos hacia atrás desde el futuro, la propia etiqueta o transformaciones de ella como predictores introduciría información no disponible. No se usan esas construcciones en el diagnóstico de esta sección. La correlación o información mutua por sí solas no demuestran disponibilidad temporal ni ausencia de fuga.
 
-### 2.5.3 Diagnóstico predictivo de close
+### 2.5.3 Diagnóstico individual de todas las entradas
 
-AUC no aplica al objetivo continuo de regresión. Se ajusta una regresión lineal diagnóstica con intercepto y una sola entrada, `close`, sin búsqueda de hiperparámetros. Se reserva el último 20 % de los timestamps observados de DEVELOPMENT para validación interna, con frontera común en **2024-07-09 20:00 UTC** (hora de apertura de la vela ancla). No es el TEST final ni una comparación definitiva de modelos.
+Se reemplaza el diagnóstico limitado a close por **179 regresiones univariadas por activo y fold**: 168 cierres rezagados (`lag_0` es close), las otras ocho columnas numéricas originales, retorno horario, retorno absoluto y volatilidad histórica de 24 horas. Son **4.475 evaluaciones** en los mismos cinco folds cronológicos de la sección 3. Cada OLS con intercepto utiliza una única columna y escalado ajustado únicamente con TRAIN; no hay búsqueda de hiperparámetros. El modelo base sigue siendo el SVR con 168 cierres: estas OLS son diagnósticas.
 
-El escalado de `close` utiliza únicamente el entrenamiento. Se excluyen 24 etiquetas por activo en la frontera: la última vela requerida por cada etiqueta de entrenamiento debe preceder al primer ancla de validación. Los huecos y cierres irregulares invalidan las ventanas correspondientes; no se imputan. Tampoco se construyen etiquetas que excedan DEVELOPMENT. RMSE y MAE se expresan en puntos porcentuales de volatilidad; R² es adimensional. La referencia constante utiliza solo la media de las etiquetas de entrenamiento.
+Se exige la misma elegibilidad y el mismo confinamiento temporal del modelo: historia de 168 cierres, objetivo y referencia completos dentro de cada bloque. Las muestras de entrenamiento y validación coinciden con la auditoría `base_folds.csv`. La referencia constante usa la media de y de TRAIN. RMSE se expresa en puntos porcentuales y R² compara con la media observada del bloque validado. AUC no aplica a regresión.
 
-| Activo | Entrenamiento | Validación | RMSE close | MAE close | R² close | RMSE media de entrenamiento |
-|---|---:|---:|---:|---:|---:|---:|
-| BNBUSDT | 33972 | 8543 | 0.3551 | 0.2962 | -0.4413 | 0.3683 |
-| BTCUSDT | 33972 | 8543 | 0.3362 | 0.2891 | -0.9333 | 0.2594 |
-| ETHUSDT | 33972 | 8543 | 0.3512 | 0.2561 | -0.0173 | 0.3510 |
-| SOLUSDT | 33997 | 8543 | 0.4685 | 0.3724 | -0.2479 | 0.5533 |
-| XRPUSDT | 33997 | 8543 | 0.9824 | 0.8353 | -1.4772 | 0.6242 |
+| Activo | Evaluaciones de rezagos | RMSE mínimo–máximo | R² mínimo–máximo | Alertas R² ≥ 0,8 |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 840 | 0.3386 a 0.9362 | -4.7710 a -0.3646 | 0 |
+| BTCUSDT | 840 | 0.3272 a 0.3965 | -1.4282 a -0.0679 | 0 |
+| ETHUSDT | 840 | 0.3451 a 0.9696 | -8.0806 a -0.0062 | 0 |
+| SOLUSDT | 840 | 0.4571 a 2.0484 | -12.1281 a -0.1905 | 0 |
+| XRPUSDT | 840 | 0.4925 a 1.0796 | -3.4348 a -0.3066 | 0 |
 
-Los R² son negativos en los cinco activos: esta relación lineal con un único cierre no explica bien la volatilidad futura en el bloque evaluado. No aparece un desempeño casi perfecto que active esa señal de alarma. Sin embargo, un desempeño bajo no prueba ausencia de fuga ni descarta que ventanas históricas o relaciones no lineales tengan utilidad. Un R² negativo compara con la media del bloque evaluado; la referencia de la última columna es distinta porque utiliza la media de entrenamiento.
+Los rangos reúnen los 168 rezagos y cinco folds de cada activo, no son intervalos de confianza ni resultados de una selección. Los candidatos originales y derivados se resumen sobre los 25 bloques activo-fold:
+
+| Variable | RMSE medio | R² mínimo–máximo | Alertas R² ≥ 0,8 |
+| --- | --- | --- | --- |
+| abs_return_1h_pct | 0.4544 | -2.5252 a 0.1615 | 0 |
+| high | 0.6193 | -10.7323 a -0.0069 | 0 |
+| low | 0.6130 | -9.6104 a -0.0053 | 0 |
+| number_of_trades | 0.6234 | -13.1447 a 0.1248 | 0 |
+| open | 0.6167 | -10.2647 a -0.0063 | 0 |
+| past_volatility_24h_pct | 0.3622 | -0.4974 a 0.4176 | 0 |
+| quote_asset_volume | 0.5197 | -10.3582 a 0.1231 | 0 |
+| return_1h_pct | 0.5036 | -3.9231 a -0.0038 | 0 |
+| taker_buy_base_asset_volume | 0.4567 | -4.0814 a 0.2243 | 0 |
+| taker_buy_quote_asset_volume | 0.5196 | -10.1956 a 0.1197 | 0 |
+| volume | 0.4559 | -4.0797 a 0.2279 | 0 |
+
+Se registran **0 alertas** con el umbral descriptivo R² ≥ 0,8 de la guía. Un resultado alto es una señal para revisar disponibilidad y alineación, no prueba de fuga; un resultado bajo tampoco acredita su ausencia. Se conservan todas las evaluaciones, sin escoger columnas según su mejor fold ni interpretar el máximo entre miles de evaluaciones como evidencia confirmatoria.
+
+[Resultados de las 4.475 evaluaciones](../../outputs/tables/leakage_all_features_scores.csv). El archivo guarda parámetros del escalado, coeficiente, intercepto, conteos y error de la media de TRAIN. No se realizan pruebas de significación ni se usan estos resultados para modificar el modelo.
+
+**Disponibilidad.** Para cada rezago k, el cierre procede de la vela s−k y está disponible nominalmente en s−k+1 hora. Los ocho campos numéricos de la vela actual se consideran disponibles solo cuando termina esa vela, en s+1 hora. El retorno necesita los cierres s−1 y s; la volatilidad pasada necesita los cierres s−24 a s. Todos preceden o coinciden con la emisión nominal s+1 hora. Las claves symbol y fechas no son predictores. La etiqueta futura nunca aparece en las entradas.
+
+[Registro de disponibilidad de las 179 variables](../../outputs/tables/leakage_feature_availability.csv). La disponibilidad es nominal tras el cierre; los archivos históricos no registran latencia real de recepción. Un sistema operativo deberá esperar confirmación de la vela cerrada. El objetivo conserva sus propias 24 horas futuras y solo se usa como etiqueta en el ajuste o la evaluación.
+
+La volatilidad pasada comparte fórmula con el objetivo, pero utiliza otro intervalo temporal: no es fuga por ese solo hecho. Se mantienen separadas las variables disponibles, los candidatos excluidos por diseño y los datos futuros prohibidos. Este diagnóstico no certifica ausencia universal de fuga ni decide transformaciones a partir de TEST.
 
 ### 2.5.4 Duplicados, entidades y fronteras temporales
 
@@ -551,25 +988,23 @@ Según esos registros, los intervalos no se solapan; por tanto, no comparten cla
 
 BTC, ETH, BNB, XRP y SOL aparecen en ambas particiones. Esta repetición de entidades es coherente con pronosticar el futuro de los mismos activos; no evalúa generalización a criptomonedas desconocidas. Los activos de una misma hora deberán permanecer en el mismo bloque en la validación temporal.
 
-La separación de filas por fecha no basta para separar etiquetas futuras. En cada fold se deben purgar las etiquetas cuyo periodo objetivo invada la validación. El diagnóstico ejecutado comprueba esa condición por fechas reales. Los folds definitivos y sus preprocesadores deberán superar la misma verificación cuando se construyan. Utilizar historia anterior al corte como contexto de una predicción posterior es admisible si ya estaba disponible; entrenar con sus resultados futuros no lo es.
+La separación de filas por fecha no basta para separar etiquetas futuras. En cada fold se purgan las etiquetas cuyo periodo objetivo invada la validación. Los folds del modelo base y sus preprocesadores se verifican mediante fechas reales y la auditoría de la sección 2.9. En este experimento se exige además que la historia completa de cada ejemplo esté contenida en su bloque; se aplica el mismo criterio a ambos modelos y a los prefijos de la curva de aprendizaje.
 
 ### 2.5.5 Transformaciones y alcance de la evidencia
 
 Escaladores, imputaciones, PCA, selección de variables, umbrales e hiperparámetros deberán ajustarse exclusivamente dentro del entrenamiento de cada fold. El EDA previo sobre DEVELOPMENT completo no equivale a una validación fuera de muestra: sus estadísticas y transformaciones auxiliares no deben reutilizarse como preprocesadores ya ajustados. Si sus conclusiones guían decisiones, las métricas internas tienen ese contexto exploratorio y TEST debe conservarse para la evaluación final.
 
-En este diagnóstico se verificaron el orden temporal, la purga, la disponibilidad de las etiquetas dentro de DEVELOPMENT y el ajuste del escalado solo en entrenamiento. No se audita todavía un pipeline final entrenado ni la latencia de una implementación en producción. Las cifras antiguas de 2.1 no se reutilizan: el objetivo se recalcula con la definición común de desviación estándar.
+Se verificaron el orden temporal, la purga, la disponibilidad de las etiquetas dentro de DEVELOPMENT y el ajuste del escalado solo en entrenamiento. La auditoría de la sección 2.9 contrasta las 168 entradas en los 25 bloques activo-fold del pipeline del modelo base. Las pruebas de fronteras y perturbación de datos futuros complementan esta comprobación. El objetivo de la sección 2.1 y el modelo comparten la desviación estándar centrada con `ddof=0`. Los archivos históricos no permiten verificar la latencia de recepción en producción.
 
 ### 2.5.6 Interpretación y decisiones
 
-Se conserva `close` de velas cerradas como entrada original. Se excluyen de la entrada el objetivo, sus transformaciones y cualquier observación futura. Identificadores y fechas se mantienen como claves; los demás campos quedan fuera del alcance acordado. Las ventanas de rezagos y los derivados históricos quedan sujetos a comprobar su disponibilidad y a una definición común antes de comparar modelos.
+Se conserva `close` de velas cerradas como entrada original y se construyen 168 rezagos consecutivos. Se excluyen de la entrada el objetivo, sus transformaciones y cualquier observación futura. Identificadores y fechas se mantienen como claves; los demás campos se analizan como diagnóstico y no se incorporan al SVR. Las ventanas y la referencia histórica se calculan por activo, con controles de continuidad, disponibilidad y confinamiento en el bloque.
 
-Las comprobaciones realizadas no detectan infracciones de las reglas temporales implementadas en el diagnóstico. Esta evidencia no constituye una garantía general de ausencia de fuga: siguen siendo necesarias la auditoría de los folds y pipelines definitivos y la verificación operativa de disponibilidad. No se utiliza TEST para elegir variables, ventanas o configuraciones.
+Las comprobaciones realizadas no detectan infracciones de las reglas temporales implementadas en los folds y pipelines evaluados. Esta evidencia no constituye una garantía general de ausencia de fuga. La disponibilidad operativa deberá verificarse antes de una implementación en producción. No se utiliza TEST para elegir variables, ventanas o configuraciones.
 
 ### 2.5.7 Reproducibilidad
 
-El procedimiento está en `src/13_leakage_audit.py`. Las métricas se guardan en `outputs/tables/leakage_close_diagnostic.csv` y la trazabilidad en `outputs/tables/leakage_audit_metadata.json`. Se verifica que el SHA-256 de DEVELOPMENT no cambie durante la ejecución. Los datos no se modifican y el archivo TEST no se lee; sus fronteras se consultan exclusivamente en los registros existentes de la partición.
-
-[Notebook ejecutado de auditoría de fuga de datos](../../notebooks/13_leakage_audit.ipynb).
+Ejecutar `python src/13_feature_diagnostics.py` y `python src/13_render_feature_diagnostics.py`. Las tablas `leakage_all_features_scores.csv` y `leakage_feature_availability.csv` y los metadatos guardan el diagnóstico vigente y sus huellas. El script anterior `src/13_leakage_audit.py` se conserva como antecedente; su diagnóstico de un solo cierre no sustituye esta evaluación de todas las entradas. [Notebook de auditoría individual](../../notebooks/13_feature_diagnostics.ipynb).
 
 ## 2.6 Componente temporal
 
@@ -699,6 +1134,8 @@ XRPUSDT: diagnóstico temporal de close y volatilidad futura, limitado a DEVELOP
 
 La partición y la validación deben respetar el orden cronológico, con ventanas crecientes o deslizantes dentro de DEVELOPMENT y el mismo corte para todos los activos. No se mezclan filas aleatoriamente. El gap debe comprobar la disponibilidad real de las etiquetas y excluir del entrenamiento cualquier horizonte objetivo que invada la validación; no basta con restar un número de filas a un panel de cinco activos.
 
+La implementación de la sección 3 exige además que la historia de cada entrada y su objetivo queden contenidos en el bloque al que pertenece el ancla. Con L=168 y horizonte 24, se comprueba `ancla − 167h ≥ inicio_bloque` y `ancla + 24h ≤ fin_bloque`. Se registran por separado las pérdidas iniciales de historial y finales de horizonte; se usa la misma regla para SVR y Persistence y para los prefijos de entrenamiento de la curva de aprendizaje.
+
 Los rezagos y estadísticas móviles de entrada se construyen solo con información pasada. Las transformaciones aprendidas se ajustan dentro del entrenamiento de cada fold. La persistencia del precio no garantiza buena predicción de volatilidad, y la menor autocorrelación del retorno no implica ausencia de dependencia en su magnitud. Las diferencias entre periodos motivan informar desempeño por activo y por bloque temporal, además del promedio.
 
 Esta exploración no cambia el horizonte de 24 horas, no selecciona una ventana definitiva y no entrena SVR, persistencia u otros modelos predictivos. TEST permanece reservado. La información temporal apoya el diseño de la validación, sin convertir los patrones retrospectivos en predictores disponibles en el pasado.
@@ -708,6 +1145,246 @@ Esta exploración no cambia el horizonte de 24 horas, no selecciona una ventana 
 El procedimiento está en `src/14_temporal_close.py`; las tablas se guardan en `outputs/tables/temporal_*.csv` y la trazabilidad en `outputs/tables/temporal_metadata.json`. Se verifica la conservación de DEVELOPMENT mediante SHA-256. Las pruebas, gráficos y descomposición no modifican los datos originales.
 
 [Notebook ejecutado del componente temporal](../../notebooks/14_temporal_close.ipynb).
+
+### 2.6.10 Análisis horario del objetivo definitivo
+
+El análisis anterior del precio se complementa con el objetivo realmente pronosticado: desviación estándar centrada de los 24 retornos logarítmicos horarios futuros, multiplicada por 100, con divisor 24 y sin anualización. Cada etiqueta exige 25 cierres consecutivos y convencionales. Se conserva la rejilla horaria, se invalidan las ventanas afectadas por huecos y se excluyen las últimas 24 anclas de DEVELOPMENT. TEST no se abre.
+
+**Este análisis es retrospectivo.** El objetivo futuro, sus momentos móviles y su descomposición STL no son entradas disponibles al emitir la predicción; no se incorporan al pipeline. Se incluyen para diagnosticar la serie. Los patrones de calendario se agrupan por el instante nominal de emisión (apertura del ancla + 1 hora, UTC).
+
+La serie completa, los momentos móviles y los ciclos utilizan todas las etiquetas válidas de DEVELOPMENT. ACF/PACF, ADF, KPSS y STL requieren una secuencia regular: se usa exclusivamente el tramo válido consecutivo más largo, elegido por cobertura, sin interpolar. Los resultados de ese tramo no representan necesariamente los periodos excluidos.
+
+| Activo | Etiquetas válidas | n del tramo | Inicio ancla UTC | Fin ancla UTC |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 42539 | 19901 | 2023-03-24 14:00:00+00:00 | 2025-06-30 18:00:00+00:00 |
+| BTCUSDT | 42539 | 19901 | 2023-03-24 14:00:00+00:00 | 2025-06-30 18:00:00+00:00 |
+| ETHUSDT | 42539 | 19901 | 2023-03-24 14:00:00+00:00 | 2025-06-30 18:00:00+00:00 |
+| SOLUSDT | 42564 | 19901 | 2023-03-24 14:00:00+00:00 | 2025-06-30 18:00:00+00:00 |
+| XRPUSDT | 42564 | 19901 | 2023-03-24 14:00:00+00:00 | 2025-06-30 18:00:00+00:00 |
+
+#### Dependencia horaria y efecto del solapamiento
+
+Se calculan ACF y PACF hasta 168 horas; PACF utiliza Levinson–Durbin sin ajuste de sesgo (`ldbiased`). Los primeros rezagos se resumen a continuación. No se presentan bandas iid como evidencia inferencial. Los objetivos consecutivos comparten 23 retornos: una ACF elevada no demuestra capacidad predictiva ni independencia de las filas. Como contraste descriptivo se calcula la ACF de los retornos absolutos y al cuadrado, que no son objetivos de 24 horas superpuestos.
+
+| Activo | Rezago h | ACF y | PACF y | ACF \|r\| | ACF r² |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 1 | 0.9892 | 0.9892 | 0.2947 | 0.1668 |
+| BNBUSDT | 24 | 0.5252 | 0.0362 | 0.1621 | 0.0792 |
+| BNBUSDT | 168 | 0.3109 | 0.0029 | 0.1094 | 0.0410 |
+| BTCUSDT | 1 | 0.9865 | 0.9865 | 0.2664 | 0.1883 |
+| BTCUSDT | 24 | 0.4241 | 0.0091 | 0.1358 | 0.0567 |
+| BTCUSDT | 168 | 0.3270 | -0.0153 | 0.1490 | 0.0691 |
+| ETHUSDT | 1 | 0.9860 | 0.9860 | 0.2494 | 0.1192 |
+| ETHUSDT | 24 | 0.4700 | 0.0069 | 0.1397 | 0.0351 |
+| ETHUSDT | 168 | 0.3127 | -0.0015 | 0.1226 | 0.0458 |
+| SOLUSDT | 1 | 0.9879 | 0.9879 | 0.2311 | 0.1719 |
+| SOLUSDT | 24 | 0.5385 | 0.0065 | 0.1471 | 0.0682 |
+| SOLUSDT | 168 | 0.2496 | 0.0077 | 0.0920 | 0.0379 |
+| XRPUSDT | 1 | 0.9883 | 0.9883 | 0.3545 | 0.1650 |
+| XRPUSDT | 24 | 0.5130 | 0.0114 | 0.1772 | 0.0398 |
+| XRPUSDT | 168 | 0.2851 | -0.0006 | 0.1193 | 0.0135 |
+
+La ACF del objetivo a una hora va de 0.9860 a 0.9892 entre activos; a 168 horas va de 0.2496 a 0.3270. La dependencia no se limita al primer rezago. Su interpretación requiere considerar tanto el solapamiento como la evolución del proceso.
+
+La ACF de retornos transformados se calcula en su propio tramo consecutivo más largo, cuyos límites se guardan en el CSV; no se supone que coincida exactamente con el del objetivo. La relación con los rezagos de close continúa documentada en 2.6.5 y no se interpreta como causalidad.
+
+#### Estacionariedad: hipótesis y límites
+
+ADF se ejecuta con constante, máximo 48 rezagos horarios y selección AIC dentro de ese máximo; su hipótesis nula es raíz unitaria. KPSS se ejecuta con constante y rezagos automáticos; su hipótesis nula es estacionariedad en nivel. Se reportan ambas salidas; no rechazar una hipótesis no equivale a demostrarla. El horizonte solapado, la selección de tramo y los cambios de distribución limitan la extrapolación. Son diez contrastes exploratorios, no un criterio de selección de variables ni de hiperparámetros; no se declara significación conjunta.
+
+| Activo | ADF estadístico | ADF p | Rezagos ADF | KPSS estadístico | KPSS p tabulado | Rezagos KPSS |
+| --- | --- | --- | --- | --- | --- | --- |
+| BNBUSDT | -9.3010 | 1.1126e-15 | 48 | 1.1256 | ≤0.01 | 85 |
+| BTCUSDT | -10.4822 | 1.2058e-18 | 48 | 1.8912 | ≤0.01 | 85 |
+| ETHUSDT | -9.2731 | 1.311e-15 | 48 | 6.5880 | ≤0.01 | 85 |
+| SOLUSDT | -9.0074 | 6.2561e-15 | 48 | 0.4626 | 0.05018 | 85 |
+| XRPUSDT | -9.5304 | 2.901e-16 | 48 | 2.0598 | ≤0.01 | 85 |
+
+BNBUSDT: ADF rechaza raíz unitaria y KPSS rechaza estacionariedad en nivel, usando 0,05 solo como referencia descriptiva. BTCUSDT: ADF rechaza raíz unitaria y KPSS rechaza estacionariedad en nivel, usando 0,05 solo como referencia descriptiva. ETHUSDT: ADF rechaza raíz unitaria y KPSS rechaza estacionariedad en nivel, usando 0,05 solo como referencia descriptiva. SOLUSDT: ADF rechaza raíz unitaria y KPSS no rechaza estacionariedad en nivel, usando 0,05 solo como referencia descriptiva. XRPUSDT: ADF rechaza raíz unitaria y KPSS rechaza estacionariedad en nivel, usando 0,05 solo como referencia descriptiva.
+
+Los p-valores KPSS pueden ser límites de la tabla (0,01 o 0,10), no valores exactos. Las advertencias originales se conservan en `temporal_target_stationarity.csv`. Rechazar ambas hipótesis puede indicar que ninguna simplificación describe bien el tramo; no se resuelve declarando la serie estacionaria por una sola prueba.
+
+#### Calendario, momentos móviles y evolución trimestral
+
+Los paneles incluyen la media y la varianza móviles sobre 168 horas consecutivas con `min_periods=168`; no se calculan a través de faltantes. Las agregaciones diaria, semanal y mensual son promedios de etiquetas horarias válidas, no volatilidades recalculadas a otra frecuencia; la cobertura puede variar. Los boxplots muestran hora, día de semana y mes de emisión, ocultando únicamente los puntos extremos para facilitar la lectura, sin eliminarlos de las estadísticas.
+
+La STL usa periodo diario de 24 horas, ajuste robusto e interpolación de los suavizadores cada tres puntos (`seasonal_jump=trend_jump=low_pass_jump=3`). Es una descomposición retrospectiva del tramo, no un filtro causal ni una prueba de estacionalidad estable. Se muestran tendencia, componente estacional y residuo. La descomposición semanal del precio analizada previamente responde a otra serie y frecuencia.
+
+| Activo | Mediana mínima–máxima por hora (%) | Día semanal de menor mediana | Día semanal de mayor mediana |
+| --- | --- | --- | --- |
+| BNBUSDT | 0.5530 a 0.5652 | sábado | lunes |
+| BTCUSDT | 0.4822 a 0.4876 | sábado | miércoles |
+| ETHUSDT | 0.6138 a 0.6241 | sábado | miércoles |
+| SOLUSDT | 0.9551 a 0.9683 | sábado | miércoles |
+| XRPUSDT | 0.6726 a 0.6808 | sábado | lunes |
+
+El rango entre medianas por hora permite valorar la magnitud del ciclo horario; cada objetivo cubre un día completo, lo que suaviza diferencias intradiarias. Los días con menor y mayor mediana son resúmenes del periodo observado, no efectos causales ni una regla garantizada para el futuro.
+
+| Activo | Mínima mediana trimestral (%) | Máxima mediana trimestral (%) | Rango de DE trimestral (pp) |
+| --- | --- | --- | --- |
+| BNBUSDT | 0.2548 | 1.3237 | 0.1862 a 0.9410 |
+| BTCUSDT | 0.2334 | 0.8989 | 0.1741 a 0.4642 |
+| ETHUSDT | 0.2426 | 1.1125 | 0.1799 a 0.6826 |
+| SOLUSDT | 0.6031 | 2.1078 | 0.2929 a 1.0460 |
+| XRPUSDT | 0.4335 | 1.6374 | 0.2572 a 1.2107 |
+
+Los resúmenes trimestrales comparan distribuciones del objetivo y complementan la deriva de close. Los trimestres extremos son parciales. Variación de la distribución marginal no prueba un cambio de la relación condicional entre predictores y objetivo (concept drift). La sección 2.6.11 amplía este diagnóstico con fechas candidatas de cambio e incertidumbre condicional y una cronología documentada de eventos. No se atribuyen causalmente los movimientos a esos eventos.
+
+Las diferencias por calendario mezclan años y regímenes: no demuestran efectos horarios permanentes. Los paneles por activo permiten revisar heterogeneidad sin mezclar niveles. Estas comprobaciones sustentan la validación cronológica, la evaluación por fold y la incertidumbre por bloques; no modifican retrospectivamente la configuración del modelo ni consultan TEST.
+
+```{figure} ../_static/figures/temporal_target_BNBUSDT.png
+:alt: EDA temporal horario del objetivo y retornos de BNBUSDT.
+
+BNBUSDT: objetivo completo, agregaciones, calendario, dependencia y STL del tramo continuo.
+```
+
+```{figure} ../_static/figures/temporal_target_BTCUSDT.png
+:alt: EDA temporal horario del objetivo y retornos de BTCUSDT.
+
+BTCUSDT: objetivo completo, agregaciones, calendario, dependencia y STL del tramo continuo.
+```
+
+```{figure} ../_static/figures/temporal_target_ETHUSDT.png
+:alt: EDA temporal horario del objetivo y retornos de ETHUSDT.
+
+ETHUSDT: objetivo completo, agregaciones, calendario, dependencia y STL del tramo continuo.
+```
+
+```{figure} ../_static/figures/temporal_target_SOLUSDT.png
+:alt: EDA temporal horario del objetivo y retornos de SOLUSDT.
+
+SOLUSDT: objetivo completo, agregaciones, calendario, dependencia y STL del tramo continuo.
+```
+
+```{figure} ../_static/figures/temporal_target_XRPUSDT.png
+:alt: EDA temporal horario del objetivo y retornos de XRPUSDT.
+
+XRPUSDT: objetivo completo, agregaciones, calendario, dependencia y STL del tramo continuo.
+```
+
+#### Reproducción
+
+Ejecutar `python src/14_temporal_target.py` y `python src/14_render_target_temporal.py`. Las tablas `outputs/tables/temporal_target_*.csv` conservan cobertura, ciclos, trimestres, componentes y diagnósticos. Los metadatos fijan convenciones y huella de DEVELOPMENT. [Notebook temporal del objetivo](../../notebooks/14_temporal_target.ipynb).
+
+### 2.6.11 Puntos de cambio y cronología de eventos
+
+**Alcance retrospectivo.** Se estudia un cambio dominante de media, no se asume que la serie tenga exactamente dos regímenes ni se utiliza este análisis para modificar el SVR, sus variables o TEST. El protocolo de este diagnóstico está fijado en `change_events_protocol.json` antes de ejecutar sus cálculos. Es una ampliación posterior al EDA inicial, no un estudio confirmatorio preregistrado.
+
+#### Serie diaria sin solapamiento de retornos
+
+Se toma la etiqueta horaria de cada ancla de las 23:00 UTC y se asigna al día siguiente, su fecha nominal de emisión. Esa etiqueta contiene los retornos de las 00:00 a las 23:00 de ese día: conserva la misma desviación estándar centrada, divisor 24 y escala porcentual. No es una media de etiquetas ni volatilidad acumulada de un retorno diario. Días consecutivos no comparten retornos, aunque comparten el cierre de frontera y pueden seguir siendo dependientes.
+
+Solo se admiten días con los 25 cierres consecutivos y convencionales. Los puntos de cambio se calculan en el tramo diario completo más largo: 829 días, del 25 de marzo de 2023 al 30 de junio de 2025, común a los cinco activos. No se concatenan días separados por huecos. La cronología de eventos usa los días válidos de todo DEVELOPMENT; por eso también incluye 2022.
+
+#### Método y elección de fecha candidata
+
+Se ajustan dos medias por mínimos cuadrados y se examinan todas las divisiones con al menos 90 días a cada lado. La fecha candidata es el primer día del segundo segmento en la división que minimiza la suma de errores cuadrados. El estadístico es la reducción de esa suma respecto de una sola media, dividida por la suma total de cuadrados. Se contrasta su sensibilidad a mínimos de 60 y 180 días. Es un diagnóstico de media, sensible a extremos y cambios graduales; no detecta necesariamente cambios de varianza, todos los regímenes ni deriva condicional.
+
+El procedimiento siempre propone una división si la serie no es constante. Por ello una fecha candidata, por sí sola, **no demuestra una ruptura**. Para evaluar la mejora bajo una aproximación de media constante se remuestrea la serie centrada mediante bloques circulares de 7, 14 y 28 días, con 499 réplicas y semilla 42. En cada réplica se vuelve a buscar la mejor división. El valor p usa (1 + réplicas con mejora al menos tan grande)/(499 + 1), evitando ceros.
+
+Se aplica Holm a los cinco activos, por separado en cada longitud de bloque. El bootstrap supone dependencia local y estabilidad suficiente bajo la hipótesis nula; la muestra y los cambios graduales pueden incumplir esa aproximación. Los valores p son exploratorios. No se selecciona la longitud que produzca el menor p ni se interpreta la sensibilidad como tres confirmaciones independientes.
+
+| Activo | Fecha candidata | Media antes (%) | Media después (%) | Diferencia (pp) | Reducción SSE (%) | p Holm, bloque 14d |
+| --- | --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 2023-10-23 | 0.3638 | 0.5375 | 0.1736 | 6.19 | 0.048 |
+| BTCUSDT | 2023-12-11 | 0.3468 | 0.4770 | 0.1302 | 6.34 | 0.016 |
+| ETHUSDT | 2024-02-12 | 0.4047 | 0.6558 | 0.2511 | 14.41 | 0.010 |
+| SOLUSDT | 2023-10-20 | 0.7071 | 0.9226 | 0.2155 | 4.53 | 0.072 |
+| XRPUSDT | 2024-11-10 | 0.6086 | 1.0066 | 0.3980 | 10.33 | 0.016 |
+
+| Activo | p Holm 7d | p Holm 14d | p Holm 28d | Fechas candidatas al variar mínimo 60/90/180d |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 0.010 | 0.048 | 0.152 | 2023-10-23 / 2023-10-23 / 2023-10-23 |
+| BTCUSDT | 0.010 | 0.016 | 0.032 | 2023-12-11 / 2023-12-11 / 2023-12-11 |
+| ETHUSDT | 0.010 | 0.010 | 0.020 | 2024-02-12 / 2024-02-12 / 2024-02-12 |
+| SOLUSDT | 0.018 | 0.072 | 0.152 | 2023-10-20 / 2023-10-20 / 2023-10-20 |
+| XRPUSDT | 0.010 | 0.016 | 0.066 | 2024-11-10 / 2024-11-10 / 2024-11-10 |
+
+#### Incertidumbre de la localización
+
+Condicionando al modelo de dos medias estimado, se remuestrean los residuos en bloques circulares **por separado dentro de cada segmento**, se añaden sus respectivas medias y se vuelve a estimar la división. Los percentiles 2,5 y 97,5 de 499 localizaciones dan el intervalo exploratorio mostrado. No son intervalos simultáneos ni contemplan la incertidumbre entre cero, uno o varios cambios; tampoco garantizan cobertura nominal si la forma de dos medias es inadecuada. Se calculan para las tres longitudes y se presenta 14 días como referencia fijada.
+
+| Activo | Localización: percentil 2,5 | Localización: percentil 97,5 |
+| --- | --- | --- |
+| BNBUSDT | 2023-07-24 | 2024-10-28 |
+| BTCUSDT | 2023-10-30 | 2024-05-29 |
+| ETHUSDT | 2024-01-23 | 2024-04-21 |
+| SOLUSDT | 2023-07-26 | 2025-01-09 |
+| XRPUSDT | 2024-09-27 | 2025-03-16 |
+
+Con umbral exploratorio 0,05, mantienen rechazo en las tres longitudes: BTCUSDT, ETHUSDT. La decisión cambia con la longitud en: BNBUSDT, SOLUSDT, XRPUSDT. Los intervalos amplios y esta sensibilidad impiden presentar todas las fechas como rupturas precisas o estables. Las dos medias describen el contraste del tramo; no autorizan a atribuirlo a un evento concreto.
+
+[Resultados por longitud de bloque](../../outputs/tables/change_points.csv) y [sensibilidad al tamaño mínimo del segmento](../../outputs/tables/change_points_sensitivity.csv).
+
+#### Cronología contrastada con fuentes primarias
+
+Se eligen tres eventos ilustrativos de tecnología, proveedor y regulación a partir de fuentes primarias. La lista no es exhaustiva y se incorpora retrospectivamente; no se seleccionan nuevos eventos buscando coincidencias con los máximos de estos gráficos. Las fuentes acreditan fecha y hecho, no su efecto en la volatilidad.
+
+| Fecha documentada | Evento | Fuente primaria |
+| --- | --- | --- |
+| 2022-09-15 | The Merge de Ethereum | [Fuente](https://ethereum.org/roadmap/merge/) |
+| 2023-06-05 | Anuncio de cargos de la SEC contra Binance | [Fuente](https://www.sec.gov/newsroom/press-releases/2023-101-sec-files-13-charges-against-binance-entities-founder-changpeng-zhao) |
+| 2024-01-10 | Aprobación de cotización de ETP spot de bitcoin | [Fuente](https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023) |
+
+El comunicado de la SEC de 2023 se describe como anuncio de cargos, no como una sentencia ni como descripción del estado actual del litigio. La fecha de enero de 2024 corresponde a la aprobación de cotización de ETP spot de bitcoin, no a una aprobación general de las criptomonedas.
+
+Se comparan los 14 días calendario anteriores y los 14 posteriores a cada fecha, excluyendo el día del evento de las medias. Se utiliza una convención de días UTC, sin inventar una hora exacta de anuncio. Cada etiqueta está contenida en su día y no atraviesa de la ventana anterior a la posterior. Los gráficos sí muestran el día cero como contexto. Se conservan los conteos de días válidos; no se imputan días faltantes.
+
+| Evento | Activo | n antes/después | Media antes (%) | Media después (%) | Diferencia (pp) |
+| --- | --- | --- | --- | --- | --- |
+| The Merge de Ethereum | BNBUSDT | 14/14 | 0.5216 | 0.5313 | 0.0097 |
+| Anuncio de cargos de la SEC contra Binance | BNBUSDT | 14/14 | 0.2238 | 0.7308 | 0.5069 |
+| Aprobación de cotización de ETP spot de bitcoin | BNBUSDT | 14/14 | 0.7208 | 0.5021 | -0.2187 |
+| The Merge de Ethereum | BTCUSDT | 14/14 | 0.5569 | 0.6524 | 0.0955 |
+| Anuncio de cargos de la SEC contra Binance | BTCUSDT | 14/14 | 0.2748 | 0.3884 | 0.1136 |
+| Aprobación de cotización de ETP spot de bitcoin | BTCUSDT | 14/14 | 0.5048 | 0.4924 | -0.0124 |
+| The Merge de Ethereum | ETHUSDT | 14/14 | 0.7583 | 0.8364 | 0.0781 |
+| Anuncio de cargos de la SEC contra Binance | ETHUSDT | 14/14 | 0.2795 | 0.4189 | 0.1395 |
+| Aprobación de cotización de ETP spot de bitcoin | ETHUSDT | 14/14 | 0.5489 | 0.5166 | -0.0323 |
+| The Merge de Ethereum | SOLUSDT | 14/14 | 0.8358 | 0.8186 | -0.0172 |
+| Anuncio de cargos de la SEC contra Binance | SOLUSDT | 14/14 | 0.4559 | 0.9991 | 0.5431 |
+| Aprobación de cotización de ETP spot de bitcoin | SOLUSDT | 14/14 | 1.2748 | 1.0019 | -0.2729 |
+| The Merge de Ethereum | XRPUSDT | 14/14 | 0.5576 | 1.5597 | 1.0022 |
+| Anuncio de cargos de la SEC contra Binance | XRPUSDT | 14/14 | 0.4590 | 0.7986 | 0.3396 |
+| Aprobación de cotización de ETP spot de bitcoin | XRPUSDT | 14/14 | 0.6937 | 0.5057 | -0.1880 |
+
+Las diferencias tienen signos y magnitudes distintos según evento y activo. Son asociaciones descriptivas alrededor de una fecha: pueden intervenir anticipación, otros anuncios, tendencia, condiciones de mercado y dependencia entre activos. No hay grupo de control ni identificación causal; no se estiman efectos causales ni se añaden p-valores iid a estas ventanas cortas. Los eventos y las fechas candidatas de cambio se investigan por separado y no se emparejan automáticamente.
+
+[Ventanas y fuentes](../../outputs/tables/event_windows.csv); [serie diaria y faltantes](../../outputs/tables/daily_nonoverlapping_volatility.csv).
+
+```{figure} ../_static/figures/change_events_BNBUSDT.png
+:alt: Cambio de media candidato y ventanas de eventos para BNBUSDT.
+
+BNBUSDT: tramo continuo y ventanas de calendario; relaciones descriptivas, no causales.
+```
+
+```{figure} ../_static/figures/change_events_BTCUSDT.png
+:alt: Cambio de media candidato y ventanas de eventos para BTCUSDT.
+
+BTCUSDT: tramo continuo y ventanas de calendario; relaciones descriptivas, no causales.
+```
+
+```{figure} ../_static/figures/change_events_ETHUSDT.png
+:alt: Cambio de media candidato y ventanas de eventos para ETHUSDT.
+
+ETHUSDT: tramo continuo y ventanas de calendario; relaciones descriptivas, no causales.
+```
+
+```{figure} ../_static/figures/change_events_SOLUSDT.png
+:alt: Cambio de media candidato y ventanas de eventos para SOLUSDT.
+
+SOLUSDT: tramo continuo y ventanas de calendario; relaciones descriptivas, no causales.
+```
+
+```{figure} ../_static/figures/change_events_XRPUSDT.png
+:alt: Cambio de media candidato y ventanas de eventos para XRPUSDT.
+
+XRPUSDT: tramo continuo y ventanas de calendario; relaciones descriptivas, no causales.
+```
+
+#### Reproducción
+
+Ejecutar `python src/22_change_events.py` y `python src/23_render_change_events.py`. Las pruebas verifican una ruptura conocida, una serie constante, invariancia de fecha ante cambios de escala y rechazo de faltantes. Los metadatos guardan las huellas del protocolo y DEVELOPMENT. [Notebook de cambios y eventos](../../notebooks/22_change_events.ipynb). TEST no se lee y los modelos predictivos no se modifican.
 
 ## 2.7 Componente espacial
 
@@ -785,15 +1462,17 @@ En consecuencia, esta sección delimita la no aplicabilidad del componente espac
 
 La entrada original continúa siendo `close`. Se implementa un pipeline de preprocesamiento con `StandardScaler`, independiente para cada activo en la comprobación de esta sección. Cada instancia se ajusta exclusivamente con las observaciones elegibles del entrenamiento cronológico; la validación utiliza únicamente `transform`. No se reutilizan escaladores del EDA calculados sobre todo DEVELOPMENT.
 
-El [Pipeline de scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) agrupa las transformaciones que se ajustan. El parseo de fechas, la alineación horaria, la construcción determinista de la etiqueta y la selección de ventanas válidas se realizan antes, conservando la correspondencia entre X, y y fechas. Estas operaciones no estiman parámetros con validación. El escalado aprendido queda dentro del pipeline. Cuando se entrene el regresor, se integrará como etapa final y el pipeline completo se ajustará de nuevo en cada fold.
+El [Pipeline de scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) agrupa las transformaciones que se ajustan. El parseo de fechas, la alineación horaria, la construcción determinista de la etiqueta y la selección de ventanas válidas se realizan antes, conservando la correspondencia entre X, y y fechas. Estas operaciones no estiman parámetros con validación. El escalado aprendido queda dentro del pipeline. En el modelo vigente, LinearSVR es la etapa final y el pipeline completo se ajusta de nuevo en cada fold, como se verifica en la sección 3.
 
-La ejecución actual verifica el preprocesamiento con una columna de cierre, sin entrenar OLS, SVR ni persistencia. Esta comprobación no fija la longitud definitiva de entrada de los modelos y no genera métricas de desempeño predictivo.
+La verificación de esta sección cubre las 168 columnas y los 25 entrenamientos del protocolo vigente. Comprueba el escalado sin volver a ajustar el SVR; sus métricas predictivas están en la sección 3.
 
 ### 2.9.2 Faltantes y elegibilidad temporal
 
 Los huecos horarios se mantienen en una rejilla de calendario. No se rellenan con ceros, medias, interpolaciones ni observaciones posteriores. No se ha establecido un mecanismo de ausencia que justifique una imputación específica; además, imputar precios alteraría los retornos y la volatilidad construida a partir de ellos.
 
 Los cierres con final horario irregular se enmascaran para la construcción analítica, sin modificar los registros originales. Una entrada histórica requiere todos sus cierres válidos; una etiqueta requiere 25 cierres consecutivos para obtener los 24 retornos futuros. Se excluyen del conjunto supervisado las ventanas incompletas y se mantienen sus fechas para auditar la cobertura. Esto no elimina filas de los archivos fuente ni demuestra que la muestra elegible esté libre de sesgo de selección.
+
+En el modelo de la sección 3, `contained_block` añade el control de los dos extremos del bloque después de comprobar la continuidad. No basta con que el ancla esté en validación: su historial no puede comenzar antes del bloque ni su etiqueta terminar después. Este filtro determinista precede al ajuste del pipeline y utiliza las mismas filas para ambos métodos.
 
 La exclusión de etiquetas inválidas afecta al entrenamiento y a la evaluación, no obliga a conocer el futuro para emitir una predicción: en operación, la elegibilidad de la entrada se determina solo con el histórico disponible. La etiqueta se comprueba cuando el horizonte se realiza. Los modelos se compararán sobre las mismas observaciones evaluables, con motivos de exclusión documentados.
 
@@ -813,9 +1492,9 @@ Los extremos válidos de `close` se conservan. Los hallazgos del EDA no justific
 
 ### 2.9.5 Ingeniería temporal
 
-La función `prepare_close` construye ventanas de L cierres: el último cierre observado y sus L−1 rezagos horarios. L debe especificarse explícitamente; no se selecciona en esta sección. Los desplazamientos se realizan sobre el calendario horario de cada activo, de modo que un hueco no se convierta artificialmente en una observación consecutiva. El ancla identifica la apertura de la última vela utilizada y la predicción se sitúa después de su cierre.
+La función `prepare` del modelo construye ventanas de 168 cierres: el último cierre observado y sus 167 rezagos horarios. Esta longitud está fijada en el protocolo, no optimizada en esta sección. Los desplazamientos se realizan sobre el calendario horario de cada activo, de modo que un hueco no se convierta artificialmente en una observación consecutiva. El ancla identifica la apertura de la última vela utilizada y la predicción se sitúa después de su cierre.
 
-La comprobación ejecutada utiliza L=1 únicamente para verificar el pipeline básico. Si se amplía L, cada rezago será una columna y se ajustará su escala con el entrenamiento. La fuente seguirá siendo `close`, aunque puedan aparecer dependencias fuertes entre columnas. No se añaden automáticamente retornos, volatilidad pasada, medias móviles, senos, cosenos ni indicadores de calendario como entradas. La estacionalidad semanal débil de 2.6 no aporta por sí sola evidencia suficiente para incorporarlos. No existen variables espaciales aplicables.
+Cada uno de los 168 rezagos es una columna y su escala se ajusta con el entrenamiento del fold. La fuente seguirá siendo `close`, aunque puedan aparecer dependencias fuertes entre columnas. No se añaden automáticamente retornos, volatilidad pasada, medias móviles, senos, cosenos ni indicadores de calendario como entradas. La estacionalidad semanal débil de 2.6 no aporta por sí sola evidencia suficiente para incorporarlos. No existen variables espaciales aplicables.
 
 ### 2.9.6 Decisiones vinculadas al EDA
 
@@ -824,27 +1503,45 @@ La comprobación ejecutada utiliza L=1 únicamente para verificar el pipeline b�
 | Huecos y cierres irregulares | Mantener el calendario y excluir ventanas incompletas; no imputar. |
 | Diferencias de nivel y escala entre activos y periodos | Verificar escalado por activo, ajustado solo en entrenamiento. |
 | Precios extremos que pueden ser movimientos reales | Conservar extremos válidos, sin recorte automático. |
-| Persistencia y redundancia entre rezagos | Mantener L explícito; comparar ventanas dentro de validación, sin selección definitiva aquí. |
+| Persistencia y redundancia entre rezagos | Fijar L=168 para este experimento; cualquier comparación posterior de ventanas deberá usar validación de DEVELOPMENT. |
 | Componente semanal débil en el tramo estudiado | No incorporar características de calendario automáticamente. |
 | Ausencia de predictores categóricos y coordenadas | No usar codificación categórica ni ingeniería espacial. |
 | Etiquetas que abarcan 24 horas futuras | Purgar por la fecha final de la etiqueta, antes de ajustar el pipeline. |
 
 ### 2.9.7 Verificación ejecutada
 
-Se utiliza la frontera interna **2024-07-09 20:00 UTC**, dentro de DEVELOPMENT, como en la auditoría 2.5. Se excluyen del entrenamiento las etiquetas cuya última vela objetivo alcanza o supera esa frontera. Se ajustan cinco pipelines de escalado, uno por activo, con una sola columna de cierre. Las cifras siguientes son parámetros y tamaños de muestra, no resultados de un modelo predictivo.
+Se comprueban los 25 bloques de entrenamiento de la sección 3, con 168 entradas y confinamiento de historia y objetivo. Para cada uno se verifica que las medias del escalador coincidan con TRAIN, que transformar validación no modifique medias, varianzas ni escalas, que las salidas sean finitas y que la transformación inversa recupere los cierres. Una perturbación artificial de validación confirma que se aplican los mismos parámetros ya aprendidos. No se exige media cero en validación.
 
-| Activo | Filas entrenamiento | Filas validación | Etiquetas purgadas | Media entrenamiento (USDT) | Escala entrenamiento (USDT) |
-|---|---:|---:|---:|---:|---:|
-| BNBUSDT | 33972 | 8543 | 24 | 316.821586 | 159.145884 |
-| BTCUSDT | 33972 | 8543 | 24 | 36050.904935 | 16026.223094 |
-| ETHUSDT | 33972 | 8543 | 24 | 2140.664848 | 1013.130489 |
-| SOLUSDT | 33997 | 8543 | 24 | 61.749436 | 60.355696 |
-| XRPUSDT | 33997 | 8543 | 24 | 0.587047 | 0.271218 |
+| Activo | Fold | n TRAIN | n VALIDATION | Máxima media TRAIN estandarizada absoluta |
+| --- | --- | --- | --- | --- |
+| BNBUSDT | 1 | 5781 | 6370 | 5.43e-15 |
+| BTCUSDT | 1 | 5781 | 6370 | 4.55e-15 |
+| ETHUSDT | 1 | 5781 | 6370 | 4.40e-15 |
+| SOLUSDT | 1 | 5781 | 6370 | 3.39e-15 |
+| XRPUSDT | 1 | 5781 | 6370 | 4.49e-15 |
+| BNBUSDT | 2 | 12342 | 6951 | 5.11e-15 |
+| BTCUSDT | 2 | 12342 | 6951 | 8.94e-15 |
+| ETHUSDT | 2 | 12342 | 6951 | 9.32e-15 |
+| SOLUSDT | 2 | 12342 | 6951 | 4.79e-15 |
+| XRPUSDT | 2 | 12342 | 6951 | 8.38e-15 |
+| BNBUSDT | 3 | 19484 | 6758 | 4.90e-15 |
+| BTCUSDT | 3 | 19484 | 6758 | 4.33e-15 |
+| ETHUSDT | 3 | 19484 | 6758 | 9.15e-15 |
+| SOLUSDT | 3 | 19484 | 6758 | 5.56e-15 |
+| XRPUSDT | 3 | 19484 | 6758 | 1.30e-14 |
+| BNBUSDT | 4 | 26433 | 6951 | 5.33e-15 |
+| BTCUSDT | 4 | 26433 | 6951 | 1.32e-14 |
+| ETHUSDT | 4 | 26433 | 6951 | 1.68e-14 |
+| SOLUSDT | 4 | 26433 | 6951 | 9.55e-15 |
+| XRPUSDT | 4 | 26433 | 6951 | 1.45e-14 |
+| BNBUSDT | 5 | 33575 | 6951 | 2.16e-14 |
+| BTCUSDT | 5 | 33575 | 6951 | 7.10e-15 |
+| ETHUSDT | 5 | 33575 | 6951 | 2.05e-14 |
+| SOLUSDT | 5 | 33575 | 6951 | 2.31e-14 |
+| XRPUSDT | 5 | 33575 | 6951 | 2.87e-14 |
 
-Las comprobaciones confirman que la media aprendida corresponde al entrenamiento, que transformar validación no cambia los parámetros, que las salidas son finitas y que la transformación inversa recupera los cierres de validación. La media estandarizada de entrenamiento es aproximadamente cero; no se exige que la de validación lo sea. Esta verificación de una frontera no sustituye las comprobaciones de los folds definitivos.
+Los 25 controles se superan. Esto verifica propiedades concretas del preprocesamiento, no una garantía universal de ausencia de fuga. [Auditoría completa](../../outputs/tables/preprocessing_full_audit.csv).
 
 ### 2.9.8 Reproducibilidad
 
-El procedimiento está en `src/17_preprocessing_close.py`. La auditoría se guarda en `outputs/tables/preprocessing_close_audit.csv` y la trazabilidad en `outputs/tables/preprocessing_metadata.json`. El script verifica el SHA-256 de DEVELOPMENT antes y después de ejecutarse. No se modifica ningún dataset ni se lee TEST. Los pipelines de esta comprobación no se guardan como modelos finales ni se reutilizan para otros folds.
-
-[Notebook ejecutado de preprocesamiento](../../notebooks/17_preprocessing_close.ipynb).
+Ejecutar `python src/17_validate_pipeline.py`. El script comparte preparación, fronteras y clase de escalado con el modelo; no utiliza TEST. Los metadatos conservan las huellas de DEVELOPMENT y de los folds. La comprobación histórica de una única columna en `src/17_preprocessing_close.py` queda sustituida por esta verificación del protocolo vigente. [Notebook ejecutado](../../notebooks/17_preprocessing_close.ipynb).

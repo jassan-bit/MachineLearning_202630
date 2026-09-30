@@ -1,0 +1,264 @@
+# 4. Auditoría de cierre y reproducibilidad
+
+Esta tabla coteja los requisitos con la versión local corregida. Distingue ejecución, justificación de no aplicabilidad y evidencia pendiente. No se asigna una nota ni se presenta como evaluación independiente del profesor. TEST permanece reservado.
+
+**CUMPLIDO: 179**; **NO APLICA: 26**; **PARCIALMENTE CUMPLIDO: 6**.
+
+## Prioridades antes de entregar
+
+1. Publicar la versión final corregida y verificar acceso al Book, datos y notebooks. La construcción local no publica cambios.
+2. Mantener explícitos los límites del mecanismo de faltantes, concept drift, localización de cambios y selección sobre los mismos folds. No usar TEST para resolver decisiones de desarrollo.
+
+## Reproducción local de estas correcciones
+
+Desde la raíz del proyecto, con Python 3.10 y las versiones de `requirements.txt`, ejecutar los comandos en este orden. Se requiere el snapshot local de DEVELOPMENT y las tablas de auditoría originales. Para repetir todo el entrenamiento del modelo, añadir primero `python src/18_base_model.py`; esto no evalúa TEST.
+
+```text
+python -m unittest discover -s tests -v
+python src/09_univariate_development.py
+python src/09_render_univariate_report.py
+python src/13_feature_diagnostics.py
+python src/13_render_feature_diagnostics.py
+python src/14_temporal_target.py
+python src/14_render_target_temporal.py
+python src/17_validate_pipeline.py
+python src/19_extended_diagnostics.py
+python src/18_render_base_report.py
+python src/22_change_events.py
+python src/23_render_change_events.py
+python src/20_sync_audit.py
+```
+
+Los notebooks permiten repetir sus cálculos mediante `RECALCULAR` o `REENTRENAR`; por defecto verifican y presentan resultados guardados. Los generadores del informe actualizan sus respectivas secciones, por lo que deben ejecutarse secuencialmente. Ejecutar el sincronizador del checklist al final evita mezclar estados de versiones anteriores.
+
+Para construir el sitio local, entrar en `book` y ejecutar `npm exec --yes --package=mystmd@1.11.0 -- myst build --html`. Esta orden fija MyST 1.11.0; se verificó con Node 24.19.0 y requiere Node/npm. Puede descargar el generador y la plantilla. La publicación remota se comprueba por separado.
+
+## Reproducción independiente ejecutada
+
+Se creó un entorno virtual nuevo, sin paquetes heredados, con Python 3.10.21 y `requirements.txt`. Se copiaron los scripts, protocolos y únicamente DEVELOPMENT a una carpeta nueva. TEST y el archivo maestro no se copiaron. Se ejecutaron 17 etapas, incluidas las pruebas, auditorías de calidad, EDA, 170 ajustes predictivos y diagnósticos nuevos. La descarga original y la partición inicial no se repitieron: la reproducción comienza en el snapshot cuyo SHA-256 se registra.
+
+Se contrastaron 13 tablas numéricas con los resultados originales usando `rtol=1e-5` y `atol=1e-8`; no se exige igualdad binaria entre plataformas o bibliotecas numéricas. [Registro de ejecución y diferencias](../../outputs/tables/clean_reproduction_metadata.json). [Dependencias transitivas fijadas para Windows/Python 3.10](../../requirements-lock-windows-py310.txt).
+
+Para repetir desde la raíz: crear un entorno con `python -m venv .venv-repro`, instalar `requirements-lock-windows-py310.txt` con el pip de ese entorno y ejecutar `.venv-repro/Scripts/python.exe src/24_clean_reproduction.py`. Cada ejecución crea una carpeta distinta bajo outputs y conserva los registros por etapa. No sobrescribe los resultados principales ni accede a TEST. El comando presupone Node disponible para las dos auditorías JavaScript.
+
+Se ejecutaron además **6 notebooks** en la carpeta aislada, forzando el kernel del nuevo entorno y comprobando su ruta. Las celdas de la copia guardada no presentan errores. Para repetir esa comprobación tras el cálculo, ejecutar `.venv-repro/Scripts/python.exe src/25_validate_clean_notebooks.py`.
+
+El [sitio publicado](https://jassan-bit.github.io/MachineLearning_202630/) respondió HTTP 200 en una comprobación de acceso; esto no verifica que contenga las correcciones locales. [Registro de acceso](../../outputs/tables/publication_access_audit.json).
+
+## Auditoría completa
+
+[Checklist descargable](../../outputs/tables/entregable1_checklist.csv). Los identificadores son los del desglose de requisitos, no necesariamente los subtítulos del informe. Una técnica indicada como alternativa se marca NO APLICA cuando se emplea la alternativa admitida.
+
+| Requisito | Estado | Evidencia | Límite o acción requerida |
+|---|---|---|---|
+| 1.1 Definición clara del problema de investigación | CUMPLIDO | Sección 1.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.2 Justificación de la selección del dataset | CUMPLIDO | Sección 1.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.3 Fuente de los datos | CUMPLIDO | Sección 1.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.4 Licencia o condiciones de uso | CUMPLIDO | Sección 1.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.5 Diccionario de variables: nombre | CUMPLIDO | Sección 1.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.6 Diccionario de variables: tipo | CUMPLIDO | Sección 1.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.7 Diccionario de variables: unidad | CUMPLIDO | Sección 1.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.8 Diccionario de variables: significado | CUMPLIDO | Sección 1.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.9 Unidad de observación | CUMPLIDO | Sección 1.5 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.10 Nivel de agregación | CUMPLIDO | Sección 1.5 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.11 Tipo de estructura del dataset | CUMPLIDO | Sección 1.5 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.12 Tamaño total de muestra | CUMPLIDO | Sección 1.6 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.13 Número de variables p | CUMPLIDO | Sección 1.6.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.14 Relación n/p | CUMPLIDO | Sección 1.6.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.15 Casos por clase | NO APLICA | Sección 1.6.2 | Regresión continua; no hay clases. |
+| 1.16 Rango de la variable objetivo | CUMPLIDO | Sección 1.6.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.17 Número de entidades | CUMPLIDO | Sección 1.6.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.18 Valores faltantes | CUMPLIDO | Sección 1.7.1–1.7.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.19 Patrón de faltantes | CUMPLIDO | Sección 1.7.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.20 Matriz/visualización de nulos | CUMPLIDO | Sección 1.7.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.21 Mecanismo MCAR/MAR/MNAR | PARCIALMENTE CUMPLIDO | Sección 1.7.3 | Se describe evidencia y se reconoce que no identifica MCAR/MAR/MNAR. Añadir registros externos de adquisición si se pretende atribuir el mecanismo; no asignarlo sin evidencia. |
+| 1.22 Evidencia del mecanismo de ausencia | PARCIALMENTE CUMPLIDO | Sección 1.7.3 | Comparación previa a diez huecos, descriptiva y dependiente; insuficiente para identificar el mecanismo. Mantener esta limitación o aportar evidencia externa. |
+| 1.23 Duplicados exactos | CUMPLIDO | Sección 1.7.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.24 Casi-duplicados | CUMPLIDO | Sección 1.7.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.25 Outliers: detección | CUMPLIDO | Sección 1.7.5 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.26 Outliers: tratamiento | CUMPLIDO | Sección 1.7.5 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.27 Valores imposibles | CUMPLIDO | Sección 1.7.6 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.28 Valores inconsistentes | CUMPLIDO | Sección 1.7.6 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.29 Rangos y unidades | CUMPLIDO | Sección 1.7.6 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.30 Sesgos de muestreo | CUMPLIDO | Sección 1.7.7 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.31 Representatividad de la población objetivo | CUMPLIDO | Sección 1.7.7 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.32 Datos personales | CUMPLIDO | Sección 1.8 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 1.33 Anonimización | NO APLICA | Sección 1.8 | Velas agregadas sin identificadores de personas; no se ejecuta anonimización innecesaria. |
+| 1.34 Riesgo de reidentificación | CUMPLIDO | Sección 1.8 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.1 Frecuencia de clases | NO APLICA | Sección 2.1 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.1.2 Grado de desbalance | NO APLICA | Sección 2.1 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.1.3 Clase minoritaria | NO APLICA | Sección 2.1 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.1.4 Distribución del objetivo | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.5 Asimetría | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.6 Colas pesadas | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.7 Valores extremos | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.8 Necesidad de transformación log | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.9 Necesidad de Box-Cox | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.10 Relación objetivo-predictoras | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.11 Comportamiento temporal del objetivo | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.12 Comportamiento espacial del objetivo | NO APLICA | Sección 2.1 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.1.13 Implicaciones para métricas | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.1.14 Implicaciones para validación | CUMPLIDO | Sección 2.1 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.1 tipo de variable | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.2 cardinalidad | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.3 media | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.4 mediana | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.5 desviación estándar | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.6 percentiles | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.7 histogramas | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.8 densidades | NO APLICA | Sección 2.2 | Se emplean histogramas, alternativa admitida a densidades por la guía. |
+| 2.2.9 asimetría | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.10 curtosis | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.11 normalidad | NO APLICA | Sección 2.2 | No se presupone normalidad marginal para SVR; se justifica no aplicar pruebas iid a estas series. |
+| 2.2.12 boxplots | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.13 IQR | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.14 frecuencia de categóricas | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.15 gráficos de barras | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.16 categorías raras | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.2.17 tratamiento de categorías raras | NO APLICA | Sección 2.2 | No hay categorías raras que requieran tratamiento. |
+| 2.2.18 interpretación | CUMPLIDO | Sección 2.2 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.1 scatter plots / hexbin | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.2 Pearson | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.3 Spearman | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.4 categóricas vs numéricas | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.5 boxplots / violin plots | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.6 pruebas entre grupos | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.7 categóricas vs categóricas | NO APLICA | Sección 2.3 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.3.8 tablas de contingencia | NO APLICA | Sección 2.3 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.3.9 chi-cuadrado | NO APLICA | Sección 2.3 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.3.10 V de Cramér | NO APLICA | Sección 2.3 | Objetivo continuo, una única categoría original (symbol) y sin coordenadas; no se crean clases o variables artificiales para aplicar esta técnica. |
+| 2.3.11 predictoras vs objetivo | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.12 información mutua | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.13 heatmap | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.14 correlaciones altas | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.15 VIF | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.16 tamaños de efecto | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.17 valores p | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.18 corrección por comparaciones múltiples | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.19 patrones relevantes | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.20 relaciones lineales | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.21 relaciones no lineales | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.3.22 selección preliminar de variables | CUMPLIDO | Sección 2.3 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.1 PCA | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.2 varianza explicada | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.3 estructura de datos | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.4 UMAP | NO APLICA | Sección 2.4 | Técnica alternativa o condicional: PCA e Isolation Forest cubren los diagnósticos elegidos; se documentan subpoblaciones conocidas por activo y periodo. |
+| 2.4.5 t-SNE | NO APLICA | Sección 2.4 | Técnica alternativa o condicional: PCA e Isolation Forest cubren los diagnósticos elegidos; se documentan subpoblaciones conocidas por activo y periodo. |
+| 2.4.6 Mahalanobis | NO APLICA | Sección 2.4 | Técnica alternativa o condicional: PCA e Isolation Forest cubren los diagnósticos elegidos; se documentan subpoblaciones conocidas por activo y periodo. |
+| 2.4.7 Isolation Forest | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.8 clustering exploratorio | NO APLICA | Sección 2.4 | Técnica alternativa o condicional: PCA e Isolation Forest cubren los diagnósticos elegidos; se documentan subpoblaciones conocidas por activo y periodo. |
+| 2.4.9 dimensionalidad efectiva | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.10 redundancia | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.4.11 subpoblaciones | CUMPLIDO | Sección 2.4 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.1 disponibilidad de cada variable en tiempo de predicción | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.2 variables derivadas del target | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.3 identificadores | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.4 proxies del target | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.5 desempeño univariado de variables | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.6 variables sospechosamente predictivas | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.7 duplicados entre DEVELOPMENT y TEST | PARCIALMENTE CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | La auditoría de partición descarta claves temporales y filas completas compartidas; no certifica casi-duplicados ignorando fecha entre DEVELOPMENT y TEST. No modificar el modelo examinando TEST. |
+| 2.5.8 entidades repetidas entre particiones | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.9 variables descartadas | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.5.10 justificación de descartes | CUMPLIDO | Sección 2.5; 179 variables, 4.475 evaluaciones, disponibilidad por hora y fronteras estrictas | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.1 formato temporal | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.2 zona horaria | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.3 frecuencia | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.4 regularidad | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.5 timestamps duplicados | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.6 huecos | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.7 cobertura temporal | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.8 serie completa | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.9 agregación horaria | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.10 agregación diaria | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.11 agregación semanal | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.12 agregación mensual | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.13 estacionalidad por hora | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.14 estacionalidad por día de semana | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.15 estacionalidad por mes | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.16 STL | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.17 tendencia | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.18 estacionalidad STL | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.19 residuo STL | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.20 medias móviles | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.21 varianzas móviles | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.22 ADF | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.23 KPSS | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.24 ACF | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.25 PACF | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.26 correlación cruzada con rezagos | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.27 cambios de régimen | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Sección 2.6.11: cambio de media candidato, bootstrap por bloques, Holm, sensibilidad e incertidumbre condicional; tres eventos con fuentes primarias. No se afirma causalidad ni certeza de ruptura. |
+| 2.6.28 puntos de cambio | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Sección 2.6.11: cambio de media candidato, bootstrap por bloques, Holm, sensibilidad e incertidumbre condicional; tres eventos con fuentes primarias. No se afirma causalidad ni certeza de ruptura. |
+| 2.6.29 eventos | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Sección 2.6.11: cambio de media candidato, bootstrap por bloques, Holm, sensibilidad e incertidumbre condicional; tres eventos con fuentes primarias. No se afirma causalidad ni certeza de ruptura. |
+| 2.6.30 efectos de calendario | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.31 covariate shift | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.32 concept drift | PARCIALMENTE CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Se distingue deriva marginal de cambio condicional; los gráficos no prueban concept drift. Añadir diagnóstico condicional si se pretende afirmarlo. |
+| 2.6.33 series por entidad | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.34 heterogeneidad entre activos | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.35 partición cronológica | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.36 TimeSeriesSplit | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.37 gap | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.38 rezagos solo con pasado | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.39 ventanas solo con pasado | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.40 interpretación de tendencia | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.41 interpretación de ciclos | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.42 estabilidad del proceso | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.6.43 riesgo de deriva | CUMPLIDO | Sección 2.6; precio y objetivo horario, tramos continuos y límites de inferencia | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.7 Aplicabilidad general de la seccion; desglose no suministrado | NO APLICA | Sección 2.7 | No hay coordenadas geográficas; justificación explícita. |
+| 2.8 Aplicabilidad general de la seccion; desglose no suministrado | NO APLICA | Sección 2.8 | No hay coordenadas geográficas; justificación explícita. |
+| 2.9.1 Pipeline | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.2 ajuste solo con train | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.3 imputación | NO APLICA | Sección 2.9 | Se excluyen ventanas incompletas sin imputar; la decisión está justificada. |
+| 2.9.4 justificación de imputación | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.5 log | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.6 escalamiento | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.7 codificación categórica | NO APLICA | Sección 2.9 | No hay variables categóricas en la matriz del SVR; modelos separados por activo. |
+| 2.9.8 tratamiento de outliers | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.9 componentes cíclicos | NO APLICA | Sección 2.9 | Características cíclicas son un ejemplo de ingeniería, no una obligación de incorporarlas; la exclusión se documenta. |
+| 2.9.10 rezagos | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.11 ventanas móviles | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 2.9.12 calendario | NO APLICA | Sección 2.9 | No se incorpora calendario al SVR fijado; no se seleccionan variables adicionales con TEST. |
+| 2.9.13 relación entre cada decisión y hallazgo del EDA | CUMPLIDO | Sección 2.9 | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.1 definición de variable objetivo | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.2 Persistence | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.3 ingenuo estacional | NO APLICA | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | La guía permite Persistence o ingenuo estacional; se implementa Persistence. |
+| 3.4 SVR lineal | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.5 división cronológica | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.6 Pipeline | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.7 TimeSeriesSplit | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.8 RMSE | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.9 MAPE | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.10 R² | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.11 normalidad de residuos | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.12 heterocedasticidad | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.13 bootstrap | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.14 comparación con Persistence | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.15 ACF de residuos | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.16 autocorrelación espacial de residuos | NO APLICA | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | No existen coordenadas ni vecindad geográfica. |
+| 3.17 curva de aprendizaje | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.18 interpretación de coeficientes | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 3.19 interpretación de métricas | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.1 revisión de leakage si R² >= 0.80 | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.2 comparación con baseline | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.3 verificación de validación temporal | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.4 revisión de autocorrelación | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.5 complejidad del dataset | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.6 trivialidad del problema | CUMPLIDO | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 4.7 considerar dataset más desafiante | NO APLICA | Sección 3; cinco folds, dos modelos, 50 diagnósticos residuales, bootstrap por bloques | El SVR no alcanza el desempeño alto que activa la sugerencia de cambiar a un dataset más desafiante. |
+| 5.1 Jupyter Book | PARCIALMENTE CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | El enlace público responde HTTP 200, pero las correcciones son locales y no se ha verificado su presencia en la versión publicada. Publicar y comprobar contenidos y descargas antes de entregar. |
+| 5.2 base de datos/enlace | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.3 requirements.txt | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.4 semillas | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.5 no overfitting | PARCIALMENTE CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Se diagnostican errores y curva de aprendizaje; no se demuestra ausencia universal de sobreajuste. Mantener las limitaciones y no presentar validación usada para selección como evaluación independiente. |
+| 5.6 no data leakage | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.7 TEST reservado | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.8 TEST no usado para hiperparámetros | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.9 decisiones documentadas | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.10 reproducibilidad | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Reejecución desde DEVELOPMENT en venv nuevo y carpeta aislada sin TEST: 17 etapas, incluidos los 170 ajustes; 13 tablas contrastadas con tolerancias declaradas. Lock de dependencias y metadatos disponibles. La publicación se verifica por separado. |
+| 5.11 EDA guía modelado | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.12 intervalos de confianza | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.13 limitaciones | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.14 sesgos de muestreo | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.15 representatividad | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| 5.16 riesgos éticos | CUMPLIDO | Secciones 1.7–1.8, 2.9 y 3.10–3.11; dependencias, scripts y resultados locales | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| Criterio común de comparabilidad entre modelos | CUMPLIDO | Protocolo común, objetivo, escala, información y fronteras | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |
+| Protocolo de comparación en condiciones comunes | CUMPLIDO | Protocolo común, objetivo, escala, información y fronteras | Evidencia documental y resultados disponibles; cumplimiento del requisito, no garantía universal de generalización. |

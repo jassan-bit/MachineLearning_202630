@@ -1,25 +1,43 @@
-# Pronóstico de volatilidad: SVR lineal
+# Entregable 1: pronóstico de volatilidad en criptomonedas
 
-Jupyter Book actualizado con la base de datos, EDA 2.1–2.9 y modelo base SVR lineal frente a persistencia.
+Informe corregido para BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT con datos horarios de Binance Spot. Compara Persistence y SVR lineal mediante validación temporal. TEST permanece reservado.
 
-- Libro: https://jassan-bit.github.io/MachineLearning_202630/
-- Fuentes: `book/sections/` y `book/entregable1_master.md`.
-- Notebooks por sección: `notebooks/06_*.ipynb` a `notebooks/18_*.ipynb`.
-- Código: `src/`; tablas y trazabilidad: `outputs/tables/`.
-- Entorno: instalar `requirements.txt` con Python 3.10.
+## Lectura
 
-## Publicación
+- Informe: `book/entregable1_master.md` y `book/sections/`.
+- Conclusiones: `book/sections/05_conclusiones.md`.
+- Auditoría completa: `outputs/tables/entregable1_checklist.csv`.
+- Notebooks con resultados: `notebooks/`; modelo base: `18_base_model.ipynb`.
+- Sitio público: https://jassan-bit.github.io/MachineLearning_202630/ (consultar el registro de publicación para identificar la versión verificada).
 
-El workflow existente publica GitHub Pages desde `main` con `myst build --html`, sin ejecutar notebooks ni entrenar modelos. El `myst.yml` de la raíz define la navegación publicada. No se versionan datasets, TEST ni los modelos serializados.
+El SVR obtuvo RMSE medio 0,623259 frente a 0,389006 de Persistence, en puntos porcentuales. Son resultados de validación interna, no de TEST. La entrega conserva las limitaciones metodológicas detalladas en el informe.
 
 ## Reproducción
 
-Los notebooks requieren la estructura de este repositorio y los CSV locales en `data/processed/` y `data/splits/`, que no se distribuyen en esta actualización. Los scripts 01–03 contienen la adquisición y partición originales; no es necesario ejecutarlos para compilar el libro. No regenerar datos para consultar los resultados guardados.
+Se verificó con Python 3.10.21 en Windows. Desde la raíz:
 
-El notebook `notebooks/18_base_model.ipynb` presenta los resultados de los 170 ajustes ya realizados. Incluye el código del experimento; `REENTRENAR = True` permite repetirlo con los datos locales. Por defecto presenta resultados guardados. TEST permanece reservado. Las métricas actuales son de validación cronológica dentro de DEVELOPMENT.
+```powershell
+python -m venv .venv-repro
+.venv-repro/Scripts/python.exe -m pip install -r requirements-lock-windows-py310.txt
+.venv-repro/Scripts/python.exe -m unittest discover -s tests -v
+.venv-repro/Scripts/python.exe src/24_clean_reproduction.py
+.venv-repro/Scripts/python.exe src/25_validate_clean_notebooks.py
+```
 
-## Versiones anteriores
+El script 24 crea una carpeta nueva, copia únicamente DEVELOPMENT y recalcula calidad, EDA, modelos y diagnósticos. Requiere Node para dos auditorías JavaScript. El script 25 ejecuta los seis notebooks de comprobación dentro de esa carpeta. El registro incluido documenta la ejecución ya realizada; las rutas absolutas en él identifican el equipo de origen. La igualdad numérica se comprueba con tolerancias, no se exige igualdad binaria entre plataformas.
 
-Se conservan los archivos históricos de MLP y sus resultados sin borrarlos. La navegación principal muestra la versión actual del proyecto SVR. La documentación y dependencias del trabajo previo están en `README_MLP_legacy.md` y `requirements_mlp_legacy.txt`; sus metodologías y resultados no deben mezclarse con los del experimento actual.
+El snapshot `data/splits/development_80.csv` tiene SHA-256 `5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2`. El paquete reproducible no contiene TEST ni el archivo maestro. Los scripts de descarga y partición se conservan como procedencia; no son pasos de la reproducción de DEVELOPMENT. Los derechos y términos del proveedor se describen en la sección 1 del informe.
 
-La sección 2.1 conserva resultados anteriores según la limitación metodológica indicada en la portada; no deben confundirse con el objetivo recalculado en las secciones posteriores. Esta publicación no recalcula análisis.
+Para construir el Book, con Node/npm:
+
+```powershell
+cd book
+npm exec --yes --package=mystmd@1.11.0 -- myst build --html
+python -m http.server 8000 --directory _build/html
+```
+
+Abrir `http://localhost:8000`. El HTML necesita un servidor local para resolver correctamente rutas y recursos. La compilación puede descargar MyST y su plantilla; se verificó con Node 24.19.0. Los generadores de secciones deben ejecutarse secuencialmente; los comandos detallados están en la auditoría del Book.
+
+## Organización
+
+`src/` contiene cálculos y generadores; `tests/`, controles de fronteras y diagnósticos; `outputs/tables/`, protocolos, métricas y metadatos; `outputs/models/`, los pipelines finales sobre DEVELOPMENT; `book/_static/figures/`, las figuras utilizadas. Los scripts anteriores identificados como antecedentes no sustituyen los procedimientos vigentes enlazados en cada sección.

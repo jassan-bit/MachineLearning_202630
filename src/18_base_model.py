@@ -39,28 +39,68 @@ def prepare(df,grid,L=168):
     common=np.logical_and.reduce([v.notna().all(axis=1).to_numpy() for v in frames.values()])
     return {s:v.loc[common] for s,v in frames.items()}
 
+def contained_block(data, start, end, L=168, horizon=24):
+    """Confinar entradas, referencia pasada y etiqueta al calendario del bloque.
+
+    Fechas referidas a apertura de vela. La predicción se emite tras cerrar
+    el ancla; el objetivo termina tras cerrar la vela ancla+horizon.
+    """
+    history_hours = max(L-1, 24)  # Persistence necesita 25 cierres.
+    first = data.index-pd.Timedelta(hours=history_hours)
+    last = data.index+pd.Timedelta(hours=horizon)
+    block = data.loc[(first >= start) & (last <= end)]
+    if block.empty:
+        raise ValueError(f'Bloque sin ventanas completas: {start} a {end}')
+    assert (block.index-pd.Timedelta(hours=history_hours) >= start).all()
+    assert (block.index+pd.Timedelta(hours=horizon) <= end).all()
+    return block
+
 def main():
     started=time.perf_counter();source=ROOT/'data/splits/development_80.csv';sha=hashlib.sha256(source.read_bytes()).hexdigest()
     cfg=json.loads((OUT/'base_model_protocol.json').read_text())
+    assert cfg['horizon_hours']==cfg['volatility_returns']==24 and cfg['ddof']==0
+    assert cfg['boundary_policy']=='strict_block_containment'
+    protocol_sha=hashlib.sha256((OUT/'base_model_protocol.json').read_bytes()).hexdigest()
     df=pd.read_csv(source,usecols=['symbol','open_time','close_time','close'])
     for col in ['open_time','close_time']:df[col]=pd.to_datetime(df[col],utc=True,format='ISO8601')
     grid=pd.date_range(df.open_time.min(),df.open_time.max(),freq='h')
     frames=prepare(df,grid,cfg['window_closes']);symbols=sorted(frames);cols=[f'lag_{k}' for k in range(cfg['window_closes'])]
-    folds=list(TimeSeriesSplit(n_splits=5).split(grid));runs=[];preds={};audit=[]
+    folds=list(TimeSeriesSplit(n_splits=cfg['folds']).split(grid));runs=[];preds={};audit=[]
+    history_hours=max(cfg['window_closes']-1,24)
     for C in cfg['C']:
       for eps in cfg['epsilon']:
         key=(C,eps);preds[key]=[]
         for f,(tr,va) in enumerate(folds,1):
           start,end=grid[va[0]],grid[va[-1]]
           for symbol in symbols:
-            data=frames[symbol];train=data.loc[data.index+pd.Timedelta(hours=24)<start];val=data.loc[(data.index>=start)&(data.index<=end)]
-            assert train.index.max()+pd.Timedelta(hours=24)<val.index.min()
-            assert val.index.max()+pd.Timedelta(hours=24)<=grid.max()
+            data=frames[symbol]
+            train=contained_block(data,grid[tr[0]],grid[tr[-1]],cfg['window_closes'])
+            val=contained_block(data,start,end,cfg['window_closes'])
+            assert train.index.max()+pd.Timedelta(hours=24)<start
+            assert val.index.min()-pd.Timedelta(hours=history_hours)>=start
             m=model(C,eps);tick=time.perf_counter();fit(m,train[cols],train.y);elapsed=time.perf_counter()-tick
             p=m.predict(val[cols]);assert np.isfinite(p).all()
             runs.append(dict(C=C,epsilon=eps,fold=f,symbol=symbol,n_train=len(train),n_val=len(val),fit_seconds=elapsed,n_iter=int(m.named_steps['svr'].n_iter_),**metrics(val.y.to_numpy(),p)))
-            preds[key].append(pd.DataFrame({'time':val.index,'symbol':symbol,'fold':f,'y':val.y,'svr':p,'persistence':val.persistence}))
-            if key==(cfg['C'][0],cfg['epsilon'][0]):audit.append(dict(fold=f,symbol=symbol,train_start=str(train.index.min()),train_end=str(train.index.max()),label_end=str(train.index.max()+pd.Timedelta(hours=24)),validation_start=str(val.index.min()),validation_end=str(val.index.max()),n_train=len(train),n_val=len(val)))
+            preds[key].append(pd.DataFrame({'time':val.index,'symbol':symbol,'fold':f,'y':val.y,'svr':p,'persistence':val.persistence,
+                'history_start':val.index-pd.Timedelta(hours=history_hours),
+                'target_end':val.index+pd.Timedelta(hours=24),
+                'prediction_time':val.index+pd.Timedelta(hours=1),
+                'target_available_time':val.index+pd.Timedelta(hours=25)}))
+            if key==(cfg['C'][0],cfg['epsilon'][0]):
+                candidates=data.loc[(data.index>=start)&(data.index<=end)]
+                left=candidates.index-pd.Timedelta(hours=history_hours)<start
+                right=candidates.index+pd.Timedelta(hours=24)>end
+                audit.append(dict(fold=f,symbol=symbol,
+                    train_block_start=str(grid[tr[0]]),train_block_end=str(grid[tr[-1]]),
+                    validation_block_start=str(start),validation_block_end=str(end),
+                    train_start=str(train.index.min()),train_end=str(train.index.max()),
+                    train_history_start=str(train.index.min()-pd.Timedelta(hours=history_hours)),
+                    label_end=str(train.index.max()+pd.Timedelta(hours=24)),
+                    validation_start=str(val.index.min()),validation_end=str(val.index.max()),
+                    validation_history_start=str(val.index.min()-pd.Timedelta(hours=history_hours)),
+                    validation_label_end=str(val.index.max()+pd.Timedelta(hours=24)),
+                    candidate_validation_rows=len(candidates),excluded_history=int(left.sum()),
+                    excluded_target=int((right&~left).sum()),n_train=len(train),n_val=len(val)))
         print('Configuración completada',C,eps,flush=True)
     search=pd.DataFrame(runs);scores=search.groupby(['C','epsilon']).rmse.mean().sort_values();best=tuple(scores.index[0])
     search.to_csv(OUT/'base_search.csv',index=False);scores.rename('mean_rmse').reset_index().to_csv(OUT/'base_selection.csv',index=False)
@@ -72,11 +112,17 @@ def main():
         for f,g in part.groupby('fold'):
             for name in ['svr','persistence']:rows.append(dict(symbol=symbol,fold=f,model=name,n=len(g),negative_predictions=int((g[name]<0).sum()),**metrics(g.y.to_numpy(),g[name].to_numpy())))
         # Curva con prefijos cronológicos del entrenamiento del último fold, validación fija.
-        va=folds[-1][1];start,end=grid[va[0]],grid[va[-1]];data=frames[symbol]
-        train=data.loc[data.index+pd.Timedelta(hours=24)<start];val=data.loc[(data.index>=start)&(data.index<=end)]
+        tr,va=folds[-1];start,end=grid[va[0]],grid[va[-1]];data=frames[symbol]
+        val=contained_block(data,start,end,cfg['window_closes'])
         for fraction in [.25,.5,1.]:
-            sub=train.iloc[:max(2,int(len(train)*fraction))];m=fit(model(*best),sub[cols],sub.y)
-            learn.append(dict(symbol=symbol,fraction=fraction,n_train=len(sub),train_rmse=metrics(sub.y.to_numpy(),m.predict(sub[cols]))['rmse'],validation_rmse=metrics(val.y.to_numpy(),m.predict(val[cols]))['rmse']))
+            prefix_end=grid[tr[max(1,int(len(tr)*fraction))-1]]
+            sub=contained_block(data,grid[tr[0]],prefix_end,cfg['window_closes'])
+            m=fit(model(*best),sub[cols],sub.y)
+            learn.append(dict(symbol=symbol,fraction=fraction,n_train=len(sub),
+                train_block_start=str(grid[tr[0]]),train_block_end=str(prefix_end),
+                history_start=str(sub.index.min()-pd.Timedelta(hours=history_hours)),
+                target_end=str(sub.index.max()+pd.Timedelta(hours=24)),
+                train_rmse=metrics(sub.y.to_numpy(),m.predict(sub[cols]))['rmse'],validation_rmse=metrics(val.y.to_numpy(),m.predict(val[cols]))['rmse']))
         # Diagnóstico gráfico en el último fold; autocorrelación con rezagos de calendario.
         g=part.loc[part.fold.eq(5)].set_index('time');res=g.y-g.svr
         full=res.reindex(pd.date_range(g.index.min(),g.index.max(),freq='h'))
@@ -93,7 +139,8 @@ def main():
         for axis in axes[0,:2]:axis.tick_params(axis='x',rotation=45,labelsize=7)
         fig.suptitle(symbol+' · SVR lineal vs persistencia · DEVELOPMENT');fig.savefig(FIG/f'base_{symbol}.png',dpi=130);plt.close(fig)
         # Ajuste final DEVELOPMENT sin consultar TEST.
-        final=fit(model(*best),data[cols],data.y)
+        final_data=contained_block(data,grid.min(),grid.max(),cfg['window_closes'])
+        final=fit(model(*best),final_data[cols],final_data.y)
         folder=ROOT/'outputs/models';folder.mkdir(exist_ok=True)
         joblib.dump(final,folder/f'linear_svr_{symbol}.joblib')
         b=final.named_steps['svr'].coef_;sc=final.named_steps['scale']
@@ -121,7 +168,10 @@ def main():
     diff=rep_metrics[:,0]-rep_metrics[:,1];cis.append(dict(metric='delta_macro_rmse',model='svr_minus_persistence',estimate=point[0]-point[1],low=np.quantile(diff,.025),high=np.quantile(diff,.975)))
     pd.DataFrame(cis).to_csv(OUT/'base_confidence_intervals.csv',index=False)
     assert sha==hashlib.sha256(source.read_bytes()).hexdigest()
-    meta={'selected_C':best[0],'selected_epsilon':best[1],'development_sha256':sha,'test_read':False,'eligible_common_per_asset':len(frames[symbols[0]]),'validation_rows_per_asset':len(oof)//5,'seconds':time.perf_counter()-started,'sklearn':sklearn.__version__,'selection_bias':'CI conditional on selected configuration; not independent final test','fits':150+15+5}
+    assert protocol_sha==hashlib.sha256((OUT/'base_model_protocol.json').read_bytes()).hexdigest()
+    meta={'selected_C':best[0],'selected_epsilon':best[1],'development_sha256':sha,
+        'protocol_sha256':protocol_sha,'boundary_policy':cfg['boundary_policy'],
+        'test_read':False,'eligible_common_per_asset':len(frames[symbols[0]]),'validation_rows_per_asset':len(oof)//5,'seconds':time.perf_counter()-started,'sklearn':sklearn.__version__,'selection_bias':'CI conditional on selected configuration; not independent final test','fits':150+15+5}
     (OUT/'base_metadata.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
     print(meta,flush=True);print(pd.DataFrame(cis).to_string(index=False),flush=True)
 if __name__=='__main__':main()

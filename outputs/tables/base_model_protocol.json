@@ -23,7 +23,11 @@
   "selection": "mean RMSE across 5 assets and 5 folds, shared C and epsilon",
   "bootstrap_reps": 499,
   "bootstrap_block_hours": 168,
-  "test_policy": "reserved pending user response",
+  "boundary_policy": "strict_block_containment",
+  "history_rule": "anchor - max(window_closes-1,24) >= block_start; fixed before rerun",
+  "target_rule": "anchor + horizon_hours <= block_end; fixed before rerun",
+  "learning_curve_rule": "prefix fractions of training calendar; histories and targets contained in each prefix",
+  "test_policy": "reserved; future evaluation must apply the same strict containment within TEST without DEVELOPMENT context",
   "negative_predictions": "retained, report count; no post-hoc clipping",
   "budget": "6 configurations x 5 folds x 5 assets; sequential CPU; no adaptive search extension"
 }

@@ -1,0 +1,17 @@
+{
+  "development_sha256": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2",
+  "test_read": false,
+  "ddof": 0,
+  "window_returns": 24,
+  "forecast_horizon_hours": 24,
+  "segment_selection": "longest_uninterrupted_valid_target_run",
+  "acf_pacf_lags": 168,
+  "adf_maxlag": 48,
+  "adf_autolag": "AIC",
+  "kpss_lags": "auto",
+  "regression": "c",
+  "stl_period_hours": 24,
+  "stl_jump": 3,
+  "future_target_is_feature": false,
+  "calendar": "nominal_issue_time_anchor_plus_1h_UTC"
+}

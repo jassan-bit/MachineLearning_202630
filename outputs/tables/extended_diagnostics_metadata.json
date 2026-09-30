@@ -1,0 +1,22 @@
+{
+  "source_hashes": {
+    "outputs/tables/base_validation_predictions.csv": "df016cb195691d17e602c93b688a564690bc9692fbd16f221d21ddf3339d938a",
+    "outputs/tables/base_model_protocol.json": "68927c72b4c5199f77fa1ce70b928a4b5fb064263fd1bf8888b7296e959963c9",
+    "outputs/tables/base_folds.csv": "26fc24592fd650fe970ae7816e22faed475b456c9134efed80c12f9608d5c8c3",
+    "data/splits/development_80.csv": "5fbbc54a12e976551b35652b72c989be8d1a120ef41cd7c6a4b50dcaf5fa87a2"
+  },
+  "test_read": false,
+  "model_refit": false,
+  "residual_definition": "observed_minus_predicted",
+  "diagnostics": 50,
+  "blocks_hours": [
+    24,
+    168,
+    336
+  ],
+  "bootstrap_reps": 499,
+  "seed": 42,
+  "inference": "conditional_on_selected_configuration_not_independent_test",
+  "correlation": "centered_autocovariance_common_denominator_hourly_grid_missing_pairs_excluded",
+  "variance_halves": "calendar_midpoint"
+}
