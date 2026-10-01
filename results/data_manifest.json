@@ -1,0 +1,13 @@
+{
+  "source": "Binance public 1m archives",
+  "start": "2020-01-01",
+  "end_exclusive": "2026-01-01",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "daily_sha256": "0fac2af849c7ad59fdb64f5a3fbe5fc78d3d7d306329a27dbfafe143b488b837",
+  "archives": 288
+}

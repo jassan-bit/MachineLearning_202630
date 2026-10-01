@@ -1,22 +1,16 @@
-# See docs at: https://mystmd.org/guide/frontmatter
 version: 1
 project:
   id: cd88d8d9-9d15-4270-aec0-4687c9c73a15
-  title: Proyecto de Investigación
+  title: Volatilidad diaria con SVR lineal
   toc:
     - file: entregable1_master.md
     - file: sections/01_base_datos.md
-      title: 1. Base de Datos
     - file: sections/02_eda.md
     - file: sections/03_modelo_base.md
+    - file: sections/04_resultados_diarios.md
     - file: sections/05_conclusiones.md
-  # description:
-  # keywords: []
-  # github:
-  # To autogenerate a Table of Contents, run "jupyter book init --write-toc"
+    - file: sections/06_dashboard.md
 site:
   template: book-theme
   options:
     style: _static/custom.css
-  #   favicon: favicon.ico
-  #   logo: site_logo.png

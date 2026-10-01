@@ -1,33 +1,63 @@
-# Ejecutar el dashboard del Entregable 2
+# 6. Dashboard, API y reproducción
 
-Desde la raíz, en el entorno Python del proyecto:
+## Ejecución
 
-```powershell
+Desde la raíz, con Python 3.10:
+
+```bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -p 'test_daily*.py' -v
+python src/download_minute_history.py
+python src/run_daily_experiment.py
+python src/build_daily_delivery.py
+python src/verify_daily_delivery.py
+python src/execute_daily_notebook.py
+```
+
+La descarga verifica 288 archivos ZIP oficiales de un minuto y sus checksums. Es reanudable: los archivos
+validados se reutilizan. La entrega incluye los datos diarios derivados y la procedencia para reproducir
+el modelado sin volver a descargar el histórico. Los ZIP originales permanecen en `data/raw/minute_2020_2025`.
+
+El [notebook completo](notebooks/Entregable_1_Completo.ipynb) incluye datos diarios y código en un paquete
+integrado; puede ejecutarse fuera del repositorio después de instalar las dependencias. Sus figuras y análisis
+guardados corresponden a la ejecución documentada. Una celda de ejecución recalcula las 64 configuraciones.
+Las tablas de resultados están en `results/`; las figuras, en `notebooks/figs/`.
+
+## Dashboard
+
+```bash
 python -m pip install -r requirements-dashboard.txt
-python app.py
+python dashboard.py
 ```
 
-Abrir http://127.0.0.1:8050. En este equipo también se puede ejecutar con `.venv-repro/Scripts/python.exe app.py`.
+El dashboard lee exclusivamente las métricas diarias nuevas. Tiene filtros de activo, definición de volatilidad
+y tamaño de entrada. Abrir http://localhost:8050. En Render, el comando es `gunicorn dashboard:server`.
 
-## Render: servicio web manual
+## API
 
-- Repositorio: `jassan-bit/MachineLearning_202630`, rama `main`.
-- Lenguaje: Python 3; variable de entorno `PYTHON_VERSION=3.11.11`.
-- Root Directory: vacío.
-- Build Command: `pip install -r requirements-dashboard.txt`.
-- Start Command: `gunicorn app:server --bind 0.0.0.0:$PORT --workers 1`.
-- Compute: Free.
-
-El archivo de dependencias del dashboard es diferente del utilizado para reproducir el entrenamiento. Evita instalar el entorno científico completo en el servidor web. Como alternativa, `render.yaml` contiene esta configuración para Blueprint.
-
-El servicio requiere `app.py`, `assets/dashboard.css`, `requirements-dashboard.txt` y los cinco CSV de `dashboard_data/`. No necesita TEST, credenciales de Binance ni modelos serializados. Usa resultados guardados de DEVELOPMENT.
-
-## Informe y comprobaciones
-
-El capítulo `book/sections/06_dashboard.md` interpreta las seis gráficas y enlaza la metodología existente. El menú del Book incluye este capítulo. `BOOK_URL` permite cambiar la dirección del informe enlazado por el dashboard.
-
-```powershell
-python -m unittest discover -s tests -p test_dashboard.py -v
+```bash
+uvicorn app.api:app --host 127.0.0.1 --port 8000
 ```
 
-Las pruebas contrastan los filtros con las tablas de origen para cinco activos, seis selecciones de fold y cuatro métricas, además de comprobar rutas HTTP y cuantiles. El despliegue Linux con Gunicorn se debe confirmar en los registros de Render; la ejecución local Windows utiliza el servidor de desarrollo de Dash.
+`GET /models` indica la longitud de entrada seleccionada para cada activo y ventana de volatilidad.
+`POST /predict` recibe `symbol`, `volatility_window` y `lags` (cierres diarios consecutivos, del más antiguo
+al más reciente). Devuelve siete volatilidades en porcentaje, horizontes 1–7 y fecha final del entrenamiento.
+Los precios deben ser positivos y finitos. La API verifica tamaño y valores, pero el cliente debe garantizar
+que corresponden a días consecutivos y cierres UTC. El origen concreto no se infiere de una lista sin fechas.
+
+```bash
+docker build -t volatility-svr .
+docker run --rm -p 8000:8000 volatility-svr
+```
+
+Docker utiliza los modelos ya entrenados; no descarga Binance ni entrena durante el arranque.
+El workflow de pruebas comprueba construcción de ventanas, ausencia de información futura, escalado y contrato API.
+La presencia de Dockerfile y workflow no implica que se haya completado un despliegue remoto; su estado se informa por separado.
+
+## Artefactos
+
+- [Entrega reproducible](delivery/Entregable1_diario.zip).
+- [Configuración](experiment.json).
+- [Datos diarios](data/processed/daily_2020_2025.csv).
+- [Protocolo y registro de ejecución](results/run_status.json).
+- [Dependencias](requirements.txt).

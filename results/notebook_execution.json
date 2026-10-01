@@ -1,0 +1,7 @@
+{
+  "status": "executed_and_verified",
+  "seconds": 163.1251628000755,
+  "cells": 179,
+  "metrics_sha256": "3def5f91e9e393ab3a0f7e8588c5879bf1b6cc6ccc808e0b450ab465b539dcbf",
+  "comparison": "pandas.assert_frame_equal rtol=1e-10 atol=1e-12"
+}

@@ -1,0 +1,8 @@
+.venv-repro
+.publish-checkout
+data
+outputs
+delivery
+book
+notebooks
+**/__pycache__

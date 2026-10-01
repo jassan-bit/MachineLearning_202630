@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "configurations": 64,
+  "fold_models": 320,
+  "deployed_models": 16,
+  "metric_rows": 15360,
+  "prediction_rows": 78400,
+  "fold_sizes": {
+    "(1, 'test')": 9,
+    "(1, 'train')": 23,
+    "(1, 'val')": 3,
+    "(2, 'test')": 9,
+    "(2, 'train')": 23,
+    "(2, 'val')": 3,
+    "(3, 'test')": 8,
+    "(3, 'train')": 23,
+    "(3, 'val')": 3,
+    "(4, 'test')": 8,
+    "(4, 'train')": 24,
+    "(4, 'val')": 3,
+    "(5, 'test')": 8,
+    "(5, 'train')": 24,
+    "(5, 'val')": 4
+  }
+}

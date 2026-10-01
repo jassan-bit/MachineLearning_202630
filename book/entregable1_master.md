@@ -1,32 +1,33 @@
-# Proyecto de Investigación
+# Pronóstico de volatilidad diaria con SVR lineal
 
-## Pronóstico de la Volatilidad Realizada a 24 Horas de BTC, ETH, BNB, XRP y SOL mediante SVR Lineal con Datos Horarios de Binance Spot (2020–2026)
-
-**Materia:** Machine Learning
-
-**Estudiantes:** Jassan Arteta y Mateo Bernal
-
-**Profesor:** Lihki Rubio
-
-**Universidad:** Universidad del Norte
-
-**Programa:** Maestría en Matemáticas
-
-**Periodo académico:** 2026-30
+**Entregable 1 — Jassan Arteta y Mateo Bernal**  
+Universidad del Norte · Maestría en Matemáticas · Machine Learning · Profesor Lihki Rubio · 2026-30
 
 ## Resumen
 
-Este proyecto estudia el pronóstico de la volatilidad futura de BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT y SOLUSDT a partir de datos horarios de Binance Spot. La variable objetivo es la desviación estándar de los próximos 24 retornos logarítmicos horarios, centrados en su media, con divisor 24 (`ddof=0`) y expresada en porcentaje. No se anualiza ni se interpreta como la volatilidad acumulada del retorno de un día.
+Se estudian BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT entre el 1 de enero de 2020 y el 31 de diciembre de 2025. Se descargaron
+12,616,618 velas de un minuto de los archivos oficiales de Binance, con verificación SHA-256,
+y se obtuvieron cierres diarios UTC. El objetivo es pronosticar siete valores futuros de volatilidad móvil.
+Se cruzan cuatro ventanas de precios (7, 14, 21 y 28 días) con cuatro ventanas de volatilidad de igual conjunto:
+64 configuraciones activo–entrada–objetivo, cinco folds por configuración y siete SVR lineales por modelo multisalida.
 
-Se comparan Persistence y SVR lineal mediante cinco folds cronológicos de ventana creciente dentro de DEVELOPMENT. El SVR recibe 168 cierres horarios consecutivos por activo. Cada ventana de entradas, referencia y etiqueta permanece contenida en su bloque, y el escalado se ajusta únicamente con entrenamiento. TEST permanece reservado para una evaluación independiente posterior.
+La función Group K-Fold de `timeseries-cv` se ejecuta sobre índices temporales comunes y se complementa con filtros
+cronológicos. Entrenamiento: 2020–2022; validación: 2023; test: 2024–2025. El escalado y el ajuste usan solo TRAIN;
+los hiperparámetros y la ventana de entrada se seleccionan con validación. Se evalúan precios diarios históricos
+como entradas, pero **todas las salidas del modelo son volatilidades**, no precios.
 
-El RMSE medio entre los 25 bloques activo-fold es **0,389006 puntos porcentuales** para Persistence y **0,623259** para SVR. El SVR no supera la referencia temporal en las condiciones evaluadas. La diferencia de RMSE es **0,234253 puntos porcentuales**, con intervalo bootstrap por bloques del 95 % **[0,204497; 0,269379]**. Esta incertidumbre está condicionada a la configuración seleccionada y no elimina el posible optimismo de la selección en los mismos folds.
+Entre las 16 selecciones por activo y definición del objetivo, SVR supera a Persistence en RMSE test en 0 casos.
+Este conteo es descriptivo: los folds se solapan y el muestreo de `tsxv` deja pocas fechas de evaluación.
+No se comparan errores absolutos entre objetivos de volatilidad distintos para declarar un ganador global.
 
 ## Organización del informe
 
-1. [Base de datos](sections/01_base_datos.md): problema, selección de la fuente, diccionario, estructura, calidad y representatividad.
-2. [Análisis exploratorio](sections/02_eda.md): distribuciones, relaciones entre variables, estructura multivariada, dependencia temporal, disponibilidad de información y preprocesamiento.
-3. [Modelo base](sections/03_modelo_base.md): formulación del objetivo, partición cronológica, validación con separación temporal, Persistence, SVR, métricas, residuos, incertidumbre y curva de aprendizaje.
-4. [Conclusiones](sections/05_conclusiones.md): resultados, limitaciones, reproducibilidad y continuidad del proyecto.
+1. [Datos y problema](sections/01_base_datos.md).
+2. [EDA y preprocesamiento](sections/02_eda.md).
+3. [Validación y SVR lineal](sections/03_modelo_base.md).
+4. [Resultados detallados y residuos](sections/04_resultados_diarios.md).
+5. [Conclusiones](sections/05_conclusiones.md).
+6. [Dashboard, API y reproducción](sections/06_dashboard.md).
 
-Los resultados corresponden a validación interna en DEVELOPMENT. Las conclusiones se limitan a los cinco activos, el proveedor y los periodos estudiados.
+La versión horaria anterior está archivada en `delivery/legacy_hourly_before_daily_restructure.zip`.
+Sus métricas y conclusiones no pertenecen a este experimento.

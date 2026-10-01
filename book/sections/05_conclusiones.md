@@ -1,40 +1,43 @@
-# 4. Conclusiones
+# 5. Conclusiones
 
-## Respuesta al problema de investigación
+## Respuesta a la pregunta
 
-En las condiciones evaluadas, el SVR lineal alimentado con 168 cierres horarios no mejora el pronóstico de Persistence de la volatilidad futura. La variable objetivo es la desviación estándar poblacional centrada de los próximos 24 retornos logarítmicos horarios, multiplicada por 100. Es una medida de dispersión horaria estimada en una ventana futura de 24 horas; no representa la volatilidad acumulada o anualizada del retorno de un día.
+| symbol | volatility_window | input_window | Persistence | SVR | SVR_minus_Persistence |
+| --- | --- | --- | --- | --- | --- |
+| BNBUSDT | 7 | 21 | 1.04053 | 2.87727 | 1.83675 |
+| BNBUSDT | 14 | 28 | 0.62201 | 3.42416 | 2.80215 |
+| BNBUSDT | 21 | 7 | 0.33270 | 3.27438 | 2.94168 |
+| BNBUSDT | 28 | 7 | 0.14609 | 2.83684 | 2.69075 |
+| BTCUSDT | 7 | 14 | 0.84373 | 4.79559 | 3.95186 |
+| BTCUSDT | 14 | 14 | 0.37277 | 5.14443 | 4.77167 |
+| BTCUSDT | 21 | 21 | 0.22854 | 5.21366 | 4.98512 |
+| BTCUSDT | 28 | 28 | 0.22821 | 4.40628 | 4.17807 |
+| ETHUSDT | 7 | 21 | 1.30690 | 2.41621 | 1.10930 |
+| ETHUSDT | 14 | 21 | 0.47784 | 1.88671 | 1.40887 |
+| ETHUSDT | 21 | 28 | 0.32266 | 2.14370 | 1.82104 |
+| ETHUSDT | 28 | 28 | 0.26969 | 2.39408 | 2.12439 |
+| XRPUSDT | 7 | 14 | 2.06372 | 9.78647 | 7.72275 |
+| XRPUSDT | 14 | 14 | 0.72504 | 8.62323 | 7.89819 |
+| XRPUSDT | 21 | 28 | 0.58286 | 9.06631 | 8.48345 |
+| XRPUSDT | 28 | 28 | 0.40955 | 7.13051 | 6.72096 |
 
-Se evaluaron cinco activos en cinco folds cronológicos dentro de DEVELOPMENT. Se utilizaron las mismas observaciones para ambos modelos y se exigió que historia, referencia y etiqueta estuvieran contenidas en cada bloque. Los escaladores se ajustaron únicamente en TRAIN. TEST permanece reservado y no sustenta ninguna conclusión de este entregable.
-
-| Modelo | RMSE medio (puntos porcentuales) | MAPE medio (%) | R² medio |
-|---|---:|---:|---:|
-| Persistence | 0,389006 | 40,555962 | −0,044738 |
-| SVR lineal | 0,623259 | 109,417896 | −1,905431 |
-
-Son medias con igual ponderación de los 25 bloques activo-fold, no métricas calculadas sobre una única concatenación. [Resultados por fold](../../outputs/tables/base_metrics_by_fold.csv). Un R² negativo indica que el error cuadrático supera el de la media observada de la etiqueta en el bloque evaluado; esa media de validación es la referencia matemática de R², no un predictor disponible anticipadamente. MAPE es sensible a objetivos próximos a cero y no se interpreta como porcentaje de exactitud.
-
-El incremento de RMSE del SVR respecto de Persistence fue **0,234253 puntos porcentuales**, con intervalo bootstrap del 95 % **[0,204497; 0,269379]**, usando bloques de 168 horas, 499 réplicas y semilla 42. La sensibilidad con bloques de 24 y 336 horas conserva el signo positivo. El remuestreo respeta el emparejamiento de modelos y activos dentro de cada fold. [Intervalos](../../outputs/tables/base_confidence_intervals.csv) y [sensibilidad](../../outputs/tables/base_bootstrap_sensitivity.csv). Estos intervalos están condicionados a la configuración seleccionada en los mismos folds; no corrigen por completo el optimismo de la selección.
-
-## Implicaciones del análisis exploratorio
-
-La dependencia temporal, la redundancia de los cierres y los cambios de distribución justifican la partición cronológica, el escalado por fold y el análisis de residuos con distancias horarias reales. El número de filas no equivale a observaciones independientes: las etiquetas horarias consecutivas comparten retornos y los activos pueden moverse conjuntamente. Por ello se reporta incertidumbre por bloques y se evitan conclusiones apoyadas únicamente en valores p calculados bajo independencia.
-
-El diagnóstico de cambios y las ventanas alrededor de eventos son exploratorios. No atribuyen causalidad a los eventos. Los cambios marginales de volatilidad tampoco demuestran por sí solos un cambio en la relación condicional entre predictores y objetivo. La sensibilidad al tamaño del bloque y la incertidumbre en las fechas de cambio se presentan en la sección 2.6.11.
+La ventana de entrada se seleccionó por validación para cada activo y ventana del objetivo. De las 16
+comparaciones resultantes, SVR obtiene menor RMSE test que Persistence en 0. Los resultados completos
+permiten examinar qué activo y definición de volatilidad favorecen cada modelo, sin reunir objetivos diferentes
+en una única clasificación por RMSE. Las métricas corresponden a los modelos de los folds, no al reajuste de despliegue.
 
 ## Limitaciones
 
-- Los registros disponibles no identifican el mecanismo MCAR, MAR o MNAR de los huecos. No se atribuye una causa específica ni se interpolan retornos a través de ellos.
-- La verificación conservada de la partición acredita cortes y claves temporales disjuntas; no certifica la ausencia de vectores casi idénticos entre DEVELOPMENT y TEST al omitir fechas.
-- El EDA y la selección se realizaron sobre DEVELOPMENT. La validación interna no reemplaza una evaluación final independiente y no permite garantizar ausencia universal de sobreajuste.
-- La disponibilidad de las velas es nominal tras su cierre; no se dispone de registros de latencia operativa.
-- La evidencia corresponde a cinco activos, un proveedor y los periodos observados. No demuestra generalización a otros mercados ni una estrategia rentable de inversión.
+El Group K-Fold nativo necesita filtros cronológicos; esos filtros reducen las muestras.
+Los folds dependientes y los pocos residuos limitan la interpretación de su variación y de BDS.
+La volatilidad móvil comparte retornos entre salidas y puede contener retornos ya conocidos al emitir el pronóstico.
+El historial de 2020–2022 no representa necesariamente las condiciones de 2024–2025.
+Los días incompletos se excluyen con una política conservadora, y los activos se seleccionaron retrospectivamente.
+Un SVR lineal puede predecir valores negativos; se reportan en las tablas sin recortarlos después de observar test.
 
-## Reproducibilidad y siguiente etapa
+## Continuidad
 
-**Notebook completo:** [Entregable_1_Completo.ipynb](../../notebooks/Entregable_1_Completo.ipynb). Incluye el informe, tablas, figuras, código y las entradas necesarias incorporadas al archivo. Puede abrirse desde cualquier carpeta. Al ejecutar todas las celdas se recuperan las entradas en una carpeta temporal y se repiten los cálculos y los 170 ajustes, usando exclusivamente DEVELOPMENT. No requiere descargar el repositorio; sí necesita Python con las dependencias indicadas y Node.js. TEST no está incluido.
-
-La reproducción en un entorno limpio completó 17 etapas, incluidos 170 ajustes y 12 pruebas; se contrastaron 13 tablas numéricas con las tolerancias documentadas. Se ejecutaron además seis notebooks en el kernel del entorno nuevo. La reproducción comienza en el snapshot de DEVELOPMENT y no repite la descarga ni la partición original. [Registro de reproducción](../../outputs/tables/clean_reproduction_metadata.json).
-
-**Materiales de la entrega:** [snapshot de DEVELOPMENT](../../data/splits/development_80.csv), [dependencias](../../requirements-lock-windows-py310.txt), [notebook del modelo](../../notebooks/18_base_model.ipynb) y [repositorio de código y notebooks](https://github.com/jassan-bit/MachineLearning_202630). TEST y el archivo maestro no forman parte del paquete reproducible. El snapshot conserva la huella SHA-256 indicada en el registro; su distribución no implica una licencia abierta adicional sobre los datos del proveedor.
-
-El entregable documenta un modelo base reproducible y una referencia temporal más competitiva. Cualquier nueva transformación, predictor o algoritmo deberá decidirse y validarse dentro de DEVELOPMENT. Antes de abrir TEST se congelarán el protocolo, las transformaciones y la configuración final; sus resultados se reportarán como evaluación separada y no se utilizarán para reajustar el modelo.
+Una evaluación posterior puede ampliar los orígenes de test con una estrategia temporal más densa,
+manteniendo estos resultados como referencia y sin reusar este test para afirmar una nueva evaluación independiente.
+Los 16 modelos de API se reajustan con todos los datos elegibles de 2020–2025 una vez fijados los parámetros por validación.
+Ese reajuste sirve a la inferencia y no tiene una nueva métrica fuera de muestra.

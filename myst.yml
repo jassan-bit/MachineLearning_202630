@@ -1,19 +1,15 @@
 version: 1
 project:
-  title: Pronóstico de volatilidad de criptomonedas con SVR lineal
+  id: cd88d8d9-9d15-4270-aec0-4687c9c73a15
+  title: Volatilidad diaria con SVR lineal
   toc:
     - file: book/entregable1_master.md
-      title: Inicio
     - file: book/sections/01_base_datos.md
-      title: 1. Base de Datos
     - file: book/sections/02_eda.md
-      title: 2. Análisis Exploratorio de Datos (EDA)
     - file: book/sections/03_modelo_base.md
-      title: 3. Modelo base
+    - file: book/sections/04_resultados_diarios.md
     - file: book/sections/05_conclusiones.md
-      title: 4. Conclusiones
     - file: book/sections/06_dashboard.md
-      title: Entregable 2 · Dashboard
 site:
   template: book-theme
   options:

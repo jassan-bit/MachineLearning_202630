@@ -1,0 +1,9 @@
+{
+  "dashboard_local_http": 200,
+  "api_models_tested": 16,
+  "api_prediction_length": 7,
+  "docker_image_built": false,
+  "docker_reason": "Docker Desktop Linux engine is not running; named pipe dockerDesktopLinuxEngine not found.",
+  "remote_api_deployed": false,
+  "remote_api_reason": "No API hosting destination configured. Local API and Dockerfile provided."
+}

@@ -1,0 +1,60 @@
+{
+  "status": "complete",
+  "seconds": 333.6157596001867,
+  "configurations": 64,
+  "folds": 5,
+  "protocol": {
+    "configuration": {
+      "schema_version": 2,
+      "symbols": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "BNBUSDT",
+        "XRPUSDT"
+      ],
+      "start": "2020-01-01",
+      "end_exclusive": "2026-01-01",
+      "source_frequency": "1min",
+      "model_frequency": "1D",
+      "input_windows": [
+        7,
+        14,
+        21,
+        28
+      ],
+      "volatility_windows": [
+        7,
+        14,
+        21,
+        28
+      ],
+      "horizon": 7,
+      "ddof": 0,
+      "target_scale": 100,
+      "annualized": false,
+      "cv": "tsxv.splitTrainValTest.split_train_val_test_groupKFold",
+      "cv_version": "0.1.5",
+      "cv_calendar_input": 28,
+      "cv_jump": 1,
+      "train_end_exclusive": "2023-01-01",
+      "validation_end_exclusive": "2024-01-01",
+      "C": [
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "epsilon": [
+        0.01,
+        0.1
+      ],
+      "selection": "mean validation RMSE over 7 horizons and 5 folds, separately per symbol and volatility window",
+      "bds_max_dim": 2,
+      "bds_min_observations": 6,
+      "seed": 42
+    },
+    "tsxv_source_sha256": "cf473b6e17fbba84d5402a93cbd1efee5ca7e279e962fe36e1e909b5d11b21e9",
+    "daily_sha256": "0fac2af849c7ad59fdb64f5a3fbe5fc78d3d7d306329a27dbfafe143b488b837",
+    "warning": "Native tsxv GroupKFold is not forward-only; chronological filters are required. Folds overlap."
+  }
+}
