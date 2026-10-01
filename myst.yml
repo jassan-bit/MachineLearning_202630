@@ -12,6 +12,8 @@ project:
       title: 3. Modelo base
     - file: book/sections/05_conclusiones.md
       title: 4. Conclusiones
+    - file: book/sections/06_dashboard.md
+      title: Entregable 2 · Dashboard
 site:
   template: book-theme
   options:
