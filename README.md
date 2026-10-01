@@ -1,97 +1,48 @@
-# Pronóstico de volatilidad diaria con SVR lineal
+# Volatilidad con SVR lineal: Binance 2023–2025
 
-**Entregable 1 — Jassan Arteta y Mateo Bernal**  
-Universidad del Norte · Maestría en Matemáticas · Machine Learning · Profesor Lihki Rubio · 2026-30
+**Entregable 1 — Jassan Arteta y Mateo Bernal**
 
-## Resumen
+El estudio activo usa BTCUSDT, ETHUSDT, BNBUSDT y XRPUSDT desde enero de 2023 hasta diciembre de 2025.
+Conserva cierres de **un minuto** en entradas de 7, 14, 21 y 28 días. Entrena con 2023, selecciona parámetros
+con 2024 y evalúa retrospectivamente en 2025. Produce siete valores diarios futuros de volatilidad.
 
-Se estudian BTCUSDT, ETHUSDT, BNBUSDT, XRPUSDT entre el 1 de enero de 2020 y el 31 de diciembre de 2025. Se descargaron
-12,616,618 velas de un minuto de los archivos oficiales de Binance, con verificación SHA-256,
-y se obtuvieron cierres diarios UTC. El objetivo es pronosticar siete valores futuros de volatilidad móvil.
-Se cruzan cuatro ventanas de precios (7, 14, 21 y 28 días) con cuatro ventanas de volatilidad de igual conjunto:
-64 configuraciones activo–entrada–objetivo, cinco folds por configuración y siete SVR lineales por modelo multisalida.
+Consulta el [informe vigente](book/sections/07_estudio_minuto.md), con resultados reales, gráficos, comparación
+con persistencia y limitaciones de los adaptadores de validación de timeseries-cv.
 
-La función Group K-Fold de `timeseries-cv` se ejecuta sobre índices temporales comunes y se complementa con filtros
-cronológicos. Entrenamiento: 2020–2022; validación: 2023; test: 2024–2025. El escalado y el ajuste usan solo TRAIN;
-los hiperparámetros y la ventana de entrada se seleccionan con validación. Se evalúan precios diarios históricos
-como entradas, pero **todas las salidas del modelo son volatilidades**, no precios.
+La [referencia anterior](https://jassan-bit.github.io/MachineLearning_202630/referencia-diaria/) y las secciones señaladas como históricas
+documentan el experimento de seis años con entradas diarias; no describen la configuración activa.
 
-Entre las 16 selecciones por activo y definición del objetivo, SVR supera a Persistence en RMSE test en 0 casos.
-Este conteo es descriptivo: los folds se solapan y el muestreo de `tsxv` deja pocas fechas de evaluación.
-No se comparan errores absolutos entre objetivos de volatilidad distintos para declarar un ganador global.
+Descargas: [notebook ejecutado](notebooks/Entregable_1_Minuto.ipynb) y
+[entrega reproducible con datos de un minuto](delivery/Entregable1_minuto_2023_2025.zip).
 
-## Organización del informe
 
-1. [Datos y problema](book/sections/01_base_datos.md).
-2. [EDA y preprocesamiento](book/sections/02_eda.md).
-3. [Validación y SVR lineal](book/sections/03_modelo_base.md).
-4. [Resultados detallados y residuos](book/sections/04_resultados_diarios.md).
-5. [Conclusiones](book/sections/05_conclusiones.md).
-6. [Dashboard, API y reproducción](book/sections/06_dashboard.md).
-
-La versión horaria anterior está archivada en `delivery/legacy_hourly_before_daily_restructure.zip`.
-Sus métricas y conclusiones no pertenecen a este experimento.
-
-# 6. Dashboard, API y reproducción
-
-## Ejecución
-
-Desde la raíz, con Python 3.10:
+## Reproducción
 
 ```bash
 python -m pip install -r requirements.txt
-python -m unittest discover -s tests -p 'test_daily*.py' -v
-python src/download_minute_history.py
-python src/run_daily_experiment.py
-python src/build_daily_delivery.py
-python src/verify_daily_delivery.py
-python src/execute_daily_notebook.py
+python src/run_minute_experiment.py
+python src/report_minute_experiment.py
+python src/verify_minute_experiment.py
 ```
 
-La descarga verifica 288 archivos ZIP oficiales de un minuto y sus checksums. Es reanudable: los archivos
-validados se reutilizan. La entrega incluye los datos diarios derivados y la procedencia para reproducir
-el modelado sin volver a descargar el histórico. Los ZIP originales permanecen en `data/raw/minute_2020_2025`.
+Los datos procesados de un minuto están en `data/processed/minute_2023_2025` y sus hashes en
+`results/minute_2023_2025/data_manifest.json`. Para reconstruirlos desde ZIP mensuales ya descargados,
+ejecutar `python src/minute_experiment.py`. La procedencia original se registra en `sources.csv`.
+Si faltan los archivos originales, `python src/download_three_years.py` descarga únicamente los 144 meses–activo necesarios.
 
-El [notebook completo](notebooks/Entregable_1_Completo.ipynb) incluye datos diarios y código en un paquete
-integrado; puede ejecutarse fuera del repositorio después de instalar las dependencias. Sus figuras y análisis
-guardados corresponden a la ejecución documentada. Una celda de ejecución recalcula las 64 configuraciones.
-Las tablas de resultados están en `results/`; las figuras, en `notebooks/figs/`.
+Notebook ejecutado: [Entregable_1_Minuto.ipynb](notebooks/Entregable_1_Minuto.ipynb).
+Entrega: [Entregable1_minuto_2023_2025.zip](delivery/Entregable1_minuto_2023_2025.zip).
+Resultados y modelos: `results/minute_2023_2025`. El notebook consulta resultados; el script anterior
+realiza el entrenamiento completo. Los modelos publicados conservan el ajuste de 2023.
 
-## Dashboard
+## Aplicaciones
 
-```bash
-python -m pip install -r requirements-dashboard.txt
-python dashboard.py
-```
+Instalar `requirements-dashboard.txt` y ejecutar `python dashboard.py`; abrir http://localhost:8050.
+La API se ejecuta con `uvicorn app.api:app --host 127.0.0.1 --port 8000`.
+`GET /models` devuelve `n_features` y `input_frequency`; `POST /predict` recibe
+`symbol`, `volatility_window` y `lags`: todos los cierres consecutivos de un minuto, del más antiguo
+al más reciente. Se espera una ventana terminada en el cierre diario UTC. La API valida valores
+y longitud; la lista no contiene marcas temporales para verificar continuidad.
 
-El dashboard lee exclusivamente las métricas diarias nuevas. Tiene filtros de activo, definición de volatilidad
-y tamaño de entrada. Abrir http://localhost:8050. En Render, el comando es `gunicorn dashboard:server`.
-
-## API
-
-```bash
-uvicorn app.api:app --host 127.0.0.1 --port 8000
-```
-
-`GET /models` indica la longitud de entrada seleccionada para cada activo y ventana de volatilidad.
-`POST /predict` recibe `symbol`, `volatility_window` y `lags` (cierres diarios consecutivos, del más antiguo
-al más reciente). Devuelve siete volatilidades en porcentaje, horizontes 1–7 y fecha final del entrenamiento.
-Los precios deben ser positivos y finitos. La API verifica tamaño y valores, pero el cliente debe garantizar
-que corresponden a días consecutivos y cierres UTC. El origen concreto no se infiere de una lista sin fechas.
-
-```bash
-docker build -t volatility-svr .
-docker run --rm -p 8000:8000 volatility-svr
-```
-
-Docker utiliza los modelos ya entrenados; no descarga Binance ni entrena durante el arranque.
-El workflow de pruebas comprueba construcción de ventanas, ausencia de información futura, escalado y contrato API.
-La presencia de Dockerfile y workflow no implica que se haya completado un despliegue remoto; su estado se informa por separado.
-
-## Artefactos
-
-- [Entrega reproducible](delivery/Entregable1_diario.zip).
-- [Configuración](experiment.json).
-- [Datos diarios](data/processed/daily_2020_2025.csv).
-- [Protocolo y registro de ejecución](results/run_status.json).
-- [Dependencias](requirements.txt).
+En el repositorio completo, el experimento anterior permanece en `results/`, `experiment.json` y `delivery/Entregable1_diario.zip`.
+El ZIP nuevo incluye el estudio vigente y permite repetir su modelado; para regenerar todo el Book con las referencias históricas, usar el repositorio completo.

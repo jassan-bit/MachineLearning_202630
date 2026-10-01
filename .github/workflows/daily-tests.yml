@@ -10,3 +10,5 @@ jobs:
           python-version: '3.10'
       - run: pip install -r requirements.txt
       - run: python -m unittest discover -s tests -p 'test_daily*.py' -v
+      - run: python -m unittest discover -s tests -p 'test_minute*.py' -v
+      - run: python -m unittest discover -s tests -p 'test_cv_comparison.py' -v

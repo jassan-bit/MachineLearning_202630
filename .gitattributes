@@ -11,3 +11,13 @@ outputs/** -text
 src/** -text
 tests/** -text
 requirements*.txt -text
+
+data/processed/minute_2023_2025/** -text
+
+book/** -text
+
+*.py -text
+
+*.md -text
+
+*.json -text

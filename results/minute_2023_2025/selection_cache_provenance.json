@@ -1,0 +1,63 @@
+{
+  "configuration": {
+    "schema_version": 3,
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "BNBUSDT",
+      "XRPUSDT"
+    ],
+    "start": "2023-01-01",
+    "end_exclusive": "2026-01-01",
+    "input_frequency": "1min",
+    "forecast_origin_frequency": "1D",
+    "target_return_frequency": "1D",
+    "input_windows": [
+      7,
+      14,
+      21,
+      28
+    ],
+    "input_features": [
+      10080,
+      20160,
+      30240,
+      40320
+    ],
+    "volatility_windows": [
+      7,
+      14,
+      21,
+      28
+    ],
+    "horizon": 7,
+    "ddof": 0,
+    "target_scale": 100,
+    "annualized": false,
+    "cv_calendar_input": 28,
+    "cv_jump": 1,
+    "train_end_exclusive": "2024-01-01",
+    "validation_end_exclusive": "2025-01-01",
+    "methods": [
+      "GroupKFold",
+      "KFold",
+      "ForwardChaining"
+    ],
+    "C": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "epsilon": [
+      0.01,
+      0.1
+    ],
+    "seed": 42,
+    "primary_method": "ForwardChaining",
+    "selection": "validation mean RMSE; input window selected separately per asset and volatility definition",
+    "numerics": "Standardize every minute feature on TRAIN. Solve LinearSVR in the training row space; export equivalent full minute coefficients. No daily aggregation of inputs."
+  },
+  "selection_cache_sha256": "4e2aebdddfddd416dbac50eb3675abf52dfd4310b25385faa401db57d25410d2",
+  "note": "156 completed grid selections retained from the initial sequential run; refitted and validation scores checked in the parallel run."
+}

@@ -1,3 +1,5 @@
+> **Referencia histórica:** estudio anterior 2020–2025 con entradas diarias. Consulte el [estudio vigente de tres años](07_estudio_minuto.md).
+
 # 3. Validación temporal y modelo
 
 ## Adaptación de la guía

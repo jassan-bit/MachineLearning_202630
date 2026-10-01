@@ -1,3 +1,5 @@
+> **Referencia histórica:** estudio anterior 2020–2025 con entradas diarias. Consulte el [estudio vigente de tres años](07_estudio_minuto.md).
+
 # 4. Resultados por objetivo, entrada y activo
 
 Las tablas corresponden a TEST. La elección de parámetros e inputs se hizo con validación. Los gráficos mejor/mediano/peor por error test son ilustraciones posteriores a la evaluación, no selección de modelos. BDS dispone solo de 8–9 residuos por fold: sus valores p asintóticos se muestran para completar el diagnóstico, pero no sostienen conclusiones fiables sobre independencia.

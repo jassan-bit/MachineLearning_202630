@@ -1,0 +1,17 @@
+method,symbol,volatility_window,input_window,C,epsilon,val_rmse,n_features,selection_source
+ForwardChaining,BNBUSDT,7,7,0.01,0.01,1.830609410612689,10080,prior_completed_grid
+ForwardChaining,BNBUSDT,14,7,0.01,0.1,1.539153156250661,10080,prior_completed_grid
+ForwardChaining,BNBUSDT,21,7,0.01,0.1,1.423667182085739,10080,prior_completed_grid
+ForwardChaining,BNBUSDT,28,7,0.01,0.1,1.3042135616051738,10080,prior_completed_grid
+ForwardChaining,BTCUSDT,7,7,0.01,0.01,1.6081824274196823,10080,prior_completed_grid
+ForwardChaining,BTCUSDT,14,7,0.01,0.01,1.3302223809684477,10080,prior_completed_grid
+ForwardChaining,BTCUSDT,21,7,0.01,0.01,1.2286097855811093,10080,prior_completed_grid
+ForwardChaining,BTCUSDT,28,7,0.01,0.01,1.13280263922304,10080,prior_completed_grid
+ForwardChaining,ETHUSDT,7,7,0.01,0.01,1.5949361088570602,10080,prior_completed_grid
+ForwardChaining,ETHUSDT,14,7,0.01,0.01,1.3678614395486821,10080,prior_completed_grid
+ForwardChaining,ETHUSDT,21,7,0.01,0.01,1.1500190771789627,10080,prior_completed_grid
+ForwardChaining,ETHUSDT,28,7,0.01,0.01,0.9899159985128684,10080,prior_completed_grid
+ForwardChaining,XRPUSDT,7,7,0.01,0.01,2.6553226161471697,10080,prior_completed_grid
+ForwardChaining,XRPUSDT,14,14,0.01,0.01,3.2151755523538874,20160,full_grid
+ForwardChaining,XRPUSDT,21,14,0.01,0.01,3.5940675891790135,20160,full_grid
+ForwardChaining,XRPUSDT,28,14,0.01,0.01,3.3169339144133034,20160,full_grid

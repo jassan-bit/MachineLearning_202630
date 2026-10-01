@@ -1,9 +1,11 @@
 version: 1
 project:
   id: cd88d8d9-9d15-4270-aec0-4687c9c73a15
-  title: Volatilidad diaria con SVR lineal
+  title: Volatilidad con SVR lineal — Binance 2023–2025
   toc:
     - file: book/entregable1_master.md
+    - file: book/sections/07_estudio_minuto.md
+    - file: book/sections/08_referencia_diaria.md
     - file: book/sections/01_base_datos.md
     - file: book/sections/02_eda.md
     - file: book/sections/03_modelo_base.md

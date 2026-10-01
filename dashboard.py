@@ -40,5 +40,12 @@ else:
         text = ' | '.join(f'{name}: RMSE {g.rmse.mean():.4f}' for name,g in folds.groupby('model'))
         return f, h, text
 
+import json
+minute_status = RESULTS/'minute_2023_2025/status.json'
+if minute_status.exists():
+    from minute_dashboard import create_app, create_progress_app
+    app = create_app() if json.loads(minute_status.read_text())['status'] == 'complete' else create_progress_app()
+    server = app.server
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT',8050)), debug=False)

@@ -29,5 +29,15 @@ class DailyApiTests(unittest.TestCase):
             r = self.client.post('/predict', json=dict(symbol=symbol, volatility_window=7, lags=[price]*7))
             self.assertEqual(r.status_code, 422)
 
+    def test_full_minute_coefficients(self):
+        size=7*1440
+        artifact=dict(weights=np.full((size,7),1/size),intercept=np.arange(7),
+            input_window=7,n_features=size,input_frequency='1min',fitted_through='2023-12-31')
+        with patch('app.api.load_model',return_value=artifact):
+            response=self.client.post('/predict',json=dict(symbol='BTCUSDT',volatility_window=7,lags=[100.0]*size))
+            self.assertEqual(response.status_code,200)
+            np.testing.assert_allclose(response.json()['prediction'],100+np.arange(7))
+            self.assertEqual(response.json()['input_frequency'],'1min')
+
 
 if __name__ == '__main__': unittest.main()

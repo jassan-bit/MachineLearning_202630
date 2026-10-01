@@ -1,0 +1,83 @@
+{
+  "status": "complete",
+  "configuration": {
+    "schema_version": 3,
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "BNBUSDT",
+      "XRPUSDT"
+    ],
+    "start": "2023-01-01",
+    "end_exclusive": "2026-01-01",
+    "input_frequency": "1min",
+    "forecast_origin_frequency": "1D",
+    "target_return_frequency": "1D",
+    "input_windows": [
+      7,
+      14,
+      21,
+      28
+    ],
+    "input_features": [
+      10080,
+      20160,
+      30240,
+      40320
+    ],
+    "volatility_windows": [
+      7,
+      14,
+      21,
+      28
+    ],
+    "horizon": 7,
+    "ddof": 0,
+    "target_scale": 100,
+    "annualized": false,
+    "cv_calendar_input": 28,
+    "cv_jump": 1,
+    "train_end_exclusive": "2024-01-01",
+    "validation_end_exclusive": "2025-01-01",
+    "methods": [
+      "GroupKFold",
+      "KFold",
+      "ForwardChaining"
+    ],
+    "C": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "epsilon": [
+      0.01,
+      0.1
+    ],
+    "seed": 42,
+    "primary_method": "ForwardChaining",
+    "selection": "validation mean RMSE; input window selected separately per asset and volatility definition",
+    "numerics": "Standardize every minute feature on TRAIN. Solve LinearSVR in the training row space; export equivalent full minute coefficients. No daily aggregation of inputs."
+  },
+  "seconds": 2620.2861479001585,
+  "configurations": 192,
+  "common_test_origins": 21,
+  "native_audits": {
+    "KFold": {
+      "native_cuts": 1005,
+      "native_future_training_label_occurrences": 477753,
+      "function": "split_train_val_test_kFold",
+      "source_sha256": "bb3a9ea2e3a05f320a74b3929fc48143ee0c2541c8c067c419ac41ff86e1b98b"
+    },
+    "ForwardChaining": {
+      "native_cuts": 1005,
+      "native_future_training_label_occurrences": 0,
+      "function": "split_train_val_test_forwardChaining",
+      "source_sha256": "7225ebe90973918d14d8a98ece1871668e2da389e6190d66c92f22caa400de29"
+    }
+  },
+  "kfold_forward_identical": true,
+  "primary_method": "ForwardChaining",
+  "note": "Minute inputs; daily sampling of forecast origins; daily-return volatility targets. Retrospective 2025 test.",
+  "source_config_sha256": "ed294443e90f7ceb9395793079cd164cd1e9590d7b6576cfb12ff0fe060ff39b"
+}
