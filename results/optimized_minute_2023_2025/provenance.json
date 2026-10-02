@@ -1,0 +1,46 @@
+{
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "timeseries-cv": "0.1.5"
+  },
+  "source_sha256": {
+    "optimize_minute_svr.py": "3fa639b4750312eafd12df3a34bc08730a4c770098141d71aa179bad0b70579d",
+    "report_optimized_svr.py": "fce7d71e8aa625d8bb801a92b25f40bf73f6b376c9744892429b8c0ea94d371f",
+    "minute_experiment.py": "1e5a827637229d89237cbbefc393fa767f6b3874191658e828ebefec3f66773c",
+    "metric_comparison.py": "731da0d466f444e7beda83d44ca5c3c30231932bcbad3d5445a6db73302db74f"
+  },
+  "artifact_sha256": {
+    "calendar.csv": "ee25d03c6983b31a45e6bc97325b065cab5984f56b47d18543e0430bd0df89f7",
+    "comparison.csv": "b8b88056303dfb03235e81aabd33f0fb1db1aedc0a6a56a2ca3c96ab5373e37e",
+    "configuration.json": "5ec83d36ba7cf031ce1c845f48f1d89cd337da20b9ab49f663ef23c8fec618c1",
+    "horizon_metrics.csv": "89dc36c077a501a7107e13ae4da2c4b5df91cdbee14298d703ab1803e2ae1e1b",
+    "index.html": "3b607de39ff72516c6b216f9c53f9e4643462403242935b61b0c0697c57da3d4",
+    "macro_metrics.csv": "ef0632965e84bbccc3afb2e8fcd88eb01257b1c74bb3310d84a16f6a6911f144",
+    "native_cv_audit.csv": "513b1743ed9852ee23ee8de9860cc8750657b4d767d5c1489a08cc42c39df747",
+    "predictions.csv.gz": "a4fe23a96a16aa49a5a7f9d314a9033d8af61d9554fb9a39d7406eb481ca1f81",
+    "search.csv": "0c4d8748b8e033fb3a216ff29e7d4448a6b1490de51deb465aa5903d90abce35",
+    "selected_inputs.csv": "53b160d6dbcd26210fc830c217a4e9f09ced60cea06ac7a7ee2291717d3cc5f4",
+    "selected_metrics.csv": "10b12e41d07bf5a71887e4f9cf8a506122ecfc4901f90d5d1f9fa1cceed99851",
+    "status.json": "340f95f9532be4f78fa90cf9c3290632e43e8b4a3a1a7588ea90f8c3148e9cf3",
+    "validation_comparison.csv": "bc8902cd454e13efe083e2937f2ff687ff0830974caf6f775faa914fd543ef3c",
+    "verification.json": "b17b9ea3ae9eac7a5172ba0000c8012f38951fd476cf1c20b681e710cd0c09f1",
+    "models\\BNBUSDT_v14.joblib": "23583d76382fe8d4aa9aa481ab3a4d981717915f180c580c29b72090521c4d0f",
+    "models\\BNBUSDT_v21.joblib": "10e8a69835558fc647e4dce7bfdb3ac78585d00a4e65f73864a4f1ec67f117bf",
+    "models\\BNBUSDT_v28.joblib": "8aad906b0c64149acb46554c780cb3c9cff7940e730d19e0e3375c403323633f",
+    "models\\BNBUSDT_v7.joblib": "005697db7936c64056bce1e1c1f844f57a17270c6331c8261069c61d2d84b7f3",
+    "models\\BTCUSDT_v14.joblib": "22efe24dc02cbe01abe66ac961ecfe47d2cc1410af3a9f8966407315dbf2b21f",
+    "models\\BTCUSDT_v21.joblib": "2d41678cd63fb76d4ac97c0e489182c9bba9d48578fa7c0b6a17c2458f94ec2e",
+    "models\\BTCUSDT_v28.joblib": "d0affff36c04ba286bc25415d42c07bef4bd230998c86033e1736d47fac06f41",
+    "models\\BTCUSDT_v7.joblib": "451106bbff656188f28db885c29fdb96f9d522213c83910a0e4ba9c8422a65cb",
+    "models\\ETHUSDT_v14.joblib": "001c4fe1cad11cee9cae1c5666500deb2d5568a8e8b6c060f74d1845d19a4b93",
+    "models\\ETHUSDT_v21.joblib": "2f47eb0bcb720cc5f52c332511ec93095ef3b34782238cfe2082778b5bff6d3c",
+    "models\\ETHUSDT_v28.joblib": "d2e648d90907c886849827ed5d9903a355000823689c2372e8225f40785e6fef",
+    "models\\ETHUSDT_v7.joblib": "d4c93289e0dfd30d3eb967c48345ff3cbab9b8a0d86bffbffcc3f91c16e52f82",
+    "models\\XRPUSDT_v14.joblib": "28f7afdae30d9f8f12be64afafaa719a3a67b90ce19a3d55e8be4bc7496e7cdd",
+    "models\\XRPUSDT_v21.joblib": "54a1c12e97c80d6a9a5d24b3fbec9a5ec71d02929768299828ac7b52ea1dc378",
+    "models\\XRPUSDT_v28.joblib": "bba7c9dcc0df812476806d02561b88b1097407d7e63c3377ac71e9ae1396bdac",
+    "models\\XRPUSDT_v7.joblib": "b5607cd252417024b2b48bb329fd5b7abe0108862f4cc89d18f14cff0fac0419"
+  }
+}

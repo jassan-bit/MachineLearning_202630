@@ -1,0 +1,33 @@
+{
+  "source_frequency": "1min",
+  "feature_representation": "daily summaries of ALL minute returns plus daily return lags and known volatility-window decay",
+  "input_windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "volatility_windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "C": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0
+  ],
+  "epsilon": [
+    0.01,
+    0.1
+  ],
+  "horizon_days": 7,
+  "selection": "Pooled out-of-fold 2024 mean horizon RMSE; six expanding fits; no 2025 selection",
+  "target": "Relative correction to current daily-return rolling volatility, ddof=0, percent units",
+  "final_fit": "All eligible labels ending before 2025; static model during 2025",
+  "warning": "Retrospective test: 2025 was already inspected in previous experiments.",
+  "cv": "Native tsxv forward training cuts, two-month validation extensions; native KFold/GroupKFold audited for future information, excluded from forecasting selection"
+}

@@ -1,0 +1,10 @@
+# Runtime for the comparative dashboard; no notebook or training tools.
+-r requirements-dashboard.txt
+-r requirements-xgboost.txt
+numpy==1.26.4
+scipy==1.15.3
+scikit-learn==1.7.2
+statsmodels==0.15.0
+joblib==1.6.0
+threadpoolctl==3.7.0
+timeseries-cv==0.1.5

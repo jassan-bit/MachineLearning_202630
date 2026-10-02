@@ -1,0 +1,39 @@
+{
+  "model": "KNeighborsRegressor",
+  "input_windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "volatility_windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "neighbors": [
+    3,
+    5,
+    10,
+    20,
+    40,
+    80
+  ],
+  "weights": [
+    "uniform",
+    "distance"
+  ],
+  "minkowski_p": [
+    1,
+    2
+  ],
+  "source_frequency": "1min",
+  "horizon_days": 7,
+  "features": "Same causal daily and minute-return summaries as optimized SVR",
+  "target": "Relative correction to current daily-return rolling volatility; ddof=0; percent units",
+  "selection": "Minimum pooled out-of-fold mean horizon RMSE in six expanding 2024 blocks",
+  "scaling": "StandardScaler fitted separately on each training block",
+  "final_fit": "All eligible labels ending before 2025; fixed model during 2025",
+  "warning": "Retrospective evaluation: 2025 was already inspected. No selection on 2025."
+}

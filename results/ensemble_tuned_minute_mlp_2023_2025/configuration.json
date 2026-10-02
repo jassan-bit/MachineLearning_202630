@@ -1,0 +1,8 @@
+{
+  "selection": "Minimum pooled mean horizon RMSE, six expanding 2024 blocks",
+  "candidates": "Original seed or mean of seeds 17, 42, 73; weights 0, .1, .2, .3, .5 with persistence or known-window decay",
+  "architecture": "Previous selected architecture, regularization and sample weights retained",
+  "test": "2025 retrospective, all choices frozen first; previously inspected",
+  "warning": "Reused validation and retrospective test; confirm on unseen data",
+  "source_selection_sha256": "dadae940e44c9d8b0e901ab650428c5f485d13f948b073dd12e5334845131f2d"
+}

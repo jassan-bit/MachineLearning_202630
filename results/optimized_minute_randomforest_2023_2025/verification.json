@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "configurations": 16,
+  "searched_configurations": 256,
+  "test_origins": 358,
+  "wins_vs_persistence": 16,
+  "source_hashes_verified": true,
+  "exported_predictions_verified": true,
+  "metrics_recomputed": true,
+  "validation_refitted": true,
+  "svr_test_dates_and_targets_equal": true,
+  "selection_sha256": "6be6b1f2c673f128d3234a718613f5c688319ffbbe4320758885a69a44607523"
+}

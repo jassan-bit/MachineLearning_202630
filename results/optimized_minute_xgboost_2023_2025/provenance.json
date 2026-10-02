@@ -1,0 +1,51 @@
+{
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "matplotlib": "3.10.9",
+    "nbformat": "5.11.1",
+    "joblib": "1.6.0",
+    "xgboost": "3.0.5"
+  },
+  "source_sha256": {
+    "optimize_minute_xgboost.py": "751eb137e7df82817d47d2ed496e2c3fa247458ff35f0874097351adfe08f6d0",
+    "report_optimized_xgboost.py": "009e178e2254f2df74c42ab9587ef62347b29032c70fa22811f9c25564f46da0",
+    "optimize_minute_svr.py": "3fa639b4750312eafd12df3a34bc08730a4c770098141d71aa179bad0b70579d",
+    "minute_experiment.py": "1e5a827637229d89237cbbefc393fa767f6b3874191658e828ebefec3f66773c"
+  },
+  "artifact_sha256": {
+    "calendar.csv": "ee25d03c6983b31a45e6bc97325b065cab5984f56b47d18543e0430bd0df89f7",
+    "comparison.csv": "7c5d8d3d0b07b62090d6a69c6c1dec7f1d95e6ed3aab66a20928979e2b510cd2",
+    "configuration.json": "20b4af2f6a2a6fe97b67c5bbe244554449e17c36c968ede6f895968a65689be1",
+    "feature_importances.csv": "a4b92ae34ada36bf2e46e71fb80d9235cee403908c4a5b2c7cbc7377c4c82e51",
+    "horizon_metrics.csv": "66fa8b4e4f6471f6e15c2dcc6bff0fb153f08a0c39aedc233360e2650b67c0f8",
+    "index.html": "6dab0434bb5c3c869b7f3566a2ec623f7fe145da8b82869584f998d9f9240b2f",
+    "macro_metrics.csv": "6f2b414ca98d9cbfab81ac3cf985c577bcc679002337d61fcce741cff703d55c",
+    "model_comparison.png": "3c0fa5c52ad9b593c94159caa9fa08f2d741475125bf09ee66f82db629af0738",
+    "native_cv_audit.csv": "513b1743ed9852ee23ee8de9860cc8750657b4d767d5c1489a08cc42c39df747",
+    "predictions.csv.gz": "e1dc9173f9f774472e49c43bc9620122c5009d62ee06096b7e9c67f679f0caf0",
+    "search.csv": "ad8f7991dd27183bda506dd5b63b57250e37e050454f5faf6c57e854b4c2942b",
+    "selected_inputs.csv": "2b5c1bcd43e6a80eb97037f1159303af7d48df9485d5a3ca52d8ae860f7c74b6",
+    "selected_metrics.csv": "e9c6e66143a32ec68ccc0fc8132b52faecf1db6bbd13569f496ad1f30d489d84",
+    "status.json": "e3c02c5c51ea433ab825b334ab4460f0f56bba668fcdcf1703dd8762fb66f8db",
+    "validation_comparison.csv": "ef25df9567ed7d9a6f25750103e94f071a890d435ec98fc1ef280115b80ee5b7",
+    "verification.json": "83cda067552e099ffc1cc7ad5b5140fb18497cda176ad11730345f3501f91084",
+    "models\\BNBUSDT_v14.joblib": "329a768917184cb06bb50da7fe9d39a955ab429d895fa7d8a218bebb3f4a2e12",
+    "models\\BNBUSDT_v21.joblib": "989dbba1065e29d54859bff2971452c4fde0d53ab297eb16cf12299d064d8024",
+    "models\\BNBUSDT_v28.joblib": "b62d22d684511716ee40c8927fec8fc4961bded9dcc7d288a02b41d1236cd19b",
+    "models\\BNBUSDT_v7.joblib": "d152a17e05d3e135d529150215abc752757822554a94fe9001ccb4556caefb44",
+    "models\\BTCUSDT_v14.joblib": "39585ff08f79486f53977c7f3403017cde0287bc7488a1a4c4c5ff783ac2c971",
+    "models\\BTCUSDT_v21.joblib": "045cf0630f33a0912021bc51a3f55be1867d7025793d7f431f4bac44c75b0e64",
+    "models\\BTCUSDT_v28.joblib": "3ccd02611c213330e7631cb2edb79d4fb06949a081b8d733f85abb930c92cdb7",
+    "models\\BTCUSDT_v7.joblib": "7096923625724f3c14af3eb349cd67c529cd70f6aafcf0e1cf1761495a2a1b46",
+    "models\\ETHUSDT_v14.joblib": "e975adacae8c7c16176730b5ff05ac0c277937d0cc0035d7e70b41ea1b86ce61",
+    "models\\ETHUSDT_v21.joblib": "561bd567c3a5592ebe7c65f3b3c52e437741affcc052f0de73c410851151ef52",
+    "models\\ETHUSDT_v28.joblib": "74cb0b868aded0355a34d8ce06a704752a97b41d89562813db004699fd037302",
+    "models\\ETHUSDT_v7.joblib": "3357734eb0ee9dcb18aedfe29e5ad599398edd62497281f5a576522ad537b61c",
+    "models\\XRPUSDT_v14.joblib": "f40800a319289ab5ff2a5330565385c3aaf29fbeb12efa5e39fa48e6605925b5",
+    "models\\XRPUSDT_v21.joblib": "b15caf47a815d8a237d5d10387bf2283d21865b5d489e8ee78b8193e731aab44",
+    "models\\XRPUSDT_v28.joblib": "3413f2a62fa47fe50b426e3a2fe3cfc80232cd1ab728ac8c25fc1f7d07e94228",
+    "models\\XRPUSDT_v7.joblib": "76c407f00c27162bae5c19a851866b642694108f5a6610d72d3ac9c35f94b8e0"
+  }
+}

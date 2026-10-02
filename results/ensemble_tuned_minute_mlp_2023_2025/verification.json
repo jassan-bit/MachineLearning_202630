@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "selection_sha256": "efababe0285ecdb5086d0eb9745aca838d3fa11121f039c8851e84dab311bd9d",
+  "baseline_validation_reproduced": true,
+  "baseline_test_reproduced": true,
+  "serialized_predictions_verified": true,
+  "exported_metrics_recomputed": true,
+  "train_only_scaling": true,
+  "test_origins": 358
+}

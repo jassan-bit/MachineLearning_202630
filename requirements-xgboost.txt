@@ -1,0 +1,2 @@
+# Additional model; install into the project's virtual environment.
+xgboost==3.0.5

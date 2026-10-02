@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "configurations": 16,
+  "forecast_rows": 40096,
+  "test_origins": 358,
+  "wins_vs_persistence": 16,
+  "source_hashes_verified": true,
+  "exported_models_verified": true,
+  "metrics_recomputed": true,
+  "selection_refitted_on_2024": true,
+  "original_test_dates_and_targets_equal": true
+}

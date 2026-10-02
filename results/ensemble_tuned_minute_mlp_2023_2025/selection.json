@@ -1,0 +1,435 @@
+[
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.4438136775172587,
+    "rmse": 0.7035021882247002,
+    "mse": 0.5394154669480894,
+    "mae": 0.5314731132975238,
+    "mape": 24.320510692412093,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.7035050738762895
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.7549874907505252,
+    "rmse": 0.37673030084979214,
+    "mse": 0.1563862857581604,
+    "mae": 0.27627907092816717,
+    "mape": 11.019527191602814,
+    "config": {
+      "lag": 14,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.3827722254737025
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8508609411524739,
+    "rmse": 0.26118487990273087,
+    "mse": 0.07599341301659614,
+    "mae": 0.1915815432755171,
+    "mape": 7.380586685910797,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.2734404664185394
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.888358639600385,
+    "rmse": 0.2046010927158624,
+    "mse": 0.04639675569889181,
+    "mae": 0.1497060037068403,
+    "mape": 5.737908210566806,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 0.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.21697603172967847
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.3539838703281184,
+    "rmse": 0.9433861771020051,
+    "mse": 0.9765505616638259,
+    "mae": 0.6946613694665522,
+    "mape": 27.23801374282944,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.9634292340313185
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.6956519348257147,
+    "rmse": 0.5450341118943387,
+    "mse": 0.3246362006023553,
+    "mae": 0.36737438324164506,
+    "mape": 12.702794411721282,
+    "config": {
+      "lag": 28,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.5676812088289948
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.7974930275497637,
+    "rmse": 0.37732142111646183,
+    "mse": 0.15622302371523372,
+    "mae": 0.24837362893102477,
+    "mape": 7.892310903020686,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.0003,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.39642569849746057
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8398490271926888,
+    "rmse": 0.29884614645039703,
+    "mse": 0.09867284071752161,
+    "mae": 0.19229235429525074,
+    "mape": 6.062071186672279,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.31470303190377136
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.5235596181173883,
+    "rmse": 0.8059093691095034,
+    "mse": 0.7201923219786321,
+    "mae": 0.5855875379074359,
+    "mape": 27.059779013126576,
+    "config": {
+      "lag": 21,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 1.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.8266025358149707
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8147646626937706,
+    "rmse": 0.4464381289586622,
+    "mse": 0.22466797136291677,
+    "mae": 0.3154938940880223,
+    "mape": 11.558085118375494,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.46023055976114213
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8841859759480606,
+    "rmse": 0.31987309644227885,
+    "mse": 0.11387453631632952,
+    "mae": 0.22292368906947388,
+    "mape": 7.941772588457664,
+    "config": {
+      "lag": 21,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.33930224562277145
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9232817909889958,
+    "rmse": 0.2372274465743124,
+    "mse": 0.06334839720806652,
+    "mae": 0.16197523056253438,
+    "mape": 5.677232469447369,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.25525197177207143
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.6668768075868228,
+    "rmse": 1.1678899954996746,
+    "mse": 1.515726940683809,
+    "mae": 0.8267982418987458,
+    "mape": 30.02346661112594,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 1.170385270236858
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8578578586975457,
+    "rmse": 0.7036237918973586,
+    "mse": 0.5603238049949851,
+    "mae": 0.4889409213026449,
+    "mape": 14.31249223237553,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.7176851581131146
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9017081162582693,
+    "rmse": 0.5505824254969981,
+    "mse": 0.34075778159898024,
+    "mae": 0.36248735098224116,
+    "mape": 10.13128659030476,
+    "config": {
+      "lag": 21,
+      "layers": [
+        32,
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 17
+    },
+    "original_validation_rmse": 0.5834804882933667
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9356554102498205,
+    "rmse": 0.42299864073618065,
+    "mse": 0.2033447112144178,
+    "mae": 0.27618723505573745,
+    "mape": 7.664365102754306,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.4384950989310406
+  }
+]

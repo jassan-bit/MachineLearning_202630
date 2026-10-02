@@ -1,0 +1,12 @@
+{
+  "method": "Paired moving-block bootstrap; 28-day blocks, 1000 resamples",
+  "rmse_difference_new_minus_previous_95_percent": [
+    -0.02098357033608453,
+    -0.00047006821086694194
+  ],
+  "r2_difference_new_minus_previous_95_percent": [
+    -0.0050432942367423985,
+    0.02580392025424362
+  ],
+  "warning": "Descriptive retrospective uncertainty; does not correct repeated model selection"
+}

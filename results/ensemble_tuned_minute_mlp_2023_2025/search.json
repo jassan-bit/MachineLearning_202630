@@ -1,0 +1,4995 @@
+[
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.4467641258463952,
+    "rmse": 0.7035050738762895,
+    "mse": 0.5365555946027131,
+    "mae": 0.5319938758539835,
+    "mape": 24.38767819391335
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.4318175613588582,
+    "rmse": 0.7131579350682179,
+    "mse": 0.5510515766192549,
+    "mae": 0.538954371695665,
+    "mape": 24.721037018089856
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.4111094152021897,
+    "rmse": 0.7262274797924719,
+    "mse": 0.5711352046700834,
+    "mae": 0.5481476588604316,
+    "mape": 25.15618915995974
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.38463968737639004,
+    "rmse": 0.7425309587968398,
+    "mse": 0.5968064787551989,
+    "mae": 0.5592774547578958,
+    "mape": 25.678245758071046
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.3144154867173964,
+    "rmse": 0.7839801586769358,
+    "mse": 0.6649119650282904,
+    "mae": 0.5862686433600718,
+    "mape": 26.942863730161985
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.4467641258463952,
+    "rmse": 0.7035050738762895,
+    "mse": 0.5365555946027131,
+    "mae": 0.5319938758539835,
+    "mape": 24.38767819391335
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.4438136775172587,
+    "rmse": 0.7035021882247002,
+    "mse": 0.5394154669480894,
+    "mae": 0.5314731132975238,
+    "mape": 24.320510692412093,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.7035050738762895
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.4363161155807778,
+    "rmse": 0.7062070943661097,
+    "mse": 0.5466852027357149,
+    "mae": 0.5331614354370652,
+    "mape": 24.349462392419547
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.42427144003695166,
+    "rmse": 0.7115789017697433,
+    "mse": 0.5583648019655899,
+    "mae": 0.5370928667405543,
+    "mape": 24.47249380812382
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.38654074812726524,
+    "rmse": 0.7300359772173743,
+    "mse": 0.594953590752088,
+    "mae": 0.5516181282547445,
+    "mape": 24.997116581646605
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.4443163840996918,
+    "rmse": 0.7047585840296601,
+    "mse": 0.5389292756646162,
+    "mae": 0.5332198729302339,
+    "mape": 24.47100762938881
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.4302620040135489,
+    "rmse": 0.7138809789730204,
+    "mse": 0.5525600438008084,
+    "mae": 0.5398280004807274,
+    "mape": 24.78514743991276
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.4103021733190025,
+    "rmse": 0.7265174236545237,
+    "mse": 0.571917979254434,
+    "mae": 0.5487320274738261,
+    "mape": 25.202509447004708
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.3844368920160525,
+    "rmse": 0.7424865059550358,
+    "mse": 0.5970030820254928,
+    "mae": 0.5594862923329758,
+    "mape": 25.70516020599156
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.3149899775849433,
+    "rmse": 0.7835534612707045,
+    "mse": 0.6643547895199109,
+    "mae": 0.5860502039596587,
+    "mape": 26.946096441464963
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.4443163840996918,
+    "rmse": 0.7047585840296601,
+    "mse": 0.5389292756646162,
+    "mae": 0.5332198729302339,
+    "mape": 24.47100762938881
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.44210364743875213,
+    "rmse": 0.7043483716103668,
+    "mse": 0.541073759219436,
+    "mae": 0.5324693715181845,
+    "mape": 24.389919510774753
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.4352342555052388,
+    "rmse": 0.7067092723117273,
+    "mse": 0.547734333035253,
+    "mae": 0.5339312585910737,
+    "mape": 24.40512727137769
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.42370820829915307,
+    "rmse": 0.7118029637694494,
+    "mse": 0.5589109971120676,
+    "mae": 0.5375004427532966,
+    "mape": 24.510136216945206
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.38668614806926355,
+    "rmse": 0.7299025845275618,
+    "mse": 0.594812596048689,
+    "mae": 0.5516439446061807,
+    "mape": 25.010802337772944
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.7502242503579105,
+    "rmse": 0.3827722254737025,
+    "mse": 0.15942929727047442,
+    "mae": 0.2802552176618259,
+    "mape": 11.362527806068355
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.7470995928679233,
+    "rmse": 0.3851925343369628,
+    "mse": 0.1614237631226969,
+    "mae": 0.28111108879387187,
+    "mape": 11.387540340961753
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.7416135301788885,
+    "rmse": 0.38932039094386894,
+    "mse": 0.1649253824384546,
+    "mae": 0.28312267590925505,
+    "mape": 11.458056258515173
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7337660622908071,
+    "rmse": 0.3951015958805283,
+    "mse": 0.16993415521774755,
+    "mae": 0.28590857711160256,
+    "mape": 11.560352732121755
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7109869109175028,
+    "rmse": 0.4113189852214351,
+    "mse": 0.18447316116693932,
+    "mae": 0.294532051324253,
+    "mape": 11.88707156000691
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.7502242503579105,
+    "rmse": 0.3827722254737025,
+    "mse": 0.15942929727047442,
+    "mae": 0.2802552176618259,
+    "mape": 11.362527806068355
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.7531153061338699,
+    "rmse": 0.3797353624175557,
+    "mse": 0.15758301318099555,
+    "mae": 0.27818224731251,
+    "mape": 11.219637965352094
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.754703052931408,
+    "rmse": 0.3777144694804641,
+    "mse": 0.1565686760102242,
+    "mae": 0.276857739672303,
+    "mape": 11.10447969159752
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.7549874907505252,
+    "rmse": 0.37673030084979214,
+    "mse": 0.1563862857581604,
+    "mae": 0.27627907092816717,
+    "mape": 11.019527191602814,
+    "config": {
+      "lag": 14,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.3827722254737025
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.7516464394534951,
+    "rmse": 0.37791820783642194,
+    "mse": 0.1585173460101556,
+    "mae": 0.27750891161714936,
+    "mape": 10.946310347276468
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.7491292563392521,
+    "rmse": 0.3835797061573509,
+    "mse": 0.16012826682559536,
+    "mae": 0.27950160375190586,
+    "mape": 11.311606664947764
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.7458130772924892,
+    "rmse": 0.38614779008495587,
+    "mse": 0.1622449843888141,
+    "mae": 0.28047887008820827,
+    "mape": 11.344947273679903
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.7402023865930442,
+    "rmse": 0.3903656775066394,
+    "mse": 0.16582615571189954,
+    "mae": 0.28278050143324934,
+    "mape": 11.429910752372308
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7322971842409167,
+    "rmse": 0.39617999897768286,
+    "mse": 0.1708717807948517,
+    "mae": 0.28575238819791393,
+    "mape": 11.54219704412394
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7096032445786148,
+    "rmse": 0.41230280030232286,
+    "mse": 0.18535639224035635,
+    "mae": 0.29469211889702374,
+    "mape": 11.88659216371638
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.7491292563392521,
+    "rmse": 0.3835797061573509,
+    "mse": 0.16012826682559536,
+    "mae": 0.27950160375190586,
+    "mape": 11.311606664947764
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.7520019413459433,
+    "rmse": 0.3805686688796843,
+    "mse": 0.1582936959402807,
+    "mae": 0.2773819519551728,
+    "mape": 11.169337382838485
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.7535997329677989,
+    "rmse": 0.3785492104061604,
+    "mse": 0.1572729363826344,
+    "mae": 0.27611540909124155,
+    "mape": 11.058388266021655
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.7539226312048184,
+    "rmse": 0.3775416288446797,
+    "mse": 0.15706598815265654,
+    "mae": 0.2756303313051118,
+    "mape": 10.97931406743037
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.7507437475243497,
+    "rmse": 0.37860843188235865,
+    "mse": 0.1590935256757059,
+    "mae": 0.2770818813306148,
+    "mape": 10.920012766301294
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8379315827988287,
+    "rmse": 0.2734404664185394,
+    "mse": 0.08258470545136676,
+    "mae": 0.20185719334375882,
+    "mape": 7.793136086662318
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8389446589636391,
+    "rmse": 0.2724276784803967,
+    "mse": 0.08206787906203075,
+    "mae": 0.20164736547552595,
+    "mape": 7.837506475381078
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8373076876649106,
+    "rmse": 0.2736881730976286,
+    "mse": 0.08290157838865515,
+    "mae": 0.20262696215433265,
+    "mape": 7.928917779803254
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8330206689026424,
+    "rmse": 0.27719365444421473,
+    "mse": 0.08508580343123996,
+    "mae": 0.20458768931075555,
+    "mape": 8.058869780625038
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8164964889874884,
+    "rmse": 0.29056722463053564,
+    "mse": 0.09350583066429087,
+    "mae": 0.21115465402001607,
+    "mape": 8.424115408663654
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8379315827988287,
+    "rmse": 0.2734404664185394,
+    "mse": 0.08258470545136676,
+    "mae": 0.20185719334375882,
+    "mape": 7.793136086662318
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8422144931023465,
+    "rmse": 0.2696161185901053,
+    "mse": 0.08040175375566759,
+    "mae": 0.19870795805948846,
+    "mape": 7.668251956280532
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8455921146577815,
+    "rmse": 0.2665195383624786,
+    "mse": 0.07868011755007952,
+    "mae": 0.19610228576067418,
+    "mape": 7.563186554222322
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8480644474651334,
+    "rmse": 0.26417623120473976,
+    "mse": 0.07741979683460253,
+    "mae": 0.19389023945602576,
+    "mape": 7.472953310955494
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8502932468355893,
+    "rmse": 0.2618236301255774,
+    "mse": 0.0762831018739819,
+    "mae": 0.19153533617734508,
+    "mape": 7.36758055425859
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8410411345131081,
+    "rmse": 0.27044822008088365,
+    "mse": 0.08099907442865928,
+    "mae": 0.2008082027846836,
+    "mape": 7.7740684289797155
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8412907792070652,
+    "rmse": 0.2700868158460822,
+    "mse": 0.08087134562212582,
+    "mae": 0.2007448720270296,
+    "mape": 7.8246018002865485
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8389909267262444,
+    "rmse": 0.2719380599263676,
+    "mse": 0.08204291264699015,
+    "mae": 0.20179758324548774,
+    "mape": 7.917971327453712
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8341415770706454,
+    "rmse": 0.2759594753336762,
+    "mse": 0.08451377550325229,
+    "mae": 0.20389595416610545,
+    "mape": 8.052699375794614
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8167943862351132,
+    "rmse": 0.2901052394295794,
+    "mse": 0.09335338870996993,
+    "mae": 0.21078282423956135,
+    "mape": 8.426420390085903
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8410411345131081,
+    "rmse": 0.27044822008088365,
+    "mse": 0.08099907442865928,
+    "mae": 0.2008082027846836,
+    "mape": 7.7740684289797155
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.844657740290706,
+    "rmse": 0.2672086004840791,
+    "mse": 0.0791558114306593,
+    "mae": 0.19787938365778557,
+    "mape": 7.656139085879307
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8474480238434418,
+    "rmse": 0.26464529446240576,
+    "mse": 0.07773361379045303,
+    "mae": 0.19544147287710445,
+    "mape": 7.555848501129643
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8494119851713148,
+    "rmse": 0.2627779719310736,
+    "mse": 0.07673248150804039,
+    "mae": 0.19352555035477326,
+    "mape": 7.47504553810773
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8508609411524739,
+    "rmse": 0.26118487990273087,
+    "mse": 0.07599341301659614,
+    "mae": 0.1915815432755171,
+    "mape": 7.380586685910797,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.2734404664185394
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8767920067615884,
+    "rmse": 0.21697603172967847,
+    "mse": 0.051203687733929276,
+    "mae": 0.15921402034806503,
+    "mape": 6.1279744585335525
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8759733234149885,
+    "rmse": 0.217311395573401,
+    "mse": 0.05154393434695837,
+    "mae": 0.1588527045481514,
+    "mape": 6.144750119882398
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8732532490319482,
+    "rmse": 0.21928716599448045,
+    "mse": 0.05267437563458575,
+    "mae": 0.15970821951321656,
+    "mape": 6.2087361563498265
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8686317836124682,
+    "rmse": 0.22286089175271467,
+    "mse": 0.05459501159681139,
+    "mae": 0.1618084549543731,
+    "mape": 6.320892139966894
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8536846796641873,
+    "rmse": 0.23448537460180294,
+    "mse": 0.0608068675450575,
+    "mae": 0.1684808591756718,
+    "mape": 6.63752631519034
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8767920067615884,
+    "rmse": 0.21697603172967847,
+    "mse": 0.051203687733929276,
+    "mae": 0.15921402034806503,
+    "mape": 6.1279744585335525
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8801118460748522,
+    "rmse": 0.21365459277399748,
+    "mse": 0.04982400121198354,
+    "mae": 0.15647992115239678,
+    "mape": 6.018497628171426
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8828396745777647,
+    "rmse": 0.21083011694588003,
+    "mse": 0.04869034965858797,
+    "mae": 0.15421543076099026,
+    "mape": 5.926377913941133
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8849754922703263,
+    "rmse": 0.20852405618021022,
+    "mse": 0.047802733073742554,
+    "mae": 0.15247261953898075,
+    "mape": 5.854107231243052
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8874710952243957,
+    "rmse": 0.20553979475142234,
+    "mse": 0.046765604809702266,
+    "mae": 0.15042977970415009,
+    "mape": 5.762233345297987
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8814694054067607,
+    "rmse": 0.2123693477678222,
+    "mse": 0.04925981066088662,
+    "mae": 0.1552829994305669,
+    "mape": 5.986143915716422
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8797728510686503,
+    "rmse": 0.21350665513595077,
+    "mse": 0.04996489927964381,
+    "mae": 0.1557131111444403,
+    "mape": 6.029046319991495
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8762660459445428,
+    "rmse": 0.21622948224481978,
+    "mse": 0.05142230384001618,
+    "mae": 0.15713978415682783,
+    "mape": 6.113442752406926
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8709489900344384,
+    "rmse": 0.22048077027483587,
+    "mse": 0.05363202434200376,
+    "mae": 0.15952353016579607,
+    "mape": 6.236599160782167
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8548841258562373,
+    "rmse": 0.23321234770720703,
+    "mse": 0.060308413170824554,
+    "mae": 0.1669392882840362,
+    "mape": 6.579812728941658
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8814694054067607,
+    "rmse": 0.2123693477678222,
+    "mse": 0.04925981066088662,
+    "mae": 0.1552829994305669,
+    "mape": 5.986143915716422
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8837990890747323,
+    "rmse": 0.20996079392281386,
+    "mse": 0.04829162403950106,
+    "mae": 0.15352721692793977,
+    "mape": 5.911275211229534
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8856528543280806,
+    "rmse": 0.2079679998740874,
+    "mse": 0.0475212252326088,
+    "mae": 0.1520843809176763,
+    "mape": 5.849135444905622
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8870307011668055,
+    "rmse": 0.20640373221954342,
+    "mse": 0.046948614240209824,
+    "mae": 0.15091942250032886,
+    "mape": 5.7980576169157105
+  },
+  {
+    "symbol": "BTCUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.888358639600385,
+    "rmse": 0.2046010927158624,
+    "mse": 0.04639675569889181,
+    "mae": 0.1497060037068403,
+    "mape": 5.737908210566806,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 0.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.21697603172967847
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.32920964069458797,
+    "rmse": 0.9634292340313185,
+    "mse": 1.0139862931154882,
+    "mae": 0.7153969313682677,
+    "mape": 28.573325037737042
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.33861209788235413,
+    "rmse": 0.9573946827373073,
+    "mse": 0.9997679111921175,
+    "mae": 0.7075486509532602,
+    "mape": 28.190255738435123
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.33749405030266927,
+    "rmse": 0.9589222397833649,
+    "mse": 1.0014522838271718,
+    "mae": 0.7036902965168877,
+    "mape": 27.96023019112565
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.3258554979555327,
+    "rmse": 0.9679764452607306,
+    "mse": 1.0190394110206509,
+    "mae": 0.7030410304957051,
+    "mape": 27.8435990237303
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.2710168789589062,
+    "rmse": 1.007688349906917,
+    "mse": 1.1019219290828843,
+    "mae": 0.7142208371373316,
+    "mape": 28.05410972645049
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.32920964069458797,
+    "rmse": 0.9634292340313185,
+    "mse": 1.0139862931154882,
+    "mae": 0.7153969313682677,
+    "mape": 28.573325037737042
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.3455056176660936,
+    "rmse": 0.9514084203757693,
+    "mse": 0.9893549378655574,
+    "mae": 0.7054768401777398,
+    "mape": 28.027210684978893
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.35376369421060394,
+    "rmse": 0.9446944144232621,
+    "mse": 0.9768763607150033,
+    "mae": 0.6986459411773147,
+    "mape": 27.584069585119476
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.3539838703281184,
+    "rmse": 0.9433861771020051,
+    "mse": 0.9765505616638259,
+    "mae": 0.6946613694665522,
+    "mape": 27.23801374282944,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.9634292340313185
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.3303105212821613,
+    "rmse": 0.9568886084852195,
+    "mse": 1.0123572978596012,
+    "mae": 0.6984046026162757,
+    "mape": 26.897384476212974
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.32983800763396776,
+    "rmse": 0.962944556174107,
+    "mse": 1.013027710458235,
+    "mae": 0.7167342774492881,
+    "mape": 28.498314104518048
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.33846746378728193,
+    "rmse": 0.9574926999094109,
+    "mse": 0.9999787149942474,
+    "mae": 0.7094338167496562,
+    "mape": 28.148204199062715
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.33673422947103643,
+    "rmse": 0.959483323570058,
+    "mse": 1.002593912267872,
+    "mae": 0.7059864145515401,
+    "mape": 27.944166543850816
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.32463830468523225,
+    "rmse": 0.9688720431763108,
+    "mse": 1.0208733022791083,
+    "mae": 0.7062385977668352,
+    "mape": 27.867839263928452
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.26935838370494514,
+    "rmse": 1.0088623906715861,
+    "mse": 1.1044246605144181,
+    "mae": 0.7177429048141517,
+    "mape": 28.109008652214303
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.32983800763396776,
+    "rmse": 0.962944556174107,
+    "mse": 1.013027710458235,
+    "mae": 0.7167342774492881,
+    "mape": 28.498314104518048
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.3455788628001275,
+    "rmse": 0.9514344279539202,
+    "mse": 0.9892365170220578,
+    "mae": 0.7074192695558779,
+    "mape": 27.98670690760713
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.3533912142307157,
+    "rmse": 0.9451377269400532,
+    "mse": 0.9774327008968067,
+    "mae": 0.7007441815537269,
+    "mape": 27.561736755711497
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.35327506192573255,
+    "rmse": 0.9441454767564765,
+    "mse": 0.9776162620824813,
+    "mae": 0.6971281366018172,
+    "mape": 27.241254304427667
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.3292572461090513,
+    "rmse": 0.9579559791737131,
+    "mse": 1.0139455163866085,
+    "mae": 0.7013548153889668,
+    "mape": 26.94266001139845
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.6790448711163639,
+    "rmse": 0.5676812088289948,
+    "mse": 0.34235785512517086,
+    "mae": 0.3983991757206249,
+    "mape": 14.189962696150495
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.6711400768526251,
+    "rmse": 0.5741974176153164,
+    "mse": 0.3507893878808523,
+    "mae": 0.39635289932885215,
+    "mape": 14.174798514873249
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.6595223646370606,
+    "rmse": 0.5836527339775276,
+    "mse": 0.3631812365032073,
+    "mae": 0.3957521711989078,
+    "mape": 14.205943315991018
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.6441917344696696,
+    "rmse": 0.5958974686025537,
+    "mse": 0.3795334009922359,
+    "mae": 0.39702933984656663,
+    "mape": 14.300769353920609
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.6023917202794101,
+    "rmse": 0.6280244201288403,
+    "mse": 0.42411867757031396,
+    "mae": 0.4066534431548522,
+    "mape": 14.730289683408442
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.6790448711163639,
+    "rmse": 0.5676812088289948,
+    "mse": 0.34235785512517086,
+    "mae": 0.3983991757206249,
+    "mape": 14.189962696150495
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.6872466421583229,
+    "rmse": 0.5590102412544631,
+    "mse": 0.33360773392661025,
+    "mae": 0.38761725889130044,
+    "mape": 13.77115371813998
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.6929852773919898,
+    "rmse": 0.5523556817661437,
+    "mse": 0.32748499430458033,
+    "mae": 0.3788084508497793,
+    "mape": 13.404824842526953
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.6962607768173651,
+    "rmse": 0.5477838783599464,
+    "mse": 0.3239896362590811,
+    "mae": 0.372395580643675,
+    "mape": 13.103966552690054
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.695422368243239,
+    "rmse": 0.5450618797732365,
+    "mse": 0.3248810648976747,
+    "mae": 0.3684942417113205,
+    "mape": 12.73682115077056
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.677142493722946,
+    "rmse": 0.5696723600004227,
+    "mse": 0.34438714611336885,
+    "mae": 0.39945021084960886,
+    "mape": 14.203499234657722
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.669617522155116,
+    "rmse": 0.5758361783288979,
+    "mse": 0.3524135249211654,
+    "mae": 0.3969323027992008,
+    "mape": 14.176076888743156
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.6583375026451115,
+    "rmse": 0.5849726901598096,
+    "mse": 0.3644451584509833,
+    "mae": 0.396095379565047,
+    "mape": 14.202356138455977
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.6433024351929332,
+    "rmse": 0.5969345203147141,
+    "mse": 0.3804820467028226,
+    "mae": 0.39718836339962077,
+    "mape": 14.292928774239988
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.6019671564620536,
+    "rmse": 0.6286050347065463,
+    "mse": 0.42457158737256545,
+    "mae": 0.4067199954635577,
+    "mape": 14.724375242666795
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.677142493722946,
+    "rmse": 0.5696723600004227,
+    "mse": 0.34438714611336885,
+    "mae": 0.39945021084960886,
+    "mape": 14.203499234657722
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.6859595744047534,
+    "rmse": 0.5604564580342561,
+    "mse": 0.33498067229179773,
+    "mae": 0.3877090051711919,
+    "mape": 13.761679971363714
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.6922190588559339,
+    "rmse": 0.5533211207870885,
+    "mse": 0.32830234082991094,
+    "mae": 0.37823793398044153,
+    "mape": 13.379694096006023
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.6959209470764876,
+    "rmse": 0.5483396238266598,
+    "mse": 0.3243521517277082,
+    "mae": 0.3715045550384177,
+    "mape": 13.071804377587743
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.6956519348257147,
+    "rmse": 0.5450341118943387,
+    "mse": 0.3246362006023553,
+    "mae": 0.36737438324164506,
+    "mape": 12.702794411721282,
+    "config": {
+      "lag": 28,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.5676812088289948
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.7796871021753417,
+    "rmse": 0.39642569849746057,
+    "mse": 0.16997267375379843,
+    "mae": 0.2710362636076879,
+    "mape": 8.830226809108273
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.7812631167436547,
+    "rmse": 0.39514788866768435,
+    "mse": 0.1687572402780419,
+    "mae": 0.2656467362763443,
+    "mape": 8.69139242349874
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.7793880892745649,
+    "rmse": 0.3968835274907017,
+    "mse": 0.17020387379292812,
+    "mae": 0.26189601166499604,
+    "mape": 8.60688861192665
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7740620197680723,
+    "rmse": 0.40159438744721765,
+    "mse": 0.17431257429845717,
+    "mae": 0.2598972335213281,
+    "mape": 8.579107820858686
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7530567546428787,
+    "rmse": 0.4194747781023653,
+    "mse": 0.19051617628144385,
+    "mae": 0.26087213805302945,
+    "mape": 8.678469149759204
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.7796871021753417,
+    "rmse": 0.39642569849746057,
+    "mse": 0.16997267375379843,
+    "mae": 0.2710362636076879,
+    "mape": 8.830226809108273
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.785181048258081,
+    "rmse": 0.3910235631852503,
+    "mse": 0.16573209013051546,
+    "mae": 0.2653632951237954,
+    "mape": 8.612936150220817
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.7895134285597225,
+    "rmse": 0.38659314671531453,
+    "mse": 0.16238753855531915,
+    "mae": 0.2603816810287369,
+    "mape": 8.41457124880439
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.7926842430802665,
+    "rmse": 0.3831668337747865,
+    "mse": 0.15993901902820953,
+    "mae": 0.25604135448797194,
+    "mape": 8.235012448860788
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.7955411747780625,
+    "rmse": 0.37942297847515166,
+    "mse": 0.15773007611825052,
+    "mae": 0.2502365085631576,
+    "mape": 7.956922107899974
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.784887676873174,
+    "rmse": 0.3909635111558126,
+    "mse": 0.16595660572964407,
+    "mae": 0.26724289042269445,
+    "mape": 8.697477444067491
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.7856357646030531,
+    "rmse": 0.39049144285299003,
+    "mse": 0.1653802814077859,
+    "mae": 0.26237354742801616,
+    "mape": 8.577470276360275
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.7830012257107849,
+    "rmse": 0.39300335604144576,
+    "mse": 0.16741324577624098,
+    "mae": 0.259193818446547,
+    "mape": 8.512862620564608
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7769840601963699,
+    "rmse": 0.3984443781488095,
+    "mse": 0.17205549883500937,
+    "mae": 0.2575216836408868,
+    "mape": 8.498117770289058
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7548018493010986,
+    "rmse": 0.4175953740941601,
+    "mse": 0.18916787102348603,
+    "mae": 0.2593214717788652,
+    "mape": 8.626442482403236
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.784887676873174,
+    "rmse": 0.3909635111558126,
+    "mse": 0.16595660572964407,
+    "mae": 0.26724289042269445,
+    "mape": 8.697477444067491
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.7896281290383326,
+    "rmse": 0.3863012636997665,
+    "mse": 0.16229798228803824,
+    "mae": 0.2618950151355555,
+    "mape": 8.491227734966854
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.7932588901885705,
+    "rmse": 0.3825828221625893,
+    "mse": 0.1594953123657943,
+    "mae": 0.25724039613163713,
+    "mape": 8.305135828944838
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.7957799603238888,
+    "rmse": 0.37983464080791585,
+    "mse": 0.15754859596291218,
+    "mae": 0.2533405474267639,
+    "mape": 8.140127722973935
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.7974930275497637,
+    "rmse": 0.37732142111646183,
+    "mse": 0.15622302371523372,
+    "mae": 0.24837362893102477,
+    "mape": 7.892310903020686,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.0003,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.39642569849746057
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8251768670375884,
+    "rmse": 0.31470303190377136,
+    "mse": 0.10772128152569763,
+    "mae": 0.21257048961935002,
+    "mape": 6.851305705264356
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8234730687594791,
+    "rmse": 0.31623010124990286,
+    "mse": 0.10877095724022925,
+    "mae": 0.20970989696474218,
+    "mape": 6.787510231121279
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8191983726991844,
+    "rmse": 0.31995706308907623,
+    "mse": 0.1114045349761597,
+    "mae": 0.20831634341294442,
+    "mape": 6.769780118484445
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8123527788567042,
+    "rmse": 0.3258077172902176,
+    "mse": 0.1156220147334889,
+    "mae": 0.2080568398440261,
+    "mape": 6.787836653266438
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7909488978251878,
+    "rmse": 0.3433994461704975,
+    "mse": 0.12880868031234377,
+    "mae": 0.21076986166893982,
+    "mape": 6.931058016944405
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8251768670375884,
+    "rmse": 0.31470303190377136,
+    "mse": 0.10772128152569763,
+    "mae": 0.21257048961935002,
+    "mape": 6.851305705264356
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8295765796930004,
+    "rmse": 0.3102867526374387,
+    "mse": 0.10500881290625759,
+    "mae": 0.20738470952304286,
+    "mape": 6.6624949384239
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8331773860733227,
+    "rmse": 0.30654785971917625,
+    "mse": 0.10278863438261564,
+    "mae": 0.2026658999269427,
+    "mape": 6.487205375708017
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8359792861785563,
+    "rmse": 0.3035118622714412,
+    "mse": 0.10106074595477173,
+    "mae": 0.1984224573071587,
+    "mape": 6.3256268329292435
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8391863675637566,
+    "rmse": 0.29963258950237587,
+    "mse": 0.0990818393864781,
+    "mae": 0.19219473014511257,
+    "mape": 6.065538717621284
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8277037996971155,
+    "rmse": 0.3119194906828183,
+    "mse": 0.10616181431345696,
+    "mae": 0.21066952927547292,
+    "mape": 6.783329597206107
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.825645611900173,
+    "rmse": 0.313808115129775,
+    "mse": 0.10743001385410006,
+    "mae": 0.20817011177800746,
+    "mape": 6.731769944797686
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8210391254883519,
+    "rmse": 0.3178905767373559,
+    "mse": 0.11026820939283362,
+    "mae": 0.20695072884050908,
+    "mape": 6.719948331938437
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8138843404616523,
+    "rmse": 0.3240836067057385,
+    "mse": 0.11467640092965768,
+    "mae": 0.206874036933743,
+    "mape": 6.745486016556366
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7919298745636166,
+    "rmse": 0.34229881236815,
+    "mse": 0.12820277199757732,
+    "mae": 0.21018795018950304,
+    "mape": 6.910713978999298
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8277037996971155,
+    "rmse": 0.3119194906828183,
+    "mse": 0.10616181431345696,
+    "mae": 0.21066952927547292,
+    "mape": 6.783329597206107
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8316345286742751,
+    "rmse": 0.3079792054785863,
+    "mse": 0.10373875699262,
+    "mae": 0.2058621573116226,
+    "mape": 6.606796985296476
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8348144159124125,
+    "rmse": 0.304682090196607,
+    "mse": 0.10177833097260797,
+    "mae": 0.20146075253880283,
+    "mape": 6.442034945816454
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8372434614115271,
+    "rmse": 0.30204951302558136,
+    "mse": 0.10028053625342087,
+    "mae": 0.19758005602676834,
+    "mape": 6.292398990343618
+  },
+  {
+    "symbol": "ETHUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8398490271926888,
+    "rmse": 0.29884614645039703,
+    "mse": 0.09867284071752161,
+    "mae": 0.19229235429525074,
+    "mape": 6.062071186672279,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.31470303190377136
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.5030932113279589,
+    "rmse": 0.8266025358149707,
+    "mse": 0.7511632154695456,
+    "mae": 0.6011138633683956,
+    "mape": 27.85274570703474
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.5079229784277998,
+    "rmse": 0.823554292329469,
+    "mse": 0.7438721070799339,
+    "mae": 0.5972659292588932,
+    "mape": 27.807735325957076
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.5065538625887104,
+    "rmse": 0.825692337275909,
+    "mse": 0.7459524087100938,
+    "mae": 0.5977601956743855,
+    "mape": 27.913969675809188
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.49898586381069115,
+    "rmse": 0.832975803752691,
+    "mse": 0.7574041203600252,
+    "mae": 0.6031585980458084,
+    "mape": 28.1882592843842
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.4652532174378621,
+    "rmse": 0.8623596153918461,
+    "mse": 0.8084217737192027,
+    "mae": 0.6252039917590572,
+    "mape": 29.121625964173525
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.5030932113279589,
+    "rmse": 0.8266025358149707,
+    "mse": 0.7511632154695456,
+    "mae": 0.6011138633683956,
+    "mape": 27.85274570703474
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.5149329479642771,
+    "rmse": 0.8157109280974794,
+    "mse": 0.7332559943888598,
+    "mae": 0.5921406655759074,
+    "mape": 27.457383405353294
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.5217550835607536,
+    "rmse": 0.8087822144252358,
+    "mse": 0.7229323632252219,
+    "mae": 0.586905252053975,
+    "mape": 27.18923133282107
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.5235596181173883,
+    "rmse": 0.8059093691095034,
+    "mse": 0.7201923219786321,
+    "mae": 0.5855875379074359,
+    "mape": 27.059779013126576,
+    "config": {
+      "lag": 21,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 1.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.8266025358149707
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.5121158841111337,
+    "rmse": 0.8124083515616368,
+    "mse": 0.7374630092365965,
+    "mae": 0.5931091099115212,
+    "mape": 27.150995539203425
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.4957988132785242,
+    "rmse": 0.8324506167382534,
+    "mse": 0.7621882786983265,
+    "mae": 0.604778195658089,
+    "mape": 27.971664141887455
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.5014472209464509,
+    "rmse": 0.8288655663382395,
+    "mse": 0.7536609381548508,
+    "mae": 0.6003974066301303,
+    "mape": 27.917090482802966
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.5008769232836379,
+    "rmse": 0.8304231516019854,
+    "mse": 0.7545347244824769,
+    "mae": 0.6002407541918724,
+    "mape": 28.00801593563806
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.4940879202900857,
+    "rmse": 0.8370947008454569,
+    "mse": 0.7648096376812048,
+    "mae": 0.6048420649902887,
+    "mape": 28.267065191703104
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.4618537983107624,
+    "rmse": 0.8652156983216299,
+    "mse": 0.8135628446919657,
+    "mae": 0.6265834979585025,
+    "mape": 29.192747325514876
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.4957988132785242,
+    "rmse": 0.8324506167382534,
+    "mse": 0.7621882786983265,
+    "mae": 0.604778195658089,
+    "mape": 27.971664141887455
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.5086377992240324,
+    "rmse": 0.8208702391434057,
+    "mse": 0.7427712799634809,
+    "mae": 0.5951694709446608,
+    "mape": 27.56230970300908
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.516399226462089,
+    "rmse": 0.813252088564519,
+    "mse": 0.7310283758859683,
+    "mae": 0.589231847231913,
+    "mape": 27.276417391810007
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.5190830949926939,
+    "rmse": 0.8096989756163735,
+    "mse": 0.7269595664657883,
+    "mae": 0.5871762280696549,
+    "mape": 27.129280929565848
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.5092181559315467,
+    "rmse": 0.8149047273106734,
+    "mse": 0.7418442315974267,
+    "mae": 0.5941351217728982,
+    "mape": 27.208314671418734
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8030372648831122,
+    "rmse": 0.46023055976114213,
+    "mse": 0.23888721944338884,
+    "mae": 0.32871336418921915,
+    "mape": 12.056098388034886
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8048606755585495,
+    "rmse": 0.45880987436398246,
+    "mse": 0.23668674049864535,
+    "mae": 0.32600968168261524,
+    "mape": 12.001359928663158
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8022017689120575,
+    "rmse": 0.46258173623707544,
+    "mse": 0.23992248000900437,
+    "mae": 0.3276603370944372,
+    "mape": 12.106923832901371
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7950605449436361,
+    "rmse": 0.47142437317138386,
+    "mse": 0.24859443797446593,
+    "mae": 0.3335545880805405,
+    "mape": 12.361319930026267
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7673311450410054,
+    "rmse": 0.5031132137948237,
+    "mse": 0.2822470092706966,
+    "mae": 0.35469534685988063,
+    "mape": 13.208557493524397
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8030372648831122,
+    "rmse": 0.46023055976114213,
+    "mse": 0.23888721944338884,
+    "mae": 0.32871336418921915,
+    "mape": 12.056098388034886
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8086773954278014,
+    "rmse": 0.45372893060367686,
+    "mse": 0.23204954960160581,
+    "mae": 0.3223036520446616,
+    "mape": 11.817240980894791
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8125865280313541,
+    "rmse": 0.44911176356887667,
+    "mse": 0.22730980024144848,
+    "mae": 0.31785791160804433,
+    "mape": 11.651134918774604
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8147646626937706,
+    "rmse": 0.4464381289586622,
+    "mse": 0.22466797136291677,
+    "mae": 0.3154938940880223,
+    "mape": 11.558085118375494,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.46023055976114213
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8139279381951938,
+    "rmse": 0.44703417268885787,
+    "mse": 0.2256780750507302,
+    "mae": 0.31716132877896164,
+    "mape": 11.584641577375516
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8020459747354239,
+    "rmse": 0.46108685230812085,
+    "mse": 0.24008988922846794,
+    "mae": 0.3285689809193693,
+    "mape": 12.100020980218204
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8033450449645354,
+    "rmse": 0.4603070087270252,
+    "mse": 0.238524854887039,
+    "mae": 0.3264015988519114,
+    "mape": 12.053683290097293
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8003003466408496,
+    "rmse": 0.4645391717030236,
+    "mse": 0.242228103093641,
+    "mae": 0.3280640943931605,
+    "mape": 12.14918102286435
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.7929118797643667,
+    "rmse": 0.47365201726301065,
+    "mse": 0.25119963384827376,
+    "mae": 0.33385385977963855,
+    "mape": 12.395056415368938
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.7651036403530097,
+    "rmse": 0.5053366428287046,
+    "mse": 0.284947543001632,
+    "mae": 0.35490838327348045,
+    "mape": 13.231529605784
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8020459747354239,
+    "rmse": 0.46108685230812085,
+    "mse": 0.24008988922846794,
+    "mae": 0.3285689809193693,
+    "mape": 12.100020980218204
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8074721087107919,
+    "rmse": 0.45492336671652556,
+    "mse": 0.23351225070323686,
+    "mae": 0.3227911913493859,
+    "mape": 11.873876613525848
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8112368282081546,
+    "rmse": 0.4505545896291352,
+    "mse": 0.2289480219273959,
+    "mae": 0.3187056356140854,
+    "mape": 11.71256474569294
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8133401332275121,
+    "rmse": 0.4480339634157856,
+    "mse": 0.2263972029009451,
+    "mae": 0.3165162894543676,
+    "mape": 11.617010648706675
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8125624998322106,
+    "rmse": 0.44863826967212667,
+    "mse": 0.22733579409621382,
+    "mae": 0.31828281987296264,
+    "mape": 11.636790965506417
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8719035285376882,
+    "rmse": 0.33930224562277145,
+    "mse": 0.12596220801404992,
+    "mae": 0.23619961624096483,
+    "mape": 8.511200743424332
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8721674013115379,
+    "rmse": 0.3391875776458283,
+    "mse": 0.12570395134645887,
+    "mae": 0.23628769022368892,
+    "mape": 8.560471718818741
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.870122515111896,
+    "rmse": 0.3419491655050363,
+    "mse": 0.1277153163924767,
+    "mae": 0.23906904838988777,
+    "mape": 8.693068291428448
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8657688699387622,
+    "rmse": 0.34751820333713035,
+    "mse": 0.13199630315210345,
+    "mae": 0.24364793298274304,
+    "mape": 8.879060102918565
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8501353026720196,
+    "rmse": 0.36648136649659185,
+    "mse": 0.14736714181218347,
+    "mae": 0.25670406211023183,
+    "mape": 9.371602505231518
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8719035285376882,
+    "rmse": 0.33930224562277145,
+    "mse": 0.12596220801404992,
+    "mae": 0.23619961624096483,
+    "mape": 8.511200743424332
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8760459197043541,
+    "rmse": 0.33320973940039916,
+    "mse": 0.12188662397110067,
+    "mae": 0.23164247225178794,
+    "mape": 8.33915520876833
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8793285888631581,
+    "rmse": 0.3281916328091631,
+    "mse": 0.11865652680515613,
+    "mae": 0.22789798879600612,
+    "mape": 8.191775692474097
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8817515360141005,
+    "rmse": 0.3242988004253432,
+    "mse": 0.11627191651621635,
+    "mae": 0.22535129493252862,
+    "mape": 8.079412866531364
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8840182642924005,
+    "rmse": 0.32004974753926757,
+    "mse": 0.11403915656935099,
+    "mae": 0.2233671437945217,
+    "mape": 7.95334976079335
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8712649018309927,
+    "rmse": 0.34005668277168605,
+    "mse": 0.12658976318590567,
+    "mae": 0.23671207469211988,
+    "mape": 8.530191038529695
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8717702101111298,
+    "rmse": 0.33968034224953875,
+    "mse": 0.1260943678875563,
+    "mae": 0.23648522162438693,
+    "mape": 8.56928260138763
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8699272987876376,
+    "rmse": 0.34221811729422974,
+    "mse": 0.12790734610583193,
+    "mae": 0.23915874094632497,
+    "mape": 8.699580344697303
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8657361678605167,
+    "rmse": 0.3476071720256274,
+    "mse": 0.13202869784073265,
+    "mae": 0.24390800084255482,
+    "mape": 8.890923811433138
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8503092471953877,
+    "rmse": 0.36635041594177903,
+    "mse": 0.14719652186040916,
+    "mae": 0.25732787692527037,
+    "mape": 9.393602033586907
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8712649018309927,
+    "rmse": 0.34005668277168605,
+    "mse": 0.12658976318590567,
+    "mae": 0.23671207469211988,
+    "mape": 8.530191038529695
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8756464846715709,
+    "rmse": 0.3336991833134161,
+    "mse": 0.12227920040374911,
+    "mae": 0.23176232580383288,
+    "mape": 8.345669491786133
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8791293835035668,
+    "rmse": 0.3284521979546503,
+    "mse": 0.1188523963257132,
+    "mae": 0.22773380199331342,
+    "mape": 8.189442666080774
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8817135983269804,
+    "rmse": 0.32437018506790477,
+    "mse": 0.11630935095179795,
+    "mae": 0.22500069516793175,
+    "mape": 8.071756648777036
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8841859759480606,
+    "rmse": 0.31987309644227885,
+    "mse": 0.11387453631632952,
+    "mae": 0.22292368906947388,
+    "mape": 7.941772588457664,
+    "config": {
+      "lag": 21,
+      "layers": [
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.33930224562277145
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.9113706438060586,
+    "rmse": 0.25525197177207143,
+    "mse": 0.07318202262467918,
+    "mae": 0.1755909129232863,
+    "mape": 6.187647431883866
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.9136457626087943,
+    "rmse": 0.25242695444144697,
+    "mse": 0.07130107493890792,
+    "mae": 0.1727212245201287,
+    "mape": 6.114245606946511
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.9141321863471753,
+    "rmse": 0.25211858202911086,
+    "mse": 0.07089740234479498,
+    "mae": 0.17155678192893922,
+    "mape": 6.094280552624338
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.9128299150212015,
+    "rmse": 0.25434089888652506,
+    "mse": 0.07197100484234034,
+    "mae": 0.17176898662140447,
+    "mape": 6.119686190535361
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.9048592871761894,
+    "rmse": 0.26606692742844046,
+    "mse": 0.07855003511240605,
+    "mae": 0.17645079255441423,
+    "mape": 6.305029748744743
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.9113706438060586,
+    "rmse": 0.25525197177207143,
+    "mse": 0.07318202262467918,
+    "mae": 0.1755909129232863,
+    "mape": 6.187647431883866
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.9147907978148203,
+    "rmse": 0.25025778434332696,
+    "mse": 0.07035814057006028,
+    "mae": 0.17128206586778882,
+    "mape": 6.038801712958617
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.9176237615297349,
+    "rmse": 0.24604108472428074,
+    "mse": 0.0680190995224087,
+    "mae": 0.1678540762556081,
+    "mape": 5.915241527508966
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.9198695349508021,
+    "rmse": 0.2426424184225163,
+    "mse": 0.06616489948172448,
+    "mae": 0.16509700074200148,
+    "mape": 5.810863261692202
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9225995109113948,
+    "rmse": 0.23843083303512166,
+    "mse": 0.06391102242125814,
+    "mae": 0.1626193693846151,
+    "mape": 5.692740454635958
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.9112520658371662,
+    "rmse": 0.2549831862713763,
+    "mse": 0.07328228754365446,
+    "mae": 0.17790848870371653,
+    "mape": 6.233850160163556
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.9144061529998344,
+    "rmse": 0.2509556315190315,
+    "mse": 0.07067534420315702,
+    "mae": 0.1732580021104613,
+    "mape": 6.116412153159853
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.9155788538619156,
+    "rmse": 0.24971036589040888,
+    "mse": 0.06970478021272428,
+    "mae": 0.17106901089301998,
+    "mape": 6.071621817721647
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.9147701684234107,
+    "rmse": 0.25129466139041606,
+    "mse": 0.0703705955723562,
+    "mae": 0.17086239288330782,
+    "mape": 6.089273039646115
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.9072086386446406,
+    "rmse": 0.2626766140992625,
+    "mse": 0.07661136434181413,
+    "mae": 0.1750143053608396,
+    "mape": 6.263173109772482
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.9112520658371662,
+    "rmse": 0.2549831862713763,
+    "mse": 0.07328228754365446,
+    "mae": 0.17790848870371653,
+    "mape": 6.233850160163556
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.9149510425051544,
+    "rmse": 0.24964811196714987,
+    "mse": 0.07022778623497347,
+    "mae": 0.1726938024257405,
+    "mape": 6.065234001829123
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.9180035033543312,
+    "rmse": 0.24516132958930426,
+    "mse": 0.06770714654707417,
+    "mae": 0.16829874054364263,
+    "mape": 5.92027062940869
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.9204094483846971,
+    "rmse": 0.24157015560936473,
+    "mse": 0.06572036847995658,
+    "mae": 0.16500606704590676,
+    "mape": 5.805372832803157
+  },
+  {
+    "symbol": "BNBUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9232817909889958,
+    "rmse": 0.2372274465743124,
+    "mse": 0.06334839720806652,
+    "mae": 0.16197523056253438,
+    "mape": 5.677232469447369,
+    "config": {
+      "lag": 7,
+      "layers": [
+        16
+      ],
+      "alpha": 1.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.25525197177207143
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.6664686301196036,
+    "rmse": 1.170385270236858,
+    "mse": 1.5175890732682975,
+    "mae": 0.8268438039434693,
+    "mape": 30.01194216844237
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.6652459986233418,
+    "rmse": 1.1719130508898166,
+    "mse": 1.523151605570155,
+    "mae": 0.8310621934983816,
+    "mape": 30.43352334783504
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.6589476529782657,
+    "rmse": 1.1827970345875478,
+    "mse": 1.5518097955509824,
+    "mae": 0.8398783585613462,
+    "mape": 30.965480707143534
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.6475735931843758,
+    "rmse": 1.202793380239726,
+    "mse": 1.6035636432107787,
+    "mae": 0.8532570438757726,
+    "mape": 31.619174745291076
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.6095983311501525,
+    "rmse": 1.2681696033289402,
+    "mse": 1.77635831156728,
+    "mae": 0.8945300974944252,
+    "mape": 33.279929955295806
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.6664686301196036,
+    "rmse": 1.170385270236858,
+    "mse": 1.5175890732682975,
+    "mae": 0.8268438039434693,
+    "mape": 30.01194216844237
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.6668768075868228,
+    "rmse": 1.1678899954996746,
+    "mse": 1.515726940683809,
+    "mae": 0.8267982418987458,
+    "mape": 30.02346661112594,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 1.170385270236858
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.6644078928005398,
+    "rmse": 1.1701461538526732,
+    "mse": 1.5269551211667671,
+    "mae": 0.8299926137805996,
+    "mape": 30.12213612506983
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.6590618857607549,
+    "rmse": 1.1771110410372516,
+    "mse": 1.551273614717172,
+    "mae": 0.8364195821833398,
+    "mape": 30.31868632769947
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.6397385949206781,
+    "rmse": 1.204729852957478,
+    "mse": 1.6391815410203217,
+    "mae": 0.8568331441111375,
+    "mape": 30.92890233897679
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.6661348136591575,
+    "rmse": 1.1718511523310873,
+    "mse": 1.5191096608190926,
+    "mae": 0.828402618800921,
+    "mape": 30.059995457021383
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.6652944427803573,
+    "rmse": 1.172424747875567,
+    "mse": 1.5229322647983665,
+    "mae": 0.831625146255749,
+    "mape": 30.469385801280307
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.6593008290924282,
+    "rmse": 1.182529041707436,
+    "mse": 1.5502033863604998,
+    "mae": 0.8399966824657822,
+    "mape": 30.996386321127343
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.64815397259537,
+    "rmse": 1.2019412556286977,
+    "mse": 1.6009230255054918,
+    "mae": 0.8527637223805445,
+    "mape": 31.631916149939993
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.6104005311738662,
+    "rmse": 1.2667553782780605,
+    "mse": 1.7727078565440546,
+    "mae": 0.8937948347160413,
+    "mape": 33.286717584242965
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.6661348136591575,
+    "rmse": 1.1718511523310873,
+    "mse": 1.5191096608190926,
+    "mae": 0.828402618800921,
+    "mape": 30.059995457021383
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.6666550390513388,
+    "rmse": 1.1689712710261226,
+    "mse": 1.5167372924017637,
+    "mae": 0.8279227189771535,
+    "mape": 30.066984304872147
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.6642806907947029,
+    "rmse": 1.1708892506767188,
+    "mse": 1.52753483195805,
+    "mae": 0.8311453203347422,
+    "mape": 30.176737515430037
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.65901176888925,
+    "rmse": 1.1775662118245591,
+    "mse": 1.5515022794879527,
+    "mae": 0.837274834377989,
+    "mape": 30.367254743080277
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 7,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.6397902041318925,
+    "rmse": 1.2047719465252391,
+    "mse": 1.638946898468605,
+    "mae": 0.8571925079862613,
+    "mape": 30.95051824608064
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8526585326643874,
+    "rmse": 0.7176851581131146,
+    "mse": 0.5808221495853075,
+    "mae": 0.4976301669974902,
+    "mape": 14.543490034875111
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8551687965347196,
+    "rmse": 0.7130438336361709,
+    "mse": 0.5709301530038581,
+    "mae": 0.49587653824381006,
+    "mape": 14.660088273277639
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8542949705167538,
+    "rmse": 0.716458860224947,
+    "mse": 0.5743779451810225,
+    "mae": 0.4990277805349759,
+    "mape": 14.965427889248748
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8500370546104902,
+    "rmse": 0.7278299046688065,
+    "mse": 0.5911655261168011,
+    "mae": 0.5056987747561881,
+    "mape": 15.383784083803622
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8313689531330696,
+    "rmse": 0.7728239464635008,
+    "mse": 0.664760054264201,
+    "mae": 0.5272094437882052,
+    "mape": 16.4587033824296
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8526585326643874,
+    "rmse": 0.7176851581131146,
+    "mse": 0.5808221495853075,
+    "mae": 0.4976301669974902,
+    "mape": 14.543490034875111
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.855448705742738,
+    "rmse": 0.7105609227387599,
+    "mse": 0.5698226947691188,
+    "mae": 0.493018911098523,
+    "mape": 14.405060034990811
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8571818144204573,
+    "rmse": 0.7058577149585614,
+    "mse": 0.5629899132390115,
+    "mae": 0.4901143252940629,
+    "mape": 14.330563581973324
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8578578586975457,
+    "rmse": 0.7036237918973586,
+    "mse": 0.5603238049949851,
+    "mae": 0.4889409213026449,
+    "mape": 14.31249223237553,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.7176851581131146
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8560387540498277,
+    "rmse": 0.7066282949578747,
+    "mse": 0.5674916083651773,
+    "mae": 0.49167154896944754,
+    "mape": 14.435741568204639
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.85242373882987,
+    "rmse": 0.7189875386238677,
+    "mse": 0.5817494557555223,
+    "mae": 0.49855614095543704,
+    "mape": 14.515309887150114
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.854917812925404,
+    "rmse": 0.714240442047452,
+    "mse": 0.571920898454813,
+    "mae": 0.4966841749199437,
+    "mape": 14.63228041959082
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8540366125011402,
+    "rmse": 0.7175379386345302,
+    "mse": 0.5753974254909928,
+    "mae": 0.4998620239388247,
+    "mape": 14.939185424397989
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8497801375570784,
+    "rmse": 0.7287823336712502,
+    "mse": 0.592179036864062,
+    "mae": 0.5064924813039228,
+    "mape": 15.361672853348438
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8311413641095611,
+    "rmse": 0.7735054524682182,
+    "mse": 0.6656575126208688,
+    "mae": 0.5273928065831149,
+    "mape": 16.438366006247257
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.85242373882987,
+    "rmse": 0.7189875386238677,
+    "mse": 0.5817494557555223,
+    "mae": 0.49855614095543704,
+    "mape": 14.515309887150114
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.855162495210772,
+    "rmse": 0.7118503740350404,
+    "mse": 0.5709523160488659,
+    "mae": 0.4939809639357411,
+    "mape": 14.384387722847924
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8568608307645763,
+    "rmse": 0.7071088072348665,
+    "mse": 0.5642562839112788,
+    "mae": 0.4910342657765546,
+    "mape": 14.31371154454775
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8575187454912827,
+    "rmse": 0.7048093861047351,
+    "mse": 0.5616613593427611,
+    "mae": 0.4899482787100051,
+    "mape": 14.304108838884396
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 14,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.8557133124634014,
+    "rmse": 0.7075986684027809,
+    "mse": 0.5687748329129341,
+    "mae": 0.49245786126142094,
+    "mape": 14.42951554157253
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.892170635847231,
+    "rmse": 0.5834804882933667,
+    "mse": 0.3738162030453861,
+    "mae": 0.39184599847759743,
+    "mape": 11.040343176934803
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8937746272170172,
+    "rmse": 0.5793884537753955,
+    "mse": 0.3682544270741409,
+    "mae": 0.3882824643703353,
+    "mape": 11.054479846928286
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.8938668600158898,
+    "rmse": 0.5791931428593434,
+    "mse": 0.36793411705117723,
+    "mae": 0.386804440932471,
+    "mape": 11.142506044281664
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8924473342438493,
+    "rmse": 0.582900829435088,
+    "mse": 0.37285527297649507,
+    "mae": 0.38773168052879425,
+    "mape": 11.303902237551675
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.8850730069870278,
+    "rmse": 0.6016461975341281,
+    "mse": 0.3984219826719753,
+    "mae": 0.39553749976162134,
+    "mape": 11.776075711144006
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.892170635847231,
+    "rmse": 0.5834804882933667,
+    "mse": 0.3738162030453861,
+    "mae": 0.39184599847759743,
+    "mape": 11.040343176934803
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8949967575457906,
+    "rmse": 0.5744431865715345,
+    "mse": 0.36402014123962884,
+    "mae": 0.38385319924770717,
+    "mape": 10.78974594811669
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.8973635664361741,
+    "rmse": 0.5665818700140761,
+    "mse": 0.35581626819210954,
+    "mae": 0.3766587902918608,
+    "mape": 10.566476108281451
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8992710625183818,
+    "rmse": 0.5599514157841425,
+    "mse": 0.34920458390282827,
+    "mae": 0.3705609058001391,
+    "mape": 10.378899627690013
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9017081162582693,
+    "rmse": 0.5505824254969981,
+    "mse": 0.34075778159898024,
+    "mae": 0.36248735098224116,
+    "mape": 10.13128659030476,
+    "config": {
+      "lag": 21,
+      "layers": [
+        32,
+        16
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 17
+    },
+    "original_validation_rmse": 0.5834804882933667
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.8901523083279967,
+    "rmse": 0.5886376534885474,
+    "mse": 0.3808148555167265,
+    "mae": 0.39697571734851583,
+    "mape": 11.218556497546896
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.8921940091834107,
+    "rmse": 0.5834312741127937,
+    "mse": 0.37373533848359713,
+    "mae": 0.39272132809607957,
+    "mape": 11.21047288308808
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.892671534415977,
+    "rmse": 0.5822228287137312,
+    "mse": 0.37207903757980487,
+    "mae": 0.39058106353585376,
+    "mape": 11.27709077313689
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.8915848840256958,
+    "rmse": 0.5850406692224677,
+    "mse": 0.3758459528053496,
+    "mae": 0.3905964756053065,
+    "mape": 11.410566563801314
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.88471905637659,
+    "rmse": 0.6024385164505766,
+    "mse": 0.3996494316444506,
+    "mae": 0.39720124485543085,
+    "mape": 11.840266348793719
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.8901523083279967,
+    "rmse": 0.5886376534885474,
+    "mse": 0.3808148555167265,
+    "mae": 0.39697571734851583,
+    "mape": 11.218556497546896
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.8933237618453885,
+    "rmse": 0.5787770278930248,
+    "mse": 0.3698213605541362,
+    "mae": 0.38837527525359217,
+    "mape": 10.948244957932225
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.896004013873069,
+    "rmse": 0.5701459685997486,
+    "mse": 0.3605306249963839,
+    "mae": 0.38048191035069473,
+    "mape": 10.702130445644594
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.8981930644110383,
+    "rmse": 0.5628056811768783,
+    "mse": 0.3529426488434692,
+    "mae": 0.3736573775036953,
+    "mape": 10.489839872690103
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 21,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9010975610178432,
+    "rmse": 0.5522208544703707,
+    "mse": 0.34287497475215356,
+    "mae": 0.3643374526878831,
+    "mape": 10.201205622930072
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.9314316988106359,
+    "rmse": 0.4384950989310406,
+    "mse": 0.21665089980920943,
+    "mae": 0.29173787181653477,
+    "mape": 8.18955943899678
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.9315484899888998,
+    "rmse": 0.4388118114078652,
+    "mse": 0.21626401953261137,
+    "mae": 0.2888495377057118,
+    "mape": 8.184722175451851
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.9306403817130847,
+    "rmse": 0.44220948650407177,
+    "mse": 0.21911989029409915,
+    "mae": 0.2875346375360841,
+    "mape": 8.214328717609188
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.9287073739831911,
+    "rmse": 0.44862581537459395,
+    "mse": 0.22521851209367277,
+    "mae": 0.2877966564310944,
+    "mape": 8.276592148579288
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.9217666601611666,
+    "rmse": 0.4699744777642457,
+    "mse": 0.24714400880707746,
+    "mae": 0.2928931962703742,
+    "mape": 8.504631651317402
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.9314316988106359,
+    "rmse": 0.4384950989310406,
+    "mse": 0.21665089980920943,
+    "mae": 0.29173787181653477,
+    "mape": 8.18955943899678
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.9328554427574872,
+    "rmse": 0.4335709239691002,
+    "mse": 0.21216041041362013,
+    "mae": 0.28729366423386377,
+    "mape": 8.04825745336647
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.933964274173966,
+    "rmse": 0.4296039184206765,
+    "mse": 0.20866517719128078,
+    "mae": 0.28377258197534033,
+    "mape": 7.931496143378646
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.9347581930600727,
+    "rmse": 0.42662130743305304,
+    "mse": 0.20616520014219142,
+    "mae": 0.2808671041604163,
+    "mape": 7.832052777278064
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      42
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9354012932411688,
+    "rmse": 0.4236885740987101,
+    "mse": 0.20415101456376278,
+    "mae": 0.27666759470334407,
+    "mape": 7.682274169087675
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.0,
+    "r2": 0.9319012980275219,
+    "rmse": 0.43765394158871773,
+    "mse": 0.21515034906178793,
+    "mae": 0.2904573601872038,
+    "mape": 8.134842639905358
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.1,
+    "r2": 0.9319921536596455,
+    "rmse": 0.43795571437342584,
+    "mse": 0.21484746701167315,
+    "mae": 0.2874942007203627,
+    "mape": 8.128068983061477
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.2,
+    "r2": 0.931053437754235,
+    "rmse": 0.4413700972615086,
+    "mse": 0.21780201529925738,
+    "mae": 0.2862479192756373,
+    "mape": 8.161033457599315
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.3,
+    "r2": 0.9290851503112905,
+    "rmse": 0.4478323811550409,
+    "mse": 0.22401399392454033,
+    "mae": 0.28666539171034205,
+    "mape": 8.230447031463047
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "persistence",
+    "blend_weight": 0.5,
+    "r2": 0.9220598608127991,
+    "rmse": 0.4693448320971148,
+    "mse": 0.24621024218820323,
+    "mae": 0.2920358402208654,
+    "mape": 8.471114590613656
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.0,
+    "r2": 0.9319012980275219,
+    "rmse": 0.43765394158871773,
+    "mse": 0.21515034906178793,
+    "mae": 0.2904573601872038,
+    "mape": 8.134842639905358
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.1,
+    "r2": 0.9332850363167596,
+    "rmse": 0.43271693368607334,
+    "mse": 0.21078974466971243,
+    "mae": 0.2861228875703382,
+    "mape": 7.9995189229037305
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.2,
+    "r2": 0.9343523166836084,
+    "rmse": 0.4287582246560287,
+    "mse": 0.2074288786889377,
+    "mae": 0.2827517711949361,
+    "mape": 7.89079127188919
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.3,
+    "r2": 0.935103139128068,
+    "rmse": 0.42580554046017915,
+    "mse": 0.2050677511194636,
+    "mae": 0.2800287516330533,
+    "mape": 7.799905235425295
+  },
+  {
+    "symbol": "XRPUSDT",
+    "volatility_window": 28,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "blend": "decay",
+    "blend_weight": 0.5,
+    "r2": 0.9356554102498205,
+    "rmse": 0.42299864073618065,
+    "mse": 0.2033447112144178,
+    "mae": 0.27618723505573745,
+    "mape": 7.664365102754306,
+    "config": {
+      "lag": 7,
+      "layers": [
+        32
+      ],
+      "alpha": 10.0,
+      "activation": "tanh",
+      "rate": 0.001,
+      "power": 2.0,
+      "seed": 42
+    },
+    "original_validation_rmse": 0.4384950989310406
+  }
+]

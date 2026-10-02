@@ -3,8 +3,15 @@ services:
     name: machinelearning-entregable-2
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements-dashboard.txt
-    startCommand: gunicorn dashboard:server --bind 0.0.0.0:$PORT --workers 1
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: gunicorn volatility_dashboard.app:server --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 180 --access-logfile - --error-logfile -
+    healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: OPENBLAS_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"
