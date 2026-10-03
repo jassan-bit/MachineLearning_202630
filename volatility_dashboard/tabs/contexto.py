@@ -44,6 +44,14 @@ def layout():
         html.Section([html.H3('Cortes crecientes de validación'),table(pd.DataFrame(fold_rows)),html.P(f'Ajuste final: {len(final_train)} orígenes elegibles; etiquetas terminan antes del 1 de enero de 2025. Separación comprobada: última etiqueta train anterior al primer origen validation.')],className='panel'),
         html.Section([html.H3('Metodología'),html.Div([html.Div(step,className='pipeline-step') for step in ['Cierres Binance 1 min','Características causales','Split temporal','Escalado solo train, cuando aplica','Entrenamiento','Predicción de 7 salidas','Evaluación alineada','Comparación por métrica']],className='pipeline')],className='panel'),
         html.Div([html.Div([html.H4(model),html.P(description)],className='stat-card') for model,description in DESCRIPTIONS.items()],className='cards'),
+        html.Section([html.H3('Mejora propuesta: HAR-Ridge + XGBoost'),
+            html.P('Se conservan los seis modelos anteriores. XGBoost se presenta como modelo individual; HAR-Ridge + XGBoost es un nuevo modelo propuesto que combina árboles con una regresión regularizada de resúmenes de volatilidad.'),
+            table(pd.read_csv(ROOT/'results/improved_classical_2023_2025/macro_metrics.csv')
+                  .query("symbol == 'GLOBAL_MACRO'")[['model','r2','rmse','mae']]
+                  .replace({'model': {'HAR_Ridge_XGBoost': 'HAR-Ridge + XGBoost (mejora propuesta)',
+                                      'XGBoost_reference': 'XGBoost (modelo individual)',
+                                      'Persistence': 'Persistencia'}})),
+            html.P('Promedios macro de 2025 sobre BTC, ETH, BNB y XRP y cuatro ventanas. El RMSE mejora un 3.73 % frente a XGBoost individual. La mejora no ocurre en todas las métricas: XRP tiene un MAE ligeramente mayor. Evaluación retrospectiva, sin prueba de significancia estadística ni comparación aquí con los otros cinco modelos.')],className='panel'),
         html.Details([html.Summary('Auditoría de comparabilidad y archivos fuente'),table(audit),html.P('Solo se comparan resultados con las mismas claves activo/ventana/origen/horizonte y el mismo y real. Selecciones verificadas por hash; se comprueban fechas de ajuste y los objetivos contra el dataset.'),
             html.P('Se comparan seis modelos clásicos sin redes neuronales: k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal. El ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
         html.A('Leer capítulo del Jupyter Book (Markdown)',href='/book-report',className='button')])

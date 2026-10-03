@@ -17,7 +17,13 @@ El Dockerfile incluye los modelos y metadatos; no descarga datos ni entrena al a
 Un Dockerfile preparado no equivale a un despliegue remoto verificado.
 
 
-## Modelo mejorado sin deep learning
+## Nuevo modelo propuesto: HAR-Ridge + XGBoost
+
+Se conservan los modelos anteriores, sus artefactos y sus resultados para la
+comparación. **XGBoost se presenta como modelo individual y HAR-Ridge + XGBoost
+como mejora propuesta**. La combinación se incorpora como un nuevo modelo
+del estudio, sin sustituir los modelos existentes, y cumple la restricción
+de no usar redes neuronales.
 
 Se añadió `src/improve_classical_forecast.py`: combina XGBoost con HAR-Ridge,
 una regresión regularizada con resúmenes de volatilidad de 1, 3, 7, 14 y 28 días,
@@ -38,8 +44,8 @@ Resultados macro de 2025, promediados sobre cuatro monedas y cuatro ventanas:
 | Modelo | R² | RMSE | MAE |
 | --- | ---: | ---: | ---: |
 | Persistencia | 0.5377 | 0.74770 | 0.49719 |
-| XGBoost anterior | 0.7155 | 0.57976 | 0.38864 |
-| HAR-Ridge + XGBoost | **0.7380** | **0.55817** | **0.37557** |
+| XGBoost (modelo individual) | 0.7155 | 0.57976 | 0.38864 |
+| HAR-Ridge + XGBoost (mejora propuesta) | **0.7380** | **0.55817** | **0.37557** |
 
 El RMSE macro baja un **3.73 %** frente a XGBoost y un **25.35 %** frente
 a persistencia. El RMSE promedio mejora para las cuatro monedas; XRP presenta
@@ -76,7 +82,8 @@ neuronal. Incluye k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal.
 MLP pertenece a las redes neuronales; su clasificación como deep learning
 depende de su profundidad, pero queda excluido por la restricción del profesor.
 Los experimentos anteriores se conservan como historial y no se cargan en este
-dashboard. El modelo mejorado HAR-Ridge + XGBoost también cumple la restricción.
+dashboard. El nuevo modelo propuesto HAR-Ridge + XGBoost también cumple la restricción
+y se documenta por separado, conservando los seis modelos del comparativo.
 
 ### Publicar el comparativo en Render
 
