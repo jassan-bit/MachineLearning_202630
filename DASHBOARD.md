@@ -55,7 +55,8 @@ RMSE de cada horizonte, conforme a los experimentos existentes.
 
 2025 ya se había examinado en estudios anteriores: esta comparación es
 retrospectiva, no un test nuevo independiente. No se han calculado intervalos
-predictivos ni significancia estadística de la mejora.
+predictivos. La prueba de Diebold–Mariano descrita abajo evalúa diferencias
+de pérdida cuadrática en estas predicciones retrospectivas.
 
 Ejecutar desde la raíz:
 
@@ -77,6 +78,34 @@ en las tablas, filtros, rankings y diagnósticos de Comparación de modelos.
 La API conserva su configuración.
 
 ## Dashboard comparativo: seis modelos clásicos y mejora propuesta
+
+### Prueba de Diebold–Mariano
+
+La pestaña Comparación de modelos incluye una tabla exportable de pruebas
+bilaterales entre todos los pares de modelos seleccionados. H₀ establece
+igual pérdida cuadrática esperada; DM negativo favorece al modelo A.
+Se usa la corrección Harvey–Leybourne–Newbold, distribución t con n−1 grados
+de libertad, varianza HAC Bartlett y ajuste Holm de los valores p entre los
+pares de cada selección. La conclusión usa p ajustado < 0.05.
+
+La prueba usa errores diarios alineados, no las métricas del ranking.
+Cuando activo u horizonte es TODOS, se promedian los errores cuadrados
+dentro de cada origen; n cuenta días y conserva la dependencia entre activos
+y horizontes. Los rezagos HAC son el máximo de ventana + horizonte − 2 y
+floor(4(n/100)^(2/9)), para cubrir la superposición del objetivo móvil.
+La corrección HLN usa el horizonte elegido, o 7 al promediar horizontes.
+Este ancho de banda es una decisión metodológica: no asegura capturar toda
+la dependencia y la conclusión puede variar con otros anchos de banda.
+
+Ejecutar `.\.venv-repro\Scripts\python.exe src/run_diebold_mariano.py` para
+guardar todas las selecciones por activo, ventana y horizonte en
+`results/diebold_mariano_2025/comparisons.csv`, junto con la auditoría.
+Holm se aplica dentro de cada selección, no a toda la colección de filtros.
+La prueba compara MSE aunque el ranking se ordene por otra métrica.
+No rechazar H₀ no demuestra equivalencia. La evaluación sigue siendo
+retrospectiva y no corrige la selección previa usando resultados de 2025.
+
+Referencia: [forecast: DM modificado y estimador Bartlett](https://pkg.robjhyndman.com/forecast/reference/dm.test.html).
 
 Por requisito del curso, el comparativo vigente excluye MLP y cualquier red
 neuronal. Incluye k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal.

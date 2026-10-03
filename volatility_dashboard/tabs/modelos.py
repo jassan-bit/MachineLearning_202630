@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from dash import dcc, html, Input, Output
 from ..data_loader import ROOT, FAMILIES, repository, dataset, artifact_for, hyperparameters, importance, tuning, read_json
 from ..metrics import aggregate
+from ..diebold_mariano import comparisons
 from ..utils import COLORS, METRICS, graph_card, table, acf_figure
 
 
@@ -48,6 +49,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
     global_view = view.groupby('model',as_index=False)[['mae','rmse','mse','r2']].mean()
     ranking = global_view.sort_values(metric,ascending=metric!='r2').reset_index(drop=True)
     ranking.insert(0,'posición',range(1,len(ranking)+1))
+    dm_results = comparisons(predictions,symbol,window,horizon,models)
     figures = [graph_card(f'Comparación · {METRICS[m]}',px.bar(global_view,x='model',y=m,color='model',color_discrete_map=COLORS),numeric_note(global_view,m)) for m in ['rmse','mae','r2']]
     all_assets = aggregate(all_metrics,'TODOS',int(window),horizon,models)
     matrix = all_assets.pivot(index='model',columns='symbol',values=metric)
@@ -126,6 +128,11 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
                     break
     return html.Div([
         html.Section([html.H3('Tabla general · mismo test'),html.P(f'Activo: {symbol}; ventana del objetivo: {window}; horizonte: {horizon}. Cuando se elige TODOS, las métricas son promedios de métricas por horizonte y activo, no métricas sobre objetivos concatenados.'),table(view),html.H3('Ranking por '+METRICS[metric]),table(ranking),html.P(numeric_note(global_view,metric),className='interpretation')],className='panel'),
+        html.Section([html.H3('Prueba de Diebold–Mariano'),
+            html.P('H₀: igual pérdida cuadrática esperada. Prueba bilateral con corrección Harvey–Leybourne–Newbold, varianza HAC con pesos Bartlett y ajuste Holm entre los pares de esta selección (α = 0.05). DM negativo favorece al modelo A. Se compara MSE, incluso si el ranking se ordena por R², RMSE o MAE.'),
+            html.P('TODOS promedia las pérdidas de activos y horizontes dentro de cada origen diario; no los trata como observaciones independientes. Los rezagos HAC cubren ventana + horizonte − 2, con un mínimo automático. La evaluación de 2025 es retrospectiva; la prueba no elimina el sesgo por selección previa ni implica equivalencia cuando no se rechaza H₀.'),
+            table(dm_results) if not dm_results.empty else html.P('Selecciona al menos dos modelos.'),
+            html.A('Referencia metodológica',href='https://pkg.robjhyndman.com/forecast/reference/dm.test.html',target='_blank')],className='panel'),
         html.Div(figures,className='grid-three'),
         graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}. SOL no tiene resultados y no participa en el promedio.'),
         html.Section([html.H3('Comparación global por activo'),table(pivot.reset_index())],className='panel'),
