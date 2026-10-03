@@ -16,6 +16,7 @@ if str(ROOT/'src') not in sys.path:
     sys.path.insert(0, str(ROOT/'src'))
 from optimize_minute_svr import load_panel, calendars, minute_features, features, predict
 from volatility_experiment import targets
+from improve_classical_forecast import har_features, predict_bundle
 from .metrics import metric_table
 
 DATA = ROOT/'data/processed/minute_2023_2025'
@@ -26,6 +27,7 @@ FAMILIES = {
     'Random Forest': 'optimized_minute_randomforest_2023_2025',
     'XGBoost': 'optimized_minute_xgboost_2023_2025',
     'SVR Lineal': 'optimized_minute_2023_2025',
+    'HAR-Ridge + XGBoost': 'improved_classical_2023_2025',
 }
 FEATURES = ['retorno_diario_relativo','retorno_cuadrado_relativo','volatilidad_minuto_relativa',
             'retorno_absoluto_minuto_relativo','volatilidad_negativa_relativa','max_retorno_minuto_relativo']
@@ -96,7 +98,7 @@ def repository():
                       estado_comparable='Excluido', reason='')
         try:
             verification = read_json(out/'verification.json')
-            if not verification.get('passed'):
+            if not (verification.get('passed') or (label == 'HAR-Ridge + XGBoost' and verification.get('status') == 'passed')):
                 raise ValueError('La verificacion guardada no paso.')
             selection = out/'selected_inputs.csv'
             selection_digest = verification.get('selection_sha256')
@@ -136,12 +138,16 @@ def repository():
                     raise ValueError('El entrenamiento final incluye etiquetas de test.')
                 lag = input_window(label,symbol,window)
                 X, y, base = arrays(symbol,lag,window)
-                models = [artifact['model']]
+                models = [artifact['model']] if label != 'HAR-Ridge + XGBoost' else []
+                if label == 'HAR-Ridge + XGBoost':
+                    H, _, _ = har_features(panel[symbol], minute_summary(symbol), window)
+                    np.testing.assert_allclose(artifact['ridge_model'].named_steps['standardscaler'].mean_, H[train].mean(axis=0))
                 for model in models:
                     if hasattr(model,'named_steps') and 'standardscaler' in model.named_steps:
                         np.testing.assert_allclose(model.named_steps['standardscaler'].mean_,X[train].mean(axis=0))
                 with threadpool_limits(limits=1):
-                    forecast = predict(artifact['model'],X[test],base[test])
+                    forecast = (predict_bundle(artifact, panel[symbol], minute_summary(symbol), test)
+                                if label == 'HAR-Ridge + XGBoost' else predict(artifact['model'],X[test],base[test]))
                 np.testing.assert_allclose(group.pivot(index='origin',columns='horizon',values='forecast'),forecast,rtol=1e-10,atol=1e-10)
             if reference is None:
                 reference = indexed[['actual']]
@@ -206,6 +212,11 @@ def eda_frame(symbol, window, horizon):
 
 def hyperparameters(model, symbol, window):
     artifact = artifact_for(model, symbol, window)
+    if model == 'HAR-Ridge + XGBoost':
+        return dict(input_window=artifact['input_window'], alpha=artifact['alpha'],
+                    ridge_weight=artifact['ridge_weight'], xgboost_weight=1-artifact['ridge_weight'],
+                    escalamiento='StandardScaler solo train en HAR-Ridge; XGBoost sin escalador',
+                    xgboost=hyperparameters('XGBoost', symbol, window))
     fitted = artifact['model']
     if hasattr(fitted, 'named_steps'):
         fitted = list(fitted.named_steps.values())[-1]
@@ -221,6 +232,16 @@ def hyperparameters(model, symbol, window):
 @lru_cache(maxsize=64)
 def importance(model, symbol, window, horizon):
     artifact = artifact_for(model, symbol, window)
+    if model == 'HAR-Ridge + XGBoost':
+        names = []
+        for span in [1,3,7,14,28]:
+            names.extend([f'{name}_media_{span}d' for name in
+                          ['retorno','retorno_rms','riesgo_negativo']+FEATURES[2:]])
+        names += ['log_volatilidad_actual','variabilidad_retornos_cuadrados_28d']
+        names += [f'decaimiento_conocido_h{h}' for h in range(1,8)]
+        values = artifact['ridge_model'].named_steps['ridge'].coef_[horizon-1]
+        frame = pd.DataFrame({'feature':names, 'importance':values})
+        return frame.reindex(frame.importance.abs().sort_values(ascending=False).index).head(15), 'Coeficientes del componente HAR-Ridge estandarizado; no representan la importancia del conjunto combinado'
     lag = input_window(model,symbol,window)
     names = feature_names(lag)
     if model in ['Ridge','Lasso']:

@@ -14,8 +14,8 @@ class ComparativeDashboardTests(unittest.TestCase):
     def setUpClass(cls):
         cls.predictions, cls.metrics, cls.audit = loader.repository()
 
-    def test_all_six_classical_models_have_identical_test_keys_and_actuals(self):
-        self.assertEqual(set(loader.FAMILIES), {'k-NN', 'Ridge', 'Lasso', 'Random Forest', 'XGBoost', 'SVR Lineal'})
+    def test_all_seven_models_have_identical_test_keys_and_actuals(self):
+        self.assertEqual(set(loader.FAMILIES), {'k-NN', 'Ridge', 'Lasso', 'Random Forest', 'XGBoost', 'SVR Lineal', 'HAR-Ridge + XGBoost'})
         self.assertEqual(set(self.predictions.model),set(loader.FAMILIES))
         reference = None
         for model,frame in self.predictions.groupby('model'):
@@ -30,7 +30,8 @@ class ComparativeDashboardTests(unittest.TestCase):
         for model,family in loader.FAMILIES.items():
             observed = self.metrics[self.metrics.model==model][['mae','rmse','mse','r2']].mean()
             saved = pd.read_csv(loader.ROOT/'results'/family/'macro_metrics.csv')
-            saved = saved[(saved.symbol=='GLOBAL_MACRO')&(saved.model!='Persistence')].iloc[0]
+            name = 'HAR_Ridge_XGBoost' if model == 'HAR-Ridge + XGBoost' else None
+            saved = saved[(saved.symbol=='GLOBAL_MACRO') & (saved.model.eq(name) if name else saved.model!='Persistence')].iloc[0]
             np.testing.assert_allclose(observed.to_numpy(float),saved[observed.index].to_numpy(float),rtol=1e-10)
 
     def test_corrupted_forecast_is_excluded_without_poisoning_reference(self):
@@ -45,7 +46,7 @@ class ComparativeDashboardTests(unittest.TestCase):
             with patch.object(loader.pd,'read_csv',side_effect=read):
                 predictions,_,audit = loader.repository()
             self.assertNotIn('k-NN',predictions.model.unique())
-            self.assertEqual(len(predictions.model.unique()),5)
+            self.assertEqual(len(predictions.model.unique()),6)
             self.assertEqual(audit.set_index('model').loc['k-NN','estado_comparable'],'Excluido')
         finally:
             loader.repository.cache_clear()
@@ -80,6 +81,7 @@ class ComparativeDashboardTests(unittest.TestCase):
             eda.render('XRPUSDT',28,7,loader.FEATURES[3],'Pearson','2025-01-01','2025-12-31',list(loader.dataset().columns)),
             modelos.render('TODOS',7,'TODOS',list(loader.FAMILIES),'rmse','XGBoost','BTCUSDT',1),
             modelos.render('ETHUSDT',14,3,['Ridge','Lasso','SVR Lineal'],'r2','SVR Lineal','BTCUSDT',1),
+            modelos.render('TODOS',7,'TODOS',list(loader.FAMILIES),'r2','HAR-Ridge + XGBoost','BTCUSDT',1),
         ]
         for view in views:
             self.assertGreater(len(json.dumps(view,cls=PlotlyJSONEncoder)),1000)

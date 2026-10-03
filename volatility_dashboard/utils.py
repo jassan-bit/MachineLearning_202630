@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from dash import dcc, html, dash_table
 from statsmodels.tsa.stattools import acf
 
-COLORS = {'k-NN':'#2563eb','Ridge':'#0891b2','Lasso':'#7c3aed','Random Forest':'#059669','XGBoost':'#d97706','SVR Lineal':'#dc2626'}
+COLORS = {'k-NN':'#2563eb','Ridge':'#0891b2','Lasso':'#7c3aed','Random Forest':'#059669','XGBoost':'#d97706','SVR Lineal':'#dc2626','HAR-Ridge + XGBoost':'#db2777'}
 METRICS = {'rmse':'RMSE ↓','mae':'MAE ↓','r2':'R² ↑'}
 
 

@@ -72,10 +72,11 @@ separación temporal, selección, coincidencia con el XGBoost anterior y
 reproducción de todas las predicciones desde los modelos guardados.
 `predict_bundle` reconstruye las variables causales para inferencia; necesita
 el historial de cierres diarios y resúmenes por minuto hasta el origen.
-El dashboard de seis modelos clásicos y la API actuales conservan su configuración;
-esta nueva combinación se consulta en sus propios CSV.
+El dashboard conserva los seis modelos clásicos e incluye HAR-Ridge + XGBoost
+en las tablas, filtros, rankings y diagnósticos de Comparación de modelos.
+La API conserva su configuración.
 
-## Dashboard comparativo de seis modelos clásicos
+## Dashboard comparativo: seis modelos clásicos y mejora propuesta
 
 Por requisito del curso, el comparativo vigente excluye MLP y cualquier red
 neuronal. Incluye k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal.
@@ -83,7 +84,7 @@ MLP pertenece a las redes neuronales; su clasificación como deep learning
 depende de su profundidad, pero queda excluido por la restricción del profesor.
 Los experimentos anteriores se conservan como historial y no se cargan en este
 dashboard. El nuevo modelo propuesto HAR-Ridge + XGBoost también cumple la restricción
-y se documenta por separado, conservando los seis modelos del comparativo.
+y se incorpora al comparativo, conservando los seis modelos anteriores.
 
 ### Publicar el comparativo en Render
 
@@ -105,7 +106,7 @@ No cambiar el servicio a sitio estático: los filtros requieren un servidor Pyth
 
 El repositorio remoto debe incluir `volatility_dashboard/`, `src/`,
 `data/processed/minute_2023_2025/`, `results/minute_2023_2025/data_manifest.json`,
-las seis carpetas de resultados enumeradas en `volatility_dashboard/data_loader.py`
+las siete carpetas de resultados enumeradas en `volatility_dashboard/data_loader.py`
 (incluidos modelos, predicciones y verificaciones), y
 `book/sections/10_dashboard_comparativo.md`. Mantener sus rutas relativas.
 Si los artefactos usan Git LFS, verificar que se descarguen los archivos reales.

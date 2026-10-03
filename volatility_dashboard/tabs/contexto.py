@@ -51,7 +51,7 @@ def layout():
                   .replace({'model': {'HAR_Ridge_XGBoost': 'HAR-Ridge + XGBoost (mejora propuesta)',
                                       'XGBoost_reference': 'XGBoost (modelo individual)',
                                       'Persistence': 'Persistencia'}})),
-            html.P('Promedios macro de 2025 sobre BTC, ETH, BNB y XRP y cuatro ventanas. El RMSE mejora un 3.73 % frente a XGBoost individual. La mejora no ocurre en todas las métricas: XRP tiene un MAE ligeramente mayor. Evaluación retrospectiva, sin prueba de significancia estadística ni comparación aquí con los otros cinco modelos.')],className='panel'),
+            html.P('Promedios macro de 2025 sobre BTC, ETH, BNB y XRP y cuatro ventanas. El RMSE mejora un 3.73 % frente a XGBoost individual. La mejora no ocurre en todas las métricas: XRP tiene un MAE ligeramente mayor. Evaluación retrospectiva, sin prueba de significancia estadística La pestaña Comparación de modelos incluye los siete métodos con filtros comunes.')],className='panel'),
         html.Details([html.Summary('Auditoría de comparabilidad y archivos fuente'),table(audit),html.P('Solo se comparan resultados con las mismas claves activo/ventana/origen/horizonte y el mismo y real. Selecciones verificadas por hash; se comprueban fechas de ajuste y los objetivos contra el dataset.'),
-            html.P('Se comparan seis modelos clásicos sin redes neuronales: k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal. El ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
+            html.P('Se conservan seis modelos clásicos y se añade HAR-Ridge + XGBoost como mejora propuesta, sin redes neuronales. El ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
         html.A('Leer capítulo del Jupyter Book (Markdown)',href='/book-report',className='button')])
