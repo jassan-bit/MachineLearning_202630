@@ -5,6 +5,7 @@ project:
   toc:
     - file: book/entregable1_master.md
     - file: book/sections/07_estudio_minuto.md
+    - file: book/sections/09_referencia_minuto_original.md
     - file: book/sections/08_referencia_diaria.md
     - file: book/sections/01_base_datos.md
     - file: book/sections/02_eda.md
