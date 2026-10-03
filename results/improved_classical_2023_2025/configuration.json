@@ -1,0 +1,39 @@
+{
+  "model": "HAR_Ridge_XGBoost",
+  "horizon_days": 7,
+  "target": "Daily log-return rolling volatility; ddof=0; percent units",
+  "source_frequency": "1min",
+  "alphas": [
+    1.0,
+    10.0,
+    100.0,
+    1000.0,
+    10000.0
+  ],
+  "ridge_weights": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "har_spans": [
+    1,
+    3,
+    7,
+    14,
+    28
+  ],
+  "volatility_windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "selection": "Minimum pooled 2024 mean horizon RMSE; six purged expanding folds",
+  "boosted_selection": "Reuse XGBoost inputs and hyperparameters selected on 2024 only",
+  "source_choices_sha256": "2b5c1bcd43e6a80eb97037f1159303af7d48df9485d5a3ca52d8ae860f7c74b6",
+  "final_fit": "All eligible labels ending before 2025; static model in 2025",
+  "warning": "2025 previously inspected: retrospective comparison, not an untouched test",
+  "uncertainty": "No prediction intervals; CV selection scores are not unbiased performance estimates"
+}

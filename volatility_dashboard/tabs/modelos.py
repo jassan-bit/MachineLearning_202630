@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import dcc, html, Input, Output
-from ..data_loader import ROOT, FAMILIES, repository, dataset, artifact_for, hyperparameters, importance, training_curves, tuning, read_json
+from ..data_loader import ROOT, FAMILIES, repository, dataset, artifact_for, hyperparameters, importance, tuning, read_json
 from ..metrics import aggregate
 from ..utils import COLORS, METRICS, graph_card, table, acf_figure
 
@@ -19,7 +19,7 @@ def layout():
             html.Div([html.Label('Horizonte del ranking'),dcc.Dropdown([{'label':'Promedio de los 7 horizontes','value':'TODOS'}]+[{'label':f'Día {h}','value':h} for h in range(1,8)],'TODOS',id='models-horizon',clearable=False)]),
             html.Div([html.Label('Modelos comparados'),dcc.Dropdown(available,available,multi=True,id='models-selected')]),
             html.Div([html.Label('Métrica para ordenar'),dcc.Dropdown([{'label':v,'value':k} for k,v in METRICS.items()],'rmse',id='models-metric',clearable=False)]),
-            html.Div([html.Label('Modelo para diagnóstico'),dcc.Dropdown(available,'MLP' if 'MLP' in available else available[0],id='models-focus',clearable=False)]),
+            html.Div([html.Label('Modelo para diagnóstico'),dcc.Dropdown(available,'XGBoost' if 'XGBoost' in available else available[0],id='models-focus',clearable=False)]),
             html.Div([html.Label('Activo para diagnóstico individual'),dcc.Dropdown(list(dataset().columns),'BTCUSDT',id='models-asset',clearable=False)]),
             html.Div([html.Label('Horizonte para diagnóstico individual'),dcc.Dropdown(list(range(1,8)),1,id='models-detail-h',clearable=False)])],className='filters'),
         dcc.Loading(html.Div(id='models-content'),type='circle')])
@@ -81,7 +81,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
     params = []
     for model in predictions.model.unique():
         p = hyperparameters(model,focused_asset,int(window))
-        params.append(dict(Modelo=model,Escalamiento=p.pop('escalamiento'),Tipo='Ensemble MLP multisalida' if model=='MLP' else 'Regresión',Parametros=json.dumps(p,ensure_ascii=False,default=str)))
+        params.append(dict(Modelo=model,Escalamiento=p.pop('escalamiento'),Tipo='Regresión',Parametros=json.dumps(p,ensure_ascii=False,default=str)))
     focus_params = hyperparameters(focus,focused_asset,int(window))
     importance_frame,method = importance(focus,focused_asset,int(window),focused_h)
     imp_fig = px.bar(importance_frame.sort_values('importance'),x='importance',y='feature',orientation='h',color_discrete_sequence=[COLORS[focus]])
@@ -115,16 +115,6 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             specific.append(html.Section([html.H3('Búsqueda completa · '+model),
                 html.P('Filtra por profundidad, vecinos, regularización o cualquier parámetro guardado. Las filas corresponden a validación 2024.'),
                 table(search)],className='panel'))
-    mlp_sections = []
-    if 'MLP' in predictions.model.unique():
-        p = hyperparameters('MLP',focused_asset,int(window))
-        architecture = [f"Input · {p['n_features']} features"]+[f'Hidden {i} · {n} neuronas' for i,n in enumerate(p['hidden_layer_sizes'],1)]+['Output · 7 correcciones relativas','Reconstrucción y mezcla causal']
-        train,validation = training_curves(focused_asset,int(window))
-        mlp_sections = [html.Div([html.Div(step,className='pipeline-step') for step in architecture],className='pipeline'),
-            html.Pre(json.dumps(p,indent=2,ensure_ascii=False,default=str)),
-            graph_card('Curvas guardadas del MLP final',px.line(train,x='epoch',y='loss',color='serie'),f"Arquitectura {p['hidden_layer_sizes']}, activación {p['activation']}, alpha {p['alpha']}. Iteraciones guardadas por red: {p['iteraciones_por_red']}. Loss incluye error relativo ponderado y L2; no equivale al RMSE de test.")]
-        if not validation.empty:
-            mlp_sections.append(graph_card('Diagnóstico guardado de validación · MLP ajustado previo',px.line(validation,x='epoch',y='loss'),f'{len(validation)} épocas agregadas de validación 2024 del MLP ajustado previo. Es otro diagnóstico y otra escala; no se presenta como curva de validación del ensemble final.'))
     times = []
     for model,family in FAMILIES.items():
         for filename in ['status.json','verification.json']:
@@ -152,7 +142,6 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
         html.Details([html.Summary('Interpretabilidad del modelo seleccionado'),interpretation],className='panel'),
         html.Details([html.Summary('Ridge vs Lasso · L2 y L1'),html.P('Ridge reduce magnitudes con L2; Lasso puede anular coeficientes con L1. Los conteos corresponden al horizonte seleccionado y a las respectivas ventanas de entrada.'),table(pd.DataFrame(regularization)),html.Div(ridge_figures,className='grid-two')],className='panel'),
         html.Details([html.Summary('k-NN, Random Forest y XGBoost · tuning guardado'),html.Div(specific,className='grid-two')],className='panel'),
-        html.Details([html.Summary('MLP · arquitectura y curvas guardadas')]+mlp_sections,className='panel'),
         html.Details([html.Summary('Tiempo computacional registrado'),table(pd.DataFrame(times)),html.P('No se dispone de mediciones separadas y comparables de entrenamiento y predicción. Los tiempos de búsquedas con distintos presupuestos no forman un ranking de velocidad.')],className='panel'),
         html.Details([html.Summary('Auditoría interna'),table(audit)],className='panel')])
 

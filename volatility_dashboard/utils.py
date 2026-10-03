@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from dash import dcc, html, dash_table
 from statsmodels.tsa.stattools import acf
 
-COLORS = {'k-NN':'#2563eb','Ridge':'#0891b2','Lasso':'#7c3aed','Random Forest':'#059669','XGBoost':'#d97706','SVR Lineal':'#dc2626','MLP':'#0f172a'}
+COLORS = {'k-NN':'#2563eb','Ridge':'#0891b2','Lasso':'#7c3aed','Random Forest':'#059669','XGBoost':'#d97706','SVR Lineal':'#dc2626'}
 METRICS = {'rmse':'RMSE ↓','mae':'MAE ↓','r2':'R² ↑'}
 
 
@@ -23,7 +23,8 @@ def empty(title,message):
 
 
 def graph_card(title,figure,note):
-    return html.Section([html.H3(title),dcc.Graph(figure=polish(figure),config={'displaylogo':False}),html.P(note,className='interpretation')],className='panel')
+    height = figure.layout.height or 450
+    return html.Section([html.H3(title),dcc.Graph(figure=polish(figure),responsive=True,style={'height':f'{height}px','width':'100%'},config={'displaylogo':False}),html.P(note,className='interpretation')],className='panel')
 
 
 def table(frame, page_size=12):

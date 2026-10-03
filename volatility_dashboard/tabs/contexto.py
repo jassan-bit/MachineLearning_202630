@@ -9,8 +9,7 @@ DESCRIPTIONS = {'k-NN':'Promedia vecinos históricos según la distancia entre c
     'Lasso':'Regresión lineal con penalización L1; puede anular coeficientes.',
     'Random Forest':'Combina árboles de regresión para aprender relaciones no lineales.',
     'XGBoost':'Añade árboles sucesivos para corregir los errores del conjunto.',
-    'SVR Lineal':'Regresión con margen epsilon y regularización.',
-    'MLP':'Redes multisalida; el ensemble vigente combina inicializaciones y una referencia causal.'}
+    'SVR Lineal':'Regresión con margen epsilon y regularización.'}
 
 
 def layout():
@@ -40,11 +39,11 @@ def layout():
             html.Ul([html.Li(name.replace('_',' ')) for name in FEATURES]),
             html.P('Se añaden siete variables de salida conocida de la ventana. Se usan lags de 7, 14, 21 o 28 días: 6L + 7 entradas (49, 91, 133 o 175). No hay volumen ni rango OHLC en este dataset procesado.')],className='panel'),
         html.Section([html.H3('Objetivo y horizonte'),dcc.Markdown(r'$$r_t=100\ln(P_t/P_{t-1}),\qquad \sigma_t^{(w)}=\sqrt{\frac1w\sum_{i=0}^{w-1}(r_{t-i}-\bar r_t)^2}$$'+ '\n\n'+r'$$y_{t,h}=\sigma_{t+h}^{(w)},\qquad h=1,\ldots,7;\quad w\in\{7,14,21,28\}$$',mathjax=True),
-            html.P('Desviación estándar poblacional de retornos diarios (ddof=0), incluyendo el retorno del día t. Unidad: puntos porcentuales de volatilidad no anualizada. Las redes aprenden correcciones relativas respecto a la volatilidad actual; se reconstruyen las predicciones en las unidades originales.')],className='panel'),
+            html.P('Desviación estándar poblacional de retornos diarios (ddof=0), incluyendo el retorno del día t. Unidad: puntos porcentuales de volatilidad no anualizada. Los modelos aprenden correcciones relativas respecto a la volatilidad actual; se reconstruyen las predicciones en las unidades originales.')],className='panel'),
         graph_card('Calendario temporal',fig,f'{len(development)} fechas de development y {len(test)} orígenes completos de test. Los porcentajes excluyen los siete últimos días de 2025 sin target completo; validation está dentro de development y no se suma como partición independiente.'),
         html.Section([html.H3('Cortes crecientes de validación'),table(pd.DataFrame(fold_rows)),html.P(f'Ajuste final: {len(final_train)} orígenes elegibles; etiquetas terminan antes del 1 de enero de 2025. Separación comprobada: última etiqueta train anterior al primer origen validation.')],className='panel'),
         html.Section([html.H3('Metodología'),html.Div([html.Div(step,className='pipeline-step') for step in ['Cierres Binance 1 min','Características causales','Split temporal','Escalado solo train, cuando aplica','Entrenamiento','Predicción de 7 salidas','Evaluación alineada','Comparación por métrica']],className='pipeline')],className='panel'),
         html.Div([html.Div([html.H4(model),html.P(description)],className='stat-card') for model,description in DESCRIPTIONS.items()],className='cards'),
         html.Details([html.Summary('Auditoría de comparabilidad y archivos fuente'),table(audit),html.P('Solo se comparan resultados con las mismas claves activo/ventana/origen/horizonte y el mismo y real. Selecciones verificadas por hash; se comprueban fechas de ajuste y los objetivos contra el dataset.'),
-            html.P('El MLP tiene etapas adicionales de selección sobre los mismos bloques de 2024. El test es común, pero la cantidad de búsquedas difiere: el ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
+            html.P('Se comparan seis modelos clásicos sin redes neuronales: k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal. El ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
         html.A('Leer capítulo del Jupyter Book (Markdown)',href='/book-report',className='button')])

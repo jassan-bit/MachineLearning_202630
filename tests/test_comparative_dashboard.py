@@ -14,7 +14,8 @@ class ComparativeDashboardTests(unittest.TestCase):
     def setUpClass(cls):
         cls.predictions, cls.metrics, cls.audit = loader.repository()
 
-    def test_all_seven_models_have_identical_test_keys_and_actuals(self):
+    def test_all_six_classical_models_have_identical_test_keys_and_actuals(self):
+        self.assertEqual(set(loader.FAMILIES), {'k-NN', 'Ridge', 'Lasso', 'Random Forest', 'XGBoost', 'SVR Lineal'})
         self.assertEqual(set(self.predictions.model),set(loader.FAMILIES))
         reference = None
         for model,frame in self.predictions.groupby('model'):
@@ -28,11 +29,8 @@ class ComparativeDashboardTests(unittest.TestCase):
     def test_macro_metrics_match_saved_verified_results(self):
         for model,family in loader.FAMILIES.items():
             observed = self.metrics[self.metrics.model==model][['mae','rmse','mse','r2']].mean()
-            if model=='MLP':
-                saved = pd.read_csv(loader.ROOT/'results'/family/'comparison.csv').set_index('model').loc['MLP ensemble']
-            else:
-                saved = pd.read_csv(loader.ROOT/'results'/family/'macro_metrics.csv')
-                saved = saved[(saved.symbol=='GLOBAL_MACRO')&(saved.model!='Persistence')].iloc[0]
+            saved = pd.read_csv(loader.ROOT/'results'/family/'macro_metrics.csv')
+            saved = saved[(saved.symbol=='GLOBAL_MACRO')&(saved.model!='Persistence')].iloc[0]
             np.testing.assert_allclose(observed.to_numpy(float),saved[observed.index].to_numpy(float),rtol=1e-10)
 
     def test_corrupted_forecast_is_excluded_without_poisoning_reference(self):
@@ -47,21 +45,22 @@ class ComparativeDashboardTests(unittest.TestCase):
             with patch.object(loader.pd,'read_csv',side_effect=read):
                 predictions,_,audit = loader.repository()
             self.assertNotIn('k-NN',predictions.model.unique())
-            self.assertEqual(len(predictions.model.unique()),6)
+            self.assertEqual(len(predictions.model.unique()),5)
             self.assertEqual(audit.set_index('model').loc['k-NN','estado_comparable'],'Excluido')
         finally:
             loader.repository.cache_clear()
 
     def test_window_and_horizon_filters_do_not_mix_targets(self):
-        view = aggregate(self.metrics,'BTCUSDT',14,3,['MLP','Ridge'])
-        expected = self.metrics.query('symbol == "BTCUSDT" and volatility_window == 14 and horizon == 3 and model in ["MLP","Ridge"]')
+        view = aggregate(self.metrics,'BTCUSDT',14,3,['XGBoost','Ridge'])
+        expected = self.metrics.query('symbol == "BTCUSDT" and volatility_window == 14 and horizon == 3 and model in ["XGBoost","Ridge"]')
         np.testing.assert_allclose(view.set_index('model').sort_index().rmse,expected.set_index('model').sort_index().rmse)
 
     def test_http_routes_and_three_tabs(self):
         client = app.server.test_client()
-        for route in ['/','/_dash-layout','/_dash-dependencies','/assets/style.css','/book-report']:
+        for route in ['/','/healthz','/_dash-layout','/_dash-dependencies','/assets/style.css','/book-report']:
             with client.get(route) as response:
                 self.assertEqual(response.status_code,200,route)
+        self.assertEqual(client.get('/healthz').get_json(), {'status': 'ok'})
         layout = client.get('/_dash-layout').get_json()
         tabs = layout['props']['children'][1]['props']['children']
         self.assertEqual(len(tabs),3)
@@ -79,7 +78,7 @@ class ComparativeDashboardTests(unittest.TestCase):
         views = [
             eda.render('BTCUSDT',7,1,loader.FEATURES[0],'Spearman','2023-01-01','2024-12-24',['BTCUSDT','ETHUSDT']),
             eda.render('XRPUSDT',28,7,loader.FEATURES[3],'Pearson','2025-01-01','2025-12-31',list(loader.dataset().columns)),
-            modelos.render('TODOS',7,'TODOS',list(loader.FAMILIES),'rmse','MLP','BTCUSDT',1),
+            modelos.render('TODOS',7,'TODOS',list(loader.FAMILIES),'rmse','XGBoost','BTCUSDT',1),
             modelos.render('ETHUSDT',14,3,['Ridge','Lasso','SVR Lineal'],'r2','SVR Lineal','BTCUSDT',1),
         ]
         for view in views:

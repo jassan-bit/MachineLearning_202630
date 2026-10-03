@@ -17,7 +17,66 @@ El Dockerfile incluye los modelos y metadatos; no descarga datos ni entrena al a
 Un Dockerfile preparado no equivale a un despliegue remoto verificado.
 
 
-## Dashboard comparativo de siete modelos
+## Modelo mejorado sin deep learning
+
+Se añadió `src/improve_classical_forecast.py`: combina XGBoost con HAR-Ridge,
+una regresión regularizada con resúmenes de volatilidad de 1, 3, 7, 14 y 28 días,
+riesgo negativo y los retornos conocidos que abandonan la ventana de volatilidad.
+Predice **volatilidad**, no precio ni rentabilidad, a siete horizontes diarios
+para BTC, ETH, BNB y XRP. Usa los datos por minuto existentes.
+
+Los hiperparámetros de XGBoost proceden de su selección anterior en 2024.
+Cinco penalizaciones Ridge y cinco pesos de combinación se comparan en seis
+bloques expansivos de 2024. Las etiquetas de entrenamiento terminan antes del
+primer origen de validación; cada scaler se ajusta solo con su entrenamiento.
+El peso cero permite conservar XGBoost. Todas las decisiones se fijan antes
+de calcular métricas de 2025. Los modelos finales se entrenan con etiquetas
+que terminan antes de 2025 y permanecen fijos durante la evaluación.
+
+Resultados macro de 2025, promediados sobre cuatro monedas y cuatro ventanas:
+
+| Modelo | R² | RMSE | MAE |
+| --- | ---: | ---: | ---: |
+| Persistencia | 0.5377 | 0.74770 | 0.49719 |
+| XGBoost anterior | 0.7155 | 0.57976 | 0.38864 |
+| HAR-Ridge + XGBoost | **0.7380** | **0.55817** | **0.37557** |
+
+El RMSE macro baja un **3.73 %** frente a XGBoost y un **25.35 %** frente
+a persistencia. El RMSE promedio mejora para las cuatro monedas; XRP presenta
+un MAE ligeramente mayor (0.50280 frente a 0.49501). No todas las métricas ni
+configuraciones individuales tienen que mejorar. El RMSE usa la media del
+RMSE de cada horizonte, conforme a los experimentos existentes.
+
+2025 ya se había examinado en estudios anteriores: esta comparación es
+retrospectiva, no un test nuevo independiente. No se han calculado intervalos
+predictivos ni significancia estadística de la mejora.
+
+Ejecutar desde la raíz:
+
+```powershell
+.\.venv-repro\Scripts\python.exe src/improve_classical_forecast.py
+.\.venv-repro\Scripts\python.exe src/verify_improved_classical.py
+.\.venv-repro\Scripts\python.exe -m unittest discover -s tests -p test_improved_classical.py
+```
+
+Artefactos en `results/improved_classical_2023_2025/`: modelos `.joblib`,
+predicciones, métricas por moneda/ventana, métricas macro, búsqueda, selección,
+calendario y configuración. El verificador comprueba hashes del dataset,
+separación temporal, selección, coincidencia con el XGBoost anterior y
+reproducción de todas las predicciones desde los modelos guardados.
+`predict_bundle` reconstruye las variables causales para inferencia; necesita
+el historial de cierres diarios y resúmenes por minuto hasta el origen.
+El dashboard de seis modelos clásicos y la API actuales conservan su configuración;
+esta nueva combinación se consulta en sus propios CSV.
+
+## Dashboard comparativo de seis modelos clásicos
+
+Por requisito del curso, el comparativo vigente excluye MLP y cualquier red
+neuronal. Incluye k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal.
+MLP pertenece a las redes neuronales; su clasificación como deep learning
+depende de su profundidad, pero queda excluido por la restricción del profesor.
+Los experimentos anteriores se conservan como historial y no se cargan en este
+dashboard. El modelo mejorado HAR-Ridge + XGBoost también cumple la restricción.
 
 ### Publicar el comparativo en Render
 
@@ -30,7 +89,7 @@ con `requirements-render.txt` y sirve la aplicación con Gunicorn en `$PORT`.
 3. Usar **Build Command**: `pip install -r requirements-render.txt`.
 4. Usar **Start Command**: `gunicorn volatility_dashboard.app:server --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 180 --access-logfile - --error-logfile -`.
 5. Configurar `PYTHON_VERSION=3.11.11` y `OMP_NUM_THREADS=1`,
-   `OPENBLAS_NUM_THREADS=1`, `MKL_NUM_THREADS=1`. Health check: `/`.
+   `OPENBLAS_NUM_THREADS=1`, `MKL_NUM_THREADS=1`. Health check: `/healthz`.
 6. Crear el servicio y revisar los logs. Cuando termine el despliegue, abrir
    la URL pública y comprobar Contexto, EDA y Comparación de modelos.
 
@@ -39,7 +98,7 @@ No cambiar el servicio a sitio estático: los filtros requieren un servidor Pyth
 
 El repositorio remoto debe incluir `volatility_dashboard/`, `src/`,
 `data/processed/minute_2023_2025/`, `results/minute_2023_2025/data_manifest.json`,
-las siete carpetas de resultados enumeradas en `volatility_dashboard/data_loader.py`
+las seis carpetas de resultados enumeradas en `volatility_dashboard/data_loader.py`
 (incluidos modelos, predicciones y verificaciones), y
 `book/sections/10_dashboard_comparativo.md`. Mantener sus rutas relativas.
 Si los artefactos usan Git LFS, verificar que se descarguen los archivos reales.
@@ -49,6 +108,20 @@ Una validación local no confirma que el servicio remoto esté desplegado.
 
 Documentación: https://render.com/docs/web-services
 
+### Ajuste para errores 502 durante la carga inicial
+
+La auditoría inicial se ejecuta una sola vez a la vez entre los threads del
+servidor. Los hashes se leen en bloques; los resúmenes diarios de los datos
+por minuto se reutilizan entre modelos. Las cachés de modelos y matrices
+tienen límites pequeños para reducir la memoria retenida. Se mantienen las
+verificaciones de fechas, hashes y predicciones, sin entrenar modelos.
+
+Después de publicar estos cambios, configurar **Health Check Path** como
+`/healthz` en el servicio existente y volver a desplegar. Este endpoint verifica
+que el servidor responde; comprobar también las tres pestañas para validar los datos.
+Si reaparece el 502, revisar los logs de ejecución y los eventos de memoria:
+esta optimización no confirma por sí sola la causa del fallo remoto.
+
 Implementacion modular en volatility_dashboard/, con exactamente tres pestanas: contexto, EDA y comparacion. Reutiliza el dataset y los modelos existentes; no entrena ni modifica resultados.
 
 Desde la raiz:
@@ -57,9 +130,14 @@ Desde la raiz:
 
 Abrir http://127.0.0.1:8050/. Si otro dashboard ocupa 8050, detener esa instancia antes de iniciar este comando. Las dependencias estan en requirements.txt, requirements-dashboard.txt y requirements-xgboost.txt.
 
+Si aparecen los textos de EDA pero faltan las graficas o tablas, reiniciar el
+servidor con el codigo actualizado y recargar con Ctrl+F5. El dashboard carga
+los recursos JavaScript de Plotly y las tablas desde la pagina inicial, y
+reserva altura para las graficas. En Render, volver a desplegar estos cambios.
+
 El loader audita hashes, fechas, objetivos, calendario, medias del scaler y predicciones serializadas. Las inconsistencias se excluyen con su motivo. BTC, ETH, BNB y XRP estan disponibles; SOL no tiene datos comparables.
 
-Informe detallado: book/sections/10_dashboard_comparativo.md. No hay volumen procesado, pruebas residuales alineadas ni tiempos separados completos. MAPE no se incluye automaticamente. Las importancias de k-NN/MLP son diagnosticos descriptivos por grupos de lags, sin tuning.
+Informe detallado: book/sections/10_dashboard_comparativo.md. No hay volumen procesado, pruebas residuales alineadas ni tiempos separados completos. MAPE no se incluye automaticamente. Las importancias de k-NN son diagnosticos descriptivos por grupos de lags, sin tuning.
 
 Validar:
 

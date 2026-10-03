@@ -8,9 +8,11 @@ from .tabs import contexto, eda, modelos
 
 
 def create_app():
-    app = Dash(__name__,title='Volatilidad | Machine Learning',assets_folder=str(Path(__file__).parent/'assets'),suppress_callback_exceptions=True)
+    # Graphs and tables arrive through tab callbacks. Load their JavaScript
+    # with the initial page so rendering does not depend on lazy chunk requests.
+    app = Dash(__name__,title='Volatilidad | Machine Learning',assets_folder=str(Path(__file__).parent/'assets'),suppress_callback_exceptions=True,eager_loading=True)
     app.layout = html.Div([
-        html.Header([html.Div('ML / VOLATILIDAD',className='brand'),html.H1('Predicción de la volatilidad futura de criptomonedas mediante Machine Learning'),html.P('Binance · cierres de 1 minuto · siete modelos · evaluación temporal retrospectiva')],className='site-header'),
+        html.Header([html.Div('ML / VOLATILIDAD',className='brand'),html.H1('Predicción de la volatilidad futura de criptomonedas mediante Machine Learning'),html.P('Binance · cierres de 1 minuto · seis modelos clásicos · evaluación temporal retrospectiva')],className='site-header'),
         dcc.Tabs(id='main-tabs',value='contexto',children=[dcc.Tab(label='1 · Contexto del problema',value='contexto'),dcc.Tab(label='2 · EDA',value='eda'),dcc.Tab(label='3 · Comparación de modelos',value='modelos')]),
         html.Main(dcc.Loading(html.Div(id='tab-content'),type='circle'),className='main-content'),
         html.Footer('Resultados locales verificados · Unidades y protocolos explícitos · Sin entrenamiento desde el dashboard')])
@@ -24,6 +26,10 @@ def create_app():
 
     eda.register(app)
     modelos.register(app)
+
+    @app.server.route('/healthz')
+    def healthz():
+        return {'status': 'ok'}, 200
 
     @app.server.route('/book-report')
     def book_report():

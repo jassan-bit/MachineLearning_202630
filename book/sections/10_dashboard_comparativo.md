@@ -1,6 +1,6 @@
 # Dashboard comparativo de volatilidad
 
-El dashboard local resume siete modelos sobre las mismas observaciones de test. Se ejecuta desde la raíz del repositorio:
+El dashboard local resume seis modelos clásicos sobre las mismas observaciones de test. Se ejecuta desde la raíz del repositorio:
 
     .\.venv-repro\Scripts\python.exe -m volatility_dashboard.app
 
@@ -37,7 +37,7 @@ El ajuste final utiliza orígenes elegibles con todas sus etiquetas anteriores a
 
 El escalador se ajusta exclusivamente con train por fold y con train final para los artefactos de test. Random Forest y XGBoost no utilizan un escalador ajustado. La aplicación comprueba las medias del escalador contra las características de entrenamiento.
 
-Los modelos aprenden correcciones relativas a la volatilidad actual. La predicción se reconstruye en unidades originales y se limita inferiormente a cero. El MLP seleccionado incorpora ponderación por volatilidad y un promedio de inicializaciones, cuando fue seleccionado, con mezcla con persistencia o decaimiento conocido. Sus etapas adicionales de búsqueda usan la misma validación de 2024; el presupuesto de selección no es igual al de los otros métodos.
+Los modelos aprenden correcciones relativas a la volatilidad actual. La predicción se reconstruye en unidades originales y se limita inferiormente a cero.
 
 ## Archivos de resultados utilizados
 
@@ -49,7 +49,6 @@ Los modelos aprenden correcciones relativas a la volatilidad actual. La predicci
 | Random Forest | optimized_minute_randomforest_2023_2025 |
 | XGBoost | optimized_minute_xgboost_2023_2025 |
 | SVR Lineal | optimized_minute_2023_2025 |
-| MLP | ensemble_tuned_minute_mlp_2023_2025 |
 
 Se leen predicciones, selecciones, configuraciones, auditorías temporales, verificaciones y artefactos ya entrenados. Los nombres knn y svr se normalizan a forecast exclusivamente en memoria. Los archivos fuente permanecen intactos.
 
@@ -83,9 +82,9 @@ No se inventan pruebas Jarque–Bera, Breusch–Pagan o BDS faltantes para estos
 
 Ridge y Lasso muestran coeficientes por característica estandarizada y salida de corrección relativa. Se cuentan coeficientes exactamente cero y cercanos a cero con umbral absoluto explícito de 10⁻⁶. El SVR lineal deshace el escalado de la salida para interpretar coeficientes sobre las entradas estandarizadas.
 
-Random Forest muestra reducción de impureza y XGBoost ganancia normalizada, agregadas sobre las salidas. k-NN y MLP muestran permutation importance por grupos de lags sobre hasta 120 fechas espaciadas de test, con tres repeticiones y semilla 42. Es un diagnóstico descriptivo sobre modelos fijos, no un criterio de selección, prueba causal ni una escala comparable a coeficientes o ganancia.
+Random Forest muestra reducción de impureza y XGBoost ganancia normalizada, agregadas sobre las salidas. k-NN muestra permutation importance por grupos de lags sobre hasta 120 fechas espaciadas de test, con tres repeticiones y semilla 42. Es un diagnóstico descriptivo sobre modelos fijos, no un criterio de selección, prueba causal ni una escala comparable a coeficientes o ganancia.
 
-Los parámetros y dimensiones se leen de los artefactos finales. Las curvas de loss del MLP provienen de loss_curve_. El diagnóstico guardado del MLP ajustado previo se presenta separado y con otra escala: no se atribuye al ensemble final.
+Los parámetros y dimensiones se leen de los artefactos finales.
 
 ## Limitaciones y conclusiones
 
@@ -113,7 +112,6 @@ Cada tabla mantiene fija la definicion de volatilidad. Los valores promedian las
 | model | rmse | mae | mse | r2 |
 | --- | --- | --- | --- | --- |
 | Lasso | 1.063671 | 0.749403 | 1.395908 | 0.382572 |
-| MLP | 1.036057 | 0.715246 | 1.309136 | 0.420695 |
 | Random Forest | 1.030813 | 0.732621 | 1.263555 | 0.425665 |
 | Ridge | 1.049503 | 0.743878 | 1.338345 | 0.409274 |
 | SVR Lineal | 1.048824 | 0.739312 | 1.338715 | 0.406163 |
@@ -125,7 +123,6 @@ Cada tabla mantiene fija la definicion de volatilidad. Los valores promedian las
 | model | rmse | mae | mse | r2 |
 | --- | --- | --- | --- | --- |
 | Lasso | 0.609228 | 0.420881 | 0.474398 | 0.703689 |
-| MLP | 0.566756 | 0.371767 | 0.396521 | 0.748121 |
 | Random Forest | 0.596096 | 0.408132 | 0.434713 | 0.719644 |
 | Ridge | 0.599735 | 0.407058 | 0.452337 | 0.721810 |
 | SVR Lineal | 0.591042 | 0.404936 | 0.434912 | 0.728488 |
@@ -137,7 +134,6 @@ Cada tabla mantiene fija la definicion de volatilidad. Los valores promedian las
 | model | rmse | mae | mse | r2 |
 | --- | --- | --- | --- | --- |
 | Lasso | 0.439136 | 0.303533 | 0.254732 | 0.805922 |
-| MLP | 0.394816 | 0.255497 | 0.196161 | 0.836286 |
 | Random Forest | 0.435950 | 0.299308 | 0.239755 | 0.804543 |
 | Ridge | 0.414506 | 0.286192 | 0.219793 | 0.820120 |
 | SVR Lineal | 0.426074 | 0.291702 | 0.235996 | 0.813140 |
@@ -149,7 +145,6 @@ Cada tabla mantiene fija la definicion de volatilidad. Los valores promedian las
 | model | rmse | mae | mse | r2 |
 | --- | --- | --- | --- | --- |
 | Lasso | 0.314492 | 0.211144 | 0.129288 | 0.868438 |
-| MLP | 0.298749 | 0.187235 | 0.113147 | 0.877535 |
 | Random Forest | 0.347242 | 0.228007 | 0.160258 | 0.838403 |
 | Ridge | 0.324674 | 0.218112 | 0.137620 | 0.857189 |
 | SVR Lineal | 0.326377 | 0.220179 | 0.139066 | 0.855149 |
@@ -166,9 +161,8 @@ Cada tabla mantiene fija la definicion de volatilidad. Los valores promedian las
 | Random Forest | 358.000000 | 2025-01-01 | 2025-12-24 | Comparable |
 | XGBoost | 358.000000 | 2025-01-01 | 2025-12-24 | Comparable |
 | SVR Lineal | 358.000000 | 2025-01-01 | 2025-12-24 | Comparable |
-| MLP | 358.000000 | 2025-01-01 | 2025-12-24 | Comparable |
 | Referencia historica: minute_2023_2025 | No aplica |  |  | Excluido |
 | Referencia historica: cv_comparison | No aplica |  |  | Excluido |
 
-Las siete variantes actuales son comparables en observaciones y objetivos; las referencias historicas quedan fuera. Los archivos originales de resultados y modelos no se modificaron.
+Las seis variantes actuales son comparables en observaciones y objetivos; las referencias historicas quedan fuera. Los archivos originales de resultados y modelos no se modificaron.
 <!-- dashboard-results:end -->

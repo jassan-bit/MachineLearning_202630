@@ -1,5 +1,6 @@
 """Read-only access to saved forecasts, causal features and fitted artifacts."""
-from functools import lru_cache
+from functools import lru_cache, wraps
+from threading import RLock
 from pathlib import Path
 import hashlib
 import json
@@ -15,7 +16,6 @@ if str(ROOT/'src') not in sys.path:
     sys.path.insert(0, str(ROOT/'src'))
 from optimize_minute_svr import load_panel, calendars, minute_features, features, predict
 from volatility_experiment import targets
-from ensemble_tuned_mlp import predict_bundle
 from .metrics import metric_table
 
 DATA = ROOT/'data/processed/minute_2023_2025'
@@ -26,7 +26,6 @@ FAMILIES = {
     'Random Forest': 'optimized_minute_randomforest_2023_2025',
     'XGBoost': 'optimized_minute_xgboost_2023_2025',
     'SVR Lineal': 'optimized_minute_2023_2025',
-    'MLP': 'ensemble_tuned_minute_mlp_2023_2025',
 }
 FEATURES = ['retorno_diario_relativo','retorno_cuadrado_relativo','volatilidad_minuto_relativa',
             'retorno_absoluto_minuto_relativo','volatilidad_negativa_relativa','max_retorno_minuto_relativo']
@@ -35,6 +34,33 @@ KEYS = ['symbol','volatility_window','origin','horizon']
 
 def read_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
+
+
+def file_digest(path):
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def serialized_cache(function):
+    # lru_cache alone can run the same cold audit in both Gunicorn threads.
+    lock = RLock()
+    cached = lru_cache(maxsize=1)(function)
+
+    @wraps(function)
+    def wrapped(*args, **kwargs):
+        with lock:
+            return cached(*args, **kwargs)
+
+    def clear():
+        with lock:
+            cached.cache_clear()
+
+    wrapped.cache_clear = clear
+    wrapped.cache_info = cached.cache_info
+    return wrapped
 
 
 @lru_cache(maxsize=1)
@@ -47,7 +73,7 @@ def temporal_calendar():
     return calendars(dataset())
 
 
-@lru_cache(maxsize=1)
+@serialized_cache
 def repository():
     frames, audit = [], []
     panel = dataset()
@@ -60,7 +86,7 @@ def repository():
         [str(value) for value in panel.index[test]],range(1,8)],names=KEYS).sort_values()
     manifest = read_json(ROOT/'results/minute_2023_2025/data_manifest.json')
     for name, digest in manifest.items():
-        if hashlib.sha256((DATA/name).read_bytes()).hexdigest() != digest:
+        if file_digest(DATA/name) != digest:
             raise ValueError(f'Dataset modificado: {name}; revisar procedencia antes de comparar.')
     reference = None
     for label, family in FAMILIES.items():
@@ -72,7 +98,7 @@ def repository():
             verification = read_json(out/'verification.json')
             if not verification.get('passed'):
                 raise ValueError('La verificacion guardada no paso.')
-            selection = out/('selection.json' if label == 'MLP' else 'selected_inputs.csv')
+            selection = out/'selected_inputs.csv'
             selection_digest = verification.get('selection_sha256')
             if selection_digest is None and (out/'status.json').exists():
                 selection_digest = read_json(out/'status.json').get('selection_sha256')
@@ -97,7 +123,7 @@ def repository():
                     raise ValueError('La variable objetivo no coincide exactamente.')
             if set(frame.horizon) != set(range(1,8)) or set(frame.volatility_window) != {7,14,21,28}:
                 raise ValueError('Horizontes o ventanas inesperados.')
-            saved_calendar = pd.read_csv(out/('calendar_audit.csv' if label=='MLP' else 'native_cv_audit.csv'))
+            saved_calendar = pd.read_csv(out/'native_cv_audit.csv')
             pd.testing.assert_frame_equal(saved_calendar,native_audit,check_dtype=False)
             for (symbol, window), group in frame.groupby(['symbol','volatility_window']):
                 origin = pd.to_datetime(group.origin, utc=True)
@@ -110,12 +136,12 @@ def repository():
                     raise ValueError('El entrenamiento final incluye etiquetas de test.')
                 lag = input_window(label,symbol,window)
                 X, y, base = arrays(symbol,lag,window)
-                models = artifact['models'] if label=='MLP' else [artifact['model']]
+                models = [artifact['model']]
                 for model in models:
                     if hasattr(model,'named_steps') and 'standardscaler' in model.named_steps:
                         np.testing.assert_allclose(model.named_steps['standardscaler'].mean_,X[train].mean(axis=0))
                 with threadpool_limits(limits=1):
-                    forecast = predict_bundle(artifact,X[test],base[test]) if label=='MLP' else predict(artifact['model'],X[test],base[test])
+                    forecast = predict(artifact['model'],X[test],base[test])
                 np.testing.assert_allclose(group.pivot(index='origin',columns='horizon',values='forecast'),forecast,rtol=1e-10,atol=1e-10)
             if reference is None:
                 reference = indexed[['actual']]
@@ -138,19 +164,26 @@ def repository():
     return predictions, metric_table(predictions), pd.DataFrame(audit)
 
 
-@lru_cache(maxsize=128)
+@lru_cache(maxsize=4)
 def artifact_for(model, symbol, window):
     return joblib.load(ROOT/'results'/FAMILIES[model]/'models'/f'{symbol}_v{window}.joblib')
 
 
 def input_window(model, symbol, window):
     artifact = artifact_for(model, symbol, window)
-    return int(artifact['selection']['config']['lag'] if model == 'MLP' else artifact['input_window'])
+    return int(artifact['input_window'])
 
 
-@lru_cache(maxsize=32)
+@lru_cache(maxsize=4)
+def minute_summary(symbol):
+    # Keep only daily summaries; do not repeatedly allocate minute returns
+    # for every model, input lag and volatility window.
+    return minute_features(np.load(DATA/f'{symbol}.npy', mmap_mode='r'))
+
+
+@lru_cache(maxsize=8)
 def arrays(symbol, lag, window):
-    minute = minute_features(np.load(DATA/f'{symbol}.npy'))
+    minute = minute_summary(symbol)
     return features(dataset()[symbol], minute, lag, window)
 
 
@@ -173,23 +206,14 @@ def eda_frame(symbol, window, horizon):
 
 def hyperparameters(model, symbol, window):
     artifact = artifact_for(model, symbol, window)
-    if model == 'MLP':
-        choice = artifact['selection']
-        config = dict(choice['config'])
-        networks = [m.named_steps['mlpregressor'] for m in artifact['models']]
-        params = {k:v for k,v in networks[0].get_params().items() if k in
-                  ['hidden_layer_sizes','activation','alpha','learning_rate_init','solver','batch_size','max_iter','tol','early_stopping','n_iter_no_change']}
-        params.update(iteraciones_por_red=[n.n_iter_ for n in networks], semillas=choice['seeds'],
-                      peso_muestra_potencia=config['power'], referencia=choice['blend'], peso_referencia=choice['blend_weight'])
-    else:
-        fitted = artifact['model']
-        if hasattr(fitted, 'named_steps'):
-            fitted = list(fitted.named_steps.values())[-1]
-        if model == 'SVR Lineal':
-            fitted = fitted.regressor_.estimators_[0]
-        keep = ['n_neighbors','weights','p','metric','alpha','n_estimators','max_depth','min_samples_leaf',
-                'min_samples_split','max_features','learning_rate','subsample','colsample_bytree','C','epsilon','loss','tol','max_iter']
-        params = {k:v for k,v in fitted.get_params().items() if k in keep}
+    fitted = artifact['model']
+    if hasattr(fitted, 'named_steps'):
+        fitted = list(fitted.named_steps.values())[-1]
+    if model == 'SVR Lineal':
+        fitted = fitted.regressor_.estimators_[0]
+    keep = ['n_neighbors','weights','p','metric','alpha','n_estimators','max_depth','min_samples_leaf',
+            'min_samples_split','max_features','learning_rate','subsample','colsample_bytree','C','epsilon','loss','tol','max_iter']
+    params = {k:v for k,v in fitted.get_params().items() if k in keep}
     return dict(input_window=input_window(model,symbol,window), n_features=6*input_window(model,symbol,window)+7,
                 escalamiento='StandardScaler solo train' if model not in ['Random Forest','XGBoost'] else 'Sin escalador', **params)
 
@@ -220,7 +244,7 @@ def importance(model, symbol, window, horizon):
         original = X[anchors].copy()
         def forecast(values):
             with threadpool_limits(limits=1):
-                return predict_bundle(artifact,values,base[anchors]) if model == 'MLP' else predict(artifact['model'],values,base[anchors])
+                return predict(artifact['model'],values,base[anchors])
         baseline = np.sqrt(np.mean((y[anchors,horizon-1]-forecast(original)[:,horizon-1])**2))
         names = FEATURES+['decaimiento_conocido_todos_horizontes']
         groups = [list(range(j,6*lag,6)) for j in range(6)]+[list(range(6*lag,6*lag+7))]
@@ -236,24 +260,6 @@ def importance(model, symbol, window, horizon):
         method = f'Permutation por grupos de lags: aumento RMSE, {len(anchors)} fechas espaciadas de test, 3 repeticiones; diagnostico descriptivo'
     frame = pd.DataFrame({'feature':names, 'importance':values})
     return frame.reindex(frame.importance.abs().sort_values(ascending=False).index).head(15), method
-
-
-def training_curves(symbol, window):
-    artifact = artifact_for('MLP',symbol,window)
-    frames = []
-    for seed, model in zip(artifact['selection']['seeds'],artifact['models']):
-        net = model.named_steps['mlpregressor']
-        frames.append(pd.DataFrame({'epoch':range(1,len(net.loss_curve_)+1),'loss':net.loss_curve_,'serie':f'Train final · semilla {seed}'}))
-    path = ROOT/'results/diagnosed_tuned_minute_mlp_2023_2025/epoch_metrics.csv'
-    if path.exists():
-        saved = pd.read_csv(path)
-        saved = saved[(saved.symbol==symbol)&(saved.volatility_window==window)]
-        if 'validation_rmse' in saved:
-            validation = saved[['epoch','validation_rmse']].rename(columns={'validation_rmse':'loss'})
-            validation['serie'] = 'RMSE validacion 2024 · MLP ajustado previo (otra escala)'
-            # Returned separately: loss and RMSE never share a quantitative axis.
-            return pd.concat(frames,ignore_index=True), validation
-    return pd.concat(frames,ignore_index=True), pd.DataFrame()
 
 
 def tuning(model,symbol,window):
