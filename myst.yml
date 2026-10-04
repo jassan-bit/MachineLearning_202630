@@ -11,8 +11,19 @@ project:
     - file: book/sections/15_reproducibilidad.md
 site:
   template: book-theme
+  actions:
+    - title: Descargar JBook completo
+      url: https://github.com/jassan-bit/MachineLearning_202630/releases/download/jbook-completo-202630/JBook_Completo_202630.zip
   parts:
     primary_sidebar_footer: |
+      **Descargas**
+
+      [JBook completo · ZIP (447 MB)](https://github.com/jassan-bit/MachineLearning_202630/releases/download/jbook-completo-202630/JBook_Completo_202630.zip)
+
+      [Notebook independiente · IPYNB (41 MB)](https://github.com/jassan-bit/MachineLearning_202630/releases/download/jbook-completo-202630/JBook_Completo_202630.ipynb)
+
+      [Lectura sin conexión · HTML (6 MB)](https://github.com/jassan-bit/MachineLearning_202630/releases/download/jbook-completo-202630/LEER_JBOOK.html)
+
       By Jassan Arteta y Mateo Bernal
 
       © Copyright 2026.
