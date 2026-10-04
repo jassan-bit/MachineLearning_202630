@@ -31,5 +31,19 @@ que asigna 10 % a base de datos, 60 % a EDA y 30 % a modelo base.
 El SVR obtiene R² macro **0,7007** y RMSE **0,5981**, y mejora el RMSE frente
 a persistencia en las **16 configuraciones** de activo y ventana.
 La evaluación de 2025 es retrospectiva: ese periodo ya había sido explorado.
-El informe identifica los controles verificados y los requisitos pendientes;
-no presenta esos pendientes como resultados realizados.
+La auditoría ejecutada el **4 de octubre de 2026** incorpora controles de
+calidad, rangos del objetivo, EDA de desarrollo, intervalos de confianza,
+diagnósticos de residuos, curva de aprendizaje y coeficientes del SVR.
+Los capítulos incluyen resultados y evidencias descargables.
+
+Además, con los modelos guardados y un protocolo fijado antes de descargar
+enero–agosto de **2026**, se evaluaron 236 orígenes nuevos respecto a los
+artefactos del proyecto: R² macro **0,7239**, RMSE **0,5976**, frente a
+**0,768** de persistencia, una reducción del **22,16 %**. La
+[evaluación](sections/14_evaluacion.md) explica el alcance y los intervalos.
+
+El estudio conserva límites explícitos: no alcanza 20.000 ejemplos
+supervisados diarios por activo, no puede identificar MCAR/MAR/MNAR
+con una única interrupción y no convierte el año 2025 ya explorado
+en una reserva inicial intacta. La revisión distingue requisitos
+analizados de propiedades que estos datos no permiten certificar.

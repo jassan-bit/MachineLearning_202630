@@ -1,0 +1,16 @@
+{
+  "seed": 20261004,
+  "repetitions": 2000,
+  "block_days": [
+    35,
+    56,
+    70
+  ],
+  "forecast_sha256": "cc94ff00a8322910b53fdb384c3c74326c91bc241a4a95c193a8945ee6331016",
+  "source_sha256": "ed27e1d8f5ff36b4de1565c0a74615d6a00771a60d6799a4d488f0a0caaa1d44",
+  "first_origin": "2026-01-01 00:00:00+00:00",
+  "last_origin": "2026-08-24 00:00:00+00:00",
+  "n_origins": 236,
+  "method": "Same paired circular date block draws shared by 112 series; recompute horizon metrics and macro means; percentile intervals",
+  "limitation": "236 origins contain few long blocks; uncertainty conditional on fixed models and observed period, approximate local stationarity; no refit/reselection; not individual forecast intervals"
+}

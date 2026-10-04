@@ -1,0 +1,22 @@
+requisito,descripcion,resolucion,evidencia
+1.3,Condiciones y atribución,Resuelto documentalmente,licence/evidence.json
+1.6,20.000 ejemplos supervisados,No cumplido: límite del diseño diario,quality/methodology.json
+1.6.2,Rango de volatilidad objetivo,Calculado,quality/target_ranges.csv
+1.6.3,Tamaño efectivo,Estimación descriptiva con límites,quality/effective_sample_size.csv
+1.7.1a,Matrices y propagación de nulos,Calculado,quality/minute_missingness_matrix.csv
+1.7.1b,Mecanismo MCAR/MAR/MNAR,No identificable con una interrupción,quality/methodology.json
+1.7.2,Duplicados y casi duplicados,Auditado,quality/raw_file_audit.csv
+1.7.3,Outliers y sensibilidad,Calculado sin cambiar modelos,quality/outlier_sensitivity.csv
+1.7.4,Imposibles y exclusiones por archivo,Auditado,quality/raw_file_audit.csv
+2.2,Percentiles asimetría curtosis boxplots,Calculado en desarrollo,eda/univariate.csv.gz
+2.3,Asociaciones y redundancia,Calculado con objetivos futuros alineados,eda/future_associations.csv.gz
+2.4,PCA y extremos multivariados,Exploratorio ajustado solo en 2023,eda/pca_summary.csv
+2.5,Disponibilidad y fuga temporal,Verificado,eda/metadata.json
+2.6,STL ADF KPSS PACF estacionalidad deriva,Calculado con límites temporales,eda/stationarity.csv
+3.5,Intervalos temporales de métricas,Calculado con sensibilidad 35/56/70 días,model/metric_confidence_intervals.csv
+3.6,Normalidad heterocedasticidad autocorrelación,Calculado sobre 112 series actuales,model/residual_diagnostics.csv
+3.7,Curva de aprendizaje,384 ajustes auxiliares 2023–2024,model/learning_curve.csv
+3.8,Coeficientes y ambos escaladores,Reconstruido y verificado,model/coefficient_prediction_verification.csv
+4,Contraste con persistencia,Bootstrap pareado con ajuste Holm,model/paired_loss_bootstrap.csv
+reserva2025,Reserva inicial intacta de 2025,No recuperable: periodo ya explorado,model/provenance.json
+adicional2026,Periodo adicional con protocolo congelado,236 orígenes evaluados sin reentrenar,holdout/summary.json

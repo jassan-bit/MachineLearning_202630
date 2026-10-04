@@ -90,8 +90,8 @@ interpretarse junto con la referencia y la superposición temporal.
 El R² medio mejora en las 16 combinaciones de activo y ventana, lo que no
 implica mejorar cada horizonte ni cada fecha. R² no mide calibración,
 significancia estadística ni ausencia de fuga; debe acompañarse de RMSE,
-MAE y diagnóstico de residuos. No se han calculado intervalos de confianza
-para estas diferencias. La exploración previa de 2025 y la dependencia de
+MAE y diagnóstico de residuos. Los intervalos y el contraste pareado por
+bloques se publican más adelante. La exploración previa de 2025 y la dependencia de
 los objetivos impiden presentar estos resultados como evidencia independiente
 de generalización futura.
 
@@ -110,7 +110,7 @@ El MAPE baja de 18,81 % a 15,64 %, aproximadamente un 16,85 % de reducción rela
 
 El SVR mejora las cinco métricas agregadas en las cuatro criptomonedas. BNB alcanza el mayor R² (0,8156); ETH conserva el menor (0,5932), aunque mejora frente a persistencia (0,3426). XRP mantiene el mayor RMSE absoluto (0,9047): las escalas de volatilidad difieren entre activos, por lo que este orden no equivale por sí solo a una comparación de dificultad.
 
-El SVR supera a persistencia en RMSE en las 16 combinaciones seleccionadas de activo y ventana objetivo. Esto no implica ganar en todos los días ni en cada horizonte. La evaluación es retrospectiva y los objetivos móviles se superponen; estas tablas no demuestran significancia estadística ni garantizan resultados futuros.
+El SVR supera a persistencia en RMSE en las 16 combinaciones seleccionadas de activo y ventana objetivo. Esto no implica ganar en todos los días ni en cada horizonte. La evaluación es retrospectiva y los objetivos móviles se superponen; la incertidumbre de estas mejoras se evalúa mediante el bootstrap pareado publicado más adelante, sin garantizar resultados futuros.
 
 RMSE y MAE están en puntos porcentuales de volatilidad no anualizada; MSE está en puntos porcentuales al cuadrado; MAPE está en porcentaje. Se seleccionó con validación de 2024 y se reajustó con etiquetas anteriores a 2025. Las mejoras aquí comparan el SVR optimizado con persistencia; la comparación con el SVR original combina cambios de características, validación y periodo de ajuste.
 
@@ -158,23 +158,136 @@ R² se promedia entre siete horizontes; por activo se promedian las cuatro defin
 | XRPUSDT | 28 | 7 | Persistence | 0.79232 | 0.62005 | 0.35179 |
 
 
+## Incertidumbre temporal de las métricas de 2025
+
+La auditoría complementaria conserva los modelos, métricas y predicciones
+originales. Recalcula cada métrica sobre 2.000 remuestras de los 358
+orígenes de prueba, con **bloques diarios circulares compartidos** por
+ambos modelos y las 112 series de activo–ventana–horizonte. Primero
+calcula cada horizonte y después aplica la agregación macro original.
+No remuestrea de forma independiente activos, horizontes o modelos.
+
+| Métrica macro | Persistencia, IC 95 % | SVR lineal, IC 95 % | Diferencia SVR − persistencia, IC 95 % |
+| --- | --- | --- | --- |
+| R² | 0,53773 [0,36575; 0,59811] | 0,70073 [0,54471; 0,75447] | +0,16300 [0,10050; 0,26200] |
+| RMSE | 0,74770 [0,58443; 0,88831] | 0,59808 [0,45983; 0,72439] | −0,14962 [−0,21377; −0,08293] |
+| MAE | 0,49719 [0,41283; 0,58816] | 0,41403 [0,33939; 0,49600] | −0,08316 [−0,12447; −0,04088] |
+| MSE | 0,82820 [0,51115; 1,21441] | 0,53717 [0,30906; 0,82325] | −0,29102 [−0,46479; −0,14956] |
+| MAPE (%) | 18,80771 [16,82057; 21,31244] | 15,63947 [13,79569; 17,71104] | −3,16824 [−4,67711; −1,42687] |
+
+Son intervalos percentiles con bloques de **35 días**. La diferencia de
+MAPE está en puntos porcentuales de MAPE; RMSE y MAE conservan las unidades
+del objetivo. Los intervalos de diferencias usan las mismas remuestras
+pareadas: no se obtienen restando los extremos de intervalos individuales.
+
+![Intervalos de confianza de R² y RMSE macro](../figures/current_model_confidence_intervals.png)
+
+### Sensibilidad y contraste de pérdida pareado
+
+El contraste evalúa la diferencia diaria de pérdidas cuadradas,
+$(y-\hat y_{SVR})^2-(y-\hat y_{persistencia})^2$, promediada sobre las
+112 series. La hipótesis nula es diferencia media cero. Se centra la
+distribución bootstrap respecto a la diferencia observada para construir
+un contraste bilateral. Un valor negativo favorece al SVR.
+
+| Longitud del bloque | Diferencia MSE macro | IC 95 % | p bilateral bootstrap |
+| --- | ---: | --- | ---: |
+| 35 días | −0,29102 | [−0,46479; −0,14956] | 0,00350 |
+| 56 días | −0,29102 | [−0,48283; −0,14584] | 0,00250 |
+| 70 días | −0,29102 | [−0,48605; −0,14829] | 0,00150 |
+
+La ventaja macro conserva el signo con las tres longitudes examinadas.
+El bloque principal cubre hasta 28 días de ventana objetivo más siete
+horizontes; no garantiza que toda dependencia se extinga allí. La
+inferencia supone una aproximación de estabilidad de la serie de
+objetivos y errores y se condiciona a estos modelos fijos. Los 358
+orígenes representan pocos bloques largos, y 2.000 réplicas tienen
+resolución Monte Carlo limitada. No se incluye la incertidumbre de
+selección o reajuste del modelo ni se construyen intervalos individuales
+de volatilidad futura.
+
+También se contrastó cada una de las 16 configuraciones, ajustando p
+mediante **Holm** dentro de cada longitud. Con 35 días solo BNB a ventanas
+7 y 21 rechaza igualdad de pérdida al 5 % después del ajuste. Por tanto,
+**mejorar los 16 RMSE puntuales no significa demostrar una mejora
+estadísticamente distinguible en las 16 configuraciones**. Esta evidencia
+retrospectiva no convierte 2025 en una reserva inicialmente intacta.
+
+Descargas: [intervalos macro y por configuración, las tres longitudes](../../results/current_delivery_audit/model/metric_confidence_intervals.csv),
+[contrastes pareados y p ajustados](../../results/current_delivery_audit/model/paired_loss_bootstrap.csv),
+[procedimiento, supuestos y hashes](../../results/current_delivery_audit/model/provenance.json)
+y [paquete completo reproducible](../../results/current_delivery_audit/model/model_audit_evidence.zip).
+
+## Evaluación adicional de enero–agosto de 2026
+
+Se evaluaron los **mismos 16 modelos guardados**, sin reajuste ni nueva
+selección, en 236 orígenes del 1 de enero al 24 de agosto de 2026:
+**26.432 valores pronosticados**. Los objetivos de los siete horizontes
+terminan antes del 1 de septiembre. El protocolo fijó previamente las
+fechas, configuraciones, exclusiones, métricas y comparación con
+persistencia; su SHA-256 es
+`e927c726413773e1145b68a8613736eb51b0a3ca4f6289bb2e757e2627af793e`.
+La revisión de las cuatro series por minuto no encontró minutos ausentes
+en los meses descargados de este periodo.
+
+| Métrica macro | Persistencia | SVR lineal |
+| --- | ---: | ---: |
+| R² | 0,54600 | 0,72386 |
+| RMSE | 0,76778 | 0,59764 |
+| MAE | 0,43452 | 0,36252 |
+| MSE | 0,79514 | 0,48881 |
+| MAPE (%) | 18,17378 | 15,57733 |
+
+![Comparación por activo y ventana en el periodo adicional de 2026](../figures/current_holdout_metrics.png)
+
+El RMSE macro es aproximadamente **22,16 % menor** que persistencia.
+La diferencia pareada de RMSE es −0,17014, con intervalo bootstrap del
+95 % [−0,28731; −0,06186] usando el mismo procedimiento de bloques
+compartidos de 35 días y 2.000 réplicas. Con 56 y 70 días los intervalos
+son [−0,28028; −0,06176] y [−0,27791; −0,06443]. Se conservan las
+predicciones exportadas: este cálculo adicional únicamente las remuestrea,
+sin volver a ejecutar ni modificar los modelos.
+
+Es un periodo **ausente de los artefactos previos auditados del proyecto**.
+No se ha establecido si fue explorado fuera de esos artefactos; por ello
+no se certifica una reserva externa completamente intacta. El resultado
+añade evidencia temporal sin corregir retroactivamente la exploración
+previa de 2025. La superposición de objetivos, los posibles cambios de
+régimen y el menor número de bloques en 236 orígenes siguen limitando
+la precisión y la generalización. Los intervalos corresponden a las
+métricas de estos modelos fijos en este periodo observado.
+
+Descargas: [protocolo congelado](../../results/current_delivery_audit/holdout/protocol.json),
+[resumen y comprobaciones](../../results/current_delivery_audit/holdout/summary.json),
+[métricas por configuración](../../results/current_delivery_audit/holdout/metrics.csv),
+[predicciones](../../results/current_delivery_audit/holdout/predictions.csv.gz),
+[intervalos y sensibilidad](../../results/current_delivery_audit/holdout/metric_confidence_intervals.csv)
+y [procedencia del bootstrap](../../results/current_delivery_audit/holdout/bootstrap_provenance.json).
+
 ## Conclusiones y límites
 
 La ingeniería de características, la corrección de persistencia, la regularización y la validación creciente permiten una mejora observada frente al baseline. El modelo anterior obtuvo R² macro −16,0817 y RMSE 4,0266 en las mismas fechas y objetivos; se conserva como referencia histórica.
 
-La comparación cambia varias decisiones simultáneamente, incluido el ajuste final con 2023–2024 frente al ajuste anterior solo con 2023. No permite atribuir toda la mejora a una decisión aislada. **2025 ya se había examinado**: es una evaluación retrospectiva, aunque la nueva selección no usa sus métricas. Los horizontes y objetivos móviles se superponen; no son observaciones estadísticamente independientes. No se aporta una prueba de significancia ni se garantiza rendimiento futuro.
+La comparación cambia varias decisiones simultáneamente, incluido el ajuste final con 2023–2024 frente al ajuste anterior solo con 2023. No permite atribuir toda la mejora a una decisión aislada. **2025 ya se había examinado**: es una evaluación retrospectiva, aunque la nueva selección no usa sus métricas. Los horizontes y objetivos móviles se superponen; no son observaciones estadísticamente independientes. El bootstrap pareado respalda una ventaja macro condicionada al periodo, con diferencias no concluyentes para varias configuraciones tras ajustar comparaciones múltiples. No se garantiza rendimiento futuro.
 
-Se verificaron hashes de los datos, elección de hiperparámetros, predicciones de modelos guardados, métricas recalculadas y coincidencia de fechas y objetivos con el experimento original. Pasaron 30 pruebas del proyecto. El informe anterior de BDS corresponde al modelo original; no se atribuye al modelo optimizado.
+Se verificaron hashes de los datos, elección de hiperparámetros, predicciones de modelos guardados, métricas recalculadas y coincidencia de fechas y objetivos con el experimento original. La auditoría complementaria verifica además el emparejamiento de los bloques, el cálculo macro, la inversión de ambos escaladores y las etiquetas de los cortes de aprendizaje. El informe anterior de BDS corresponde al modelo original; no se atribuye al modelo optimizado.
 
 
-## Requisitos de evaluación pendientes
+## Diagnósticos completados y alcance
 
-No se presentan como completados los intervalos de confianza mediante
-bootstrap temporal, los diagnósticos de normalidad y heterocedasticidad,
-la ACF de residuos del SVR vigente, la curva de aprendizaje ni un análisis
-de coeficientes por característica. Los diagnósticos del modelo histórico
-no sustituyen los de este ajuste. Tampoco se garantiza ausencia de sobreajuste.
+Los apartados [3.5–3.8](13_modelo_base_svr.md) aportan intervalos temporales,
+normalidad y segundo momento condicional con corrección por dependencia,
+ACF/PACF y Ljung–Box, curva de aprendizaje con configuraciones fijas e
+interpretación de coeficientes en unidades reconstruidas. Los residuos
+conservan asimetría, colas pesadas y dependencia temporal; 22 de 112 series
+presentan asociación del segundo momento con el nivel de volatilidad
+tras el ajuste descrito. El SVR no exige residuos normales para producir
+pronósticos puntuales, pero estos resultados limitan supuestos simples
+para inferir incertidumbre. La curva de aprendizaje no demuestra ausencia
+de sobreajuste y los pesos de variables correlacionadas no son causales.
 
 Un R² alto requiere revisar fuga, superposición temporal y comparación con
-persistencia; no acredita por sí solo generalización. Los resultados de 2025
-son retrospectivos y requieren confirmación en datos nuevos.
+persistencia; no acredita por sí solo generalización. La evaluación
+adicional de 2026 aplica el procedimiento congelado a un periodo nuevo
+para los artefactos auditados. Su alcance se limita al periodo observado
+y a la información de uso previo disponible.

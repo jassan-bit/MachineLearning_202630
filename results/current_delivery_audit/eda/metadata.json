@@ -1,0 +1,43 @@
+{
+  "dataset": "data/processed/minute_2023_2025",
+  "source_frequency": "1 minute UTC",
+  "statistical_frequency": "daily",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "development_origin_first": "2023-01-29 00:00:00+00:00",
+  "development_origin_last": "2024-12-24 00:00:00+00:00",
+  "development_last_label": "2024-12-31 00:00:00+00:00",
+  "n_development": 660,
+  "training_origin_last": "2023-12-24 00:00:00+00:00",
+  "training_last_label": "2023-12-31 00:00:00+00:00",
+  "n_training": 294,
+  "preprocessing": "Exact optimize_minute_svr.features/minute_features; no imputation",
+  "pca": "PCA and StandardScaler fit only on 2023. 2024 projected; no feature selection applied",
+  "extremes": "LedoitWolf squared Mahalanobis, training empirical p99; descriptive flags, no removals",
+  "temporal": "Longest contiguous DEVELOPMENT segment, no joining across missing days; weekly robust STL",
+  "drift": "2023 vs 2024 and 2024 vs 2025 DESCRIPTIVE ONLY, no p-values or tuning",
+  "effects": "Pearson r and r^2, Spearman rho; no IID significance claims",
+  "selected_inputs_sha256": "53b160d6dbcd26210fc830c217a4e9f09ced60cea06ac7a7ee2291717d3cc5f4",
+  "data_sha256": {
+    "BNBUSDT.npy": "4a7c7d03706474e238689f3b58041440322d5867b7226d13131a4ffc9a2996ee",
+    "BTCUSDT.npy": "a18c60c8622442e7cb11d80f03d25600840548773fc136fc1d772ce27bd0a32d",
+    "daily_target_closes.csv": "4d5f4184c2bbee7bd39f431d997d32412ee8179ef66302e131d260d2f8042ef8",
+    "ETHUSDT.npy": "098dc6d9c3fcddc678acfcdc206555128801c79f73708a41b5713ed0ce953c3a",
+    "XRPUSDT.npy": "7c138777d7445bdc6bfa5de0a5356c24b57f09e4864885015a4ed326ea6631a7"
+  },
+  "source_sha256": "9c43c9512b568c589ccc231dbb57ecb06ceb5900715f79c6abdaddf6147c985e",
+  "n_univariate": 1612,
+  "n_associations": 38864,
+  "n_pca": 16,
+  "notes": [
+    "2025 was explored historically: this report cannot restore a pristine test.",
+    "P-values unadjusted; ADF/KPSS conflicting results do not establish stationarity.",
+    "Overlapping rolling targets mechanically induce persistence and serial dependence.",
+    "Numerically constant columns (range <= 1e-12 max(1, absolute maximum)) have undefined shape and association; no roundoff outliers.",
+    "STL is a descriptive two-sided decomposition, never a forecasting feature."
+  ]
+}

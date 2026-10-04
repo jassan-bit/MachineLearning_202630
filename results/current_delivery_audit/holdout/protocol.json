@@ -1,0 +1,71 @@
+{
+  "frozen_at_utc": "2026-10-04T15:14:16.464205+00:00",
+  "period_start": "2026-01-01",
+  "period_end_exclusive": "2026-09-01",
+  "last_origin": "2026-08-24",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "selection": "Use the 16 existing saved SVRs and 2024-selected inputs without refitting or tuning",
+  "target": "Daily log-return rolling population standard deviation, percent, windows 7/14/21/28",
+  "horizons": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "exclusions": "Same common 36-day calendar with all finite daily closes, including all seven future objectives; no imputation",
+  "metrics": [
+    "r2",
+    "rmse",
+    "mae",
+    "mse",
+    "mape"
+  ],
+  "aggregation": "Mean over seven horizons per asset/window; mean over the 16 configurations",
+  "baseline": "Known current volatility repeated for all seven horizons",
+  "primary": "Paired comparison of macro mean horizon RMSE against persistence",
+  "inference": "Descriptive additional evaluation, no selection or retraining based on these results",
+  "prior_use": "No 2026 observations found in the audited project artifacts; external prior use is not established",
+  "file_sha256": {
+    "results/optimized_minute_2023_2025/models/BNBUSDT_v14.joblib": "23583d76382fe8d4aa9aa481ab3a4d981717915f180c580c29b72090521c4d0f",
+    "results/optimized_minute_2023_2025/models/BNBUSDT_v21.joblib": "10e8a69835558fc647e4dce7bfdb3ac78585d00a4e65f73864a4f1ec67f117bf",
+    "results/optimized_minute_2023_2025/models/BNBUSDT_v28.joblib": "8aad906b0c64149acb46554c780cb3c9cff7940e730d19e0e3375c403323633f",
+    "results/optimized_minute_2023_2025/models/BNBUSDT_v7.joblib": "005697db7936c64056bce1e1c1f844f57a17270c6331c8261069c61d2d84b7f3",
+    "results/optimized_minute_2023_2025/models/BTCUSDT_v14.joblib": "22efe24dc02cbe01abe66ac961ecfe47d2cc1410af3a9f8966407315dbf2b21f",
+    "results/optimized_minute_2023_2025/models/BTCUSDT_v21.joblib": "2d41678cd63fb76d4ac97c0e489182c9bba9d48578fa7c0b6a17c2458f94ec2e",
+    "results/optimized_minute_2023_2025/models/BTCUSDT_v28.joblib": "d0affff36c04ba286bc25415d42c07bef4bd230998c86033e1736d47fac06f41",
+    "results/optimized_minute_2023_2025/models/BTCUSDT_v7.joblib": "451106bbff656188f28db885c29fdb96f9d522213c83910a0e4ba9c8422a65cb",
+    "results/optimized_minute_2023_2025/models/ETHUSDT_v14.joblib": "001c4fe1cad11cee9cae1c5666500deb2d5568a8e8b6c060f74d1845d19a4b93",
+    "results/optimized_minute_2023_2025/models/ETHUSDT_v21.joblib": "2f47eb0bcb720cc5f52c332511ec93095ef3b34782238cfe2082778b5bff6d3c",
+    "results/optimized_minute_2023_2025/models/ETHUSDT_v28.joblib": "d2e648d90907c886849827ed5d9903a355000823689c2372e8225f40785e6fef",
+    "results/optimized_minute_2023_2025/models/ETHUSDT_v7.joblib": "d4c93289e0dfd30d3eb967c48345ff3cbab9b8a0d86bffbffcc3f91c16e52f82",
+    "results/optimized_minute_2023_2025/models/XRPUSDT_v14.joblib": "28f7afdae30d9f8f12be64afafaa719a3a67b90ce19a3d55e8be4bc7496e7cdd",
+    "results/optimized_minute_2023_2025/models/XRPUSDT_v21.joblib": "54a1c12e97c80d6a9a5d24b3fbec9a5ec71d02929768299828ac7b52ea1dc378",
+    "results/optimized_minute_2023_2025/models/XRPUSDT_v28.joblib": "bba7c9dcc0df812476806d02561b88b1097407d7e63c3377ac71e9ae1396bdac",
+    "results/optimized_minute_2023_2025/models/XRPUSDT_v7.joblib": "b5607cd252417024b2b48bb329fd5b7abe0108862f4cc89d18f14cff0fac0419",
+    "results/optimized_minute_2023_2025/selected_inputs.csv": "53b160d6dbcd26210fc830c217a4e9f09ced60cea06ac7a7ee2291717d3cc5f4",
+    "data/processed/minute_2023_2025/BNBUSDT.npy": "4a7c7d03706474e238689f3b58041440322d5867b7226d13131a4ffc9a2996ee",
+    "data/processed/minute_2023_2025/BTCUSDT.npy": "a18c60c8622442e7cb11d80f03d25600840548773fc136fc1d772ce27bd0a32d",
+    "data/processed/minute_2023_2025/ETHUSDT.npy": "098dc6d9c3fcddc678acfcdc206555128801c79f73708a41b5713ed0ce953c3a",
+    "data/processed/minute_2023_2025/XRPUSDT.npy": "7c138777d7445bdc6bfa5de0a5356c24b57f09e4864885015a4ed326ea6631a7",
+    "data/processed/minute_2023_2025/daily_target_closes.csv": "4d5f4184c2bbee7bd39f431d997d32412ee8179ef66302e131d260d2f8042ef8",
+    "src/evaluate_frozen_holdout.py": "2300d625ec0109764de741196e9bdcb1453be810e08d56e1162ba35b2c6f0399",
+    "src/optimize_minute_svr.py": "3fa639b4750312eafd12df3a34bc08730a4c770098141d71aa179bad0b70579d",
+    "src/minute_experiment.py": "1e5a827637229d89237cbbefc393fa767f6b3874191658e828ebefec3f66773c",
+    "src/volatility_experiment.py": "e58ffa13f0294cfcf01da07d785235ca3ccf1af914609ad605f9720d1abdbf74"
+  },
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "requests": "2.32.5",
+    "joblib": "1.6.0"
+  }
+}

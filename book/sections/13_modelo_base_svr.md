@@ -2,8 +2,9 @@
 
 Los apartados 3.1–3.8 siguen los requisitos de la guía para el modelo base.
 El problema es de regresión temporal; el modelo entrenado es un SVR lineal
-y su referencia mínima es persistencia. Los requisitos sin evidencia del
-ajuste vigente se indican como pendientes.
+y su referencia mínima es persistencia. La auditoría complementaria usa
+los 16 modelos y las predicciones guardadas del ajuste vigente. Sus hashes
+confirman que los originales permanecen intactos.
 
 ## 3.1 Definición de la variable objetivo
 
@@ -148,27 +149,112 @@ a **0,53773** de persistencia y RMSE **0,59808** frente a **0,74770**.
 La comparación es retrospectiva y las métricas macro promedian
 configuraciones y horizontes.
 
-**Pendiente:** intervalos de confianza para las métricas principales mediante
-un procedimiento que respete la dependencia temporal, como bootstrap por
-bloques. Las métricas de clasificación de la guía no aplican al objetivo
-continuo de este estudio.
+Se calcularon **intervalos del 95 % mediante bootstrap temporal por bloques**:
+2.000 réplicas, bloques circulares de 35 días y sensibilidad a 56 y 70 días.
+Cada réplica toma los mismos orígenes para ambos modelos y para las 112
+series activo–ventana–horizonte. Así se conserva el emparejamiento y la
+dependencia entre activos y salidas, en vez de tratarlas como 40.096
+observaciones independientes. Se recalculan las métricas por horizonte y
+después se aplica la misma media macro de las tablas originales.
+
+La longitud principal cubre los 28 días de la ventana objetivo más los
+siete horizontes; no garantiza eliminar dependencias más largas. La
+sección 4 publica los intervalos y su sensibilidad. Son intervalos de las
+métricas de estos pronósticos fijos en 2025, condicionados al periodo
+observado y a una aproximación de estabilidad temporal. **No son bandas
+de predicción individual**, ni incluyen la incertidumbre de seleccionar
+hiperparámetros o reajustar modelos. Las métricas de clasificación de la
+guía no aplican al objetivo continuo de este estudio.
 
 ## 3.6 Diagnóstico de residuos según la estructura de los datos
 
-**Pendiente para el SVR vigente:** análisis de normalidad, heterocedasticidad
-y autocorrelación temporal de los residuos mediante ACF. La dependencia
-residual puede señalar información temporal que el modelo no captura.
-Los diagnósticos del modelo histórico no sustituyen los de este ajuste.
+Se diagnosticaron las **112 series** de residuos $e_{t,h}=y_{t,h}-\hat y_{t,h}$,
+con 358 orígenes diarios por serie. Los cálculos corresponden al SVR vigente,
+sin concatenar activos ni horizontes:
+
+| Diagnóstico | Procedimiento y resultado al 5 % |
+| --- | --- |
+| Normalidad | Jarque–Bera y asimetría/curtosis descriptivas; prueba conjunta de asimetría y exceso de curtosis con covarianza HAC de Bartlett a 35 rezagos y ajuste Holm de 112 contrastes: 112 rechazos. |
+| Heterocedasticidad | Regresión de $e^2$ sobre volatilidad predicha estandarizada, su cuadrado y volatilidad actual estandarizada. Wald conjunto de pendientes con HAC(35), Holm de 112 contrastes: 22 rechazos. |
+| Autocorrelación | ACF y PACF de rezagos 1–56; Ljung–Box a 7, 14, 28, 35 y 56. A 35 rezagos, 101 de 112 series rechazan ruido blanco después de Holm sobre los 560 contrastes. |
+
+El diagnóstico HAC de normalidad usa las funciones de influencia de los
+momentos, incluyendo la estimación de media y varianza. Evalúa dos
+condiciones necesarias de normalidad; aceptar esas condiciones no
+demostraría una distribución normal. Jarque–Bera conserva su p nominal
+solo como referencia: su aproximación asintótica y la dependencia temporal
+limitan su uso aislado con 358 observaciones.
+
+La regresión de residuos cuadrados evalúa el **segundo momento condicional**.
+Su asociación con los niveles de volatilidad es compatible con varianza
+no constante; también puede reflejar sesgo en la media condicional. HAC y
+Holm mejoran el tratamiento de dependencia y comparaciones múltiples,
+pero siguen siendo aproximaciones con un periodo corto y posibles cambios
+de régimen. No rechazar no demuestra homocedasticidad.
+
+Ljung–Box evalúa correlación serial, con `model_df=0` porque los modelos
+permanecen fijos durante 2025 y no se estiman sobre estos residuos. La
+superposición del objetivo induce parte de esa dependencia: un rechazo
+no identifica su causa ni prueba por sí solo fuga de datos. La ACF a un
+día promedia entre 0,584 y 0,668 según el activo. Se publica también
+Ljung–Box de residuos centrados al cuadrado para describir agrupación
+temporal de errores grandes.
+
+![ACF y PACF de los residuos del SVR vigente](../figures/current_model_residual_acf_pacf.png)
+
+Descargas: [diagnósticos y p ajustados](../../results/current_delivery_audit/model/residual_diagnostics.csv),
+[ACF/PACF por serie y rezago](../../results/current_delivery_audit/model/residual_acf_pacf.csv)
+y [Ljung–Box completo](../../results/current_delivery_audit/model/residual_ljung_box.csv).
+Las definiciones de [Ljung–Box](https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html)
+y [Jarque–Bera](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.jarque_bera.html)
+se pueden consultar en la documentación de las bibliotecas.
 
 El diagnóstico espacial mediante I de Moran **no aplica**: no hay coordenadas
 ni unidades geográficas en el dataset, como se explica en el apartado 2.7.
 
 ## 3.7 Curva de aprendizaje
 
-**Pendiente:** comparar los errores de entrenamiento y validación con tamaños
-crecientes de muestra, manteniendo el orden temporal y el procedimiento
-fijado. La selección de ventanas e hiperparámetros del apartado 3.4.3 no
-sustituye una curva de aprendizaje ni demuestra ausencia de sobreajuste.
+Se realizaron **384 ajustes de diagnóstico**: 16 configuraciones fijas,
+seis cortes temporales de 2024 y cuatro tamaños de entrenamiento. Se usa
+el 25, 50, 75 y 100 % de los orígenes más recientes disponibles en cada
+entrenamiento; son conjuntos anidados que conservan el mismo último
+origen. Cada tamaño se evalúa en las mismas fechas de validación de ese
+corte. Las etiquetas de entrenamiento terminan antes de la validación,
+y ninguna etiqueta usada en ajuste o validación entra en 2025.
+
+Se mantienen C, epsilon y ventana de entrada elegidos para el modelo
+vigente. Cada ajuste aprende sus propios escaladores exclusivamente en
+su entrenamiento. Estos modelos auxiliares no sustituyen los artefactos
+publicados ni hacen una nueva selección con 2025.
+
+| Fracción de entrenamiento | Orígenes medios por ajuste | RMSE entrenamiento | RMSE validación |
+| --- | ---: | ---: | ---: |
+| 25 % | 106,8 | 0,47771 | 0,54402 |
+| 50 % | 213,2 | 0,46598 | 0,52281 |
+| 75 % | 320,0 | 0,67281 | 0,54626 |
+| 100 % | 426,0 | 0,67204 | 0,53909 |
+
+Las métricas promedian configuraciones y cortes, cada uno con el mismo
+peso; la persistencia de validación tiene RMSE medio 0,65424 en esta
+agregación. Este resumen no es el RMSE de la validación concatenada usado
+para seleccionar en 3.4.3. La curva no mejora de forma monótona. Incorporar
+historia más antigua cambia también el régimen observado: el aumento del
+error de entrenamiento al 75 % no se interpreta como efecto causal del
+tamaño. Un error de validación menor que el de entrenamiento al 100 %
+puede reflejar esa diferencia entre periodos y no demuestra ausencia de
+sobreajuste.
+
+![Curva de aprendizaje temporal con configuraciones fijas](../figures/current_model_learning_curve.png)
+
+Se conserva además la vista de los seis entrenamientos completos crecientes
+(274 a 579 orígenes) y el calendario de validación acumulada (60 a 359
+orígenes). Los hiperparámetros se seleccionaron con esos mismos cortes
+de 2024: la curva es un diagnóstico condicionado a la selección, no una
+nueva validación independiente.
+
+Descargas: [384 ajustes y fechas de corte](../../results/current_delivery_audit/model/learning_curve.csv),
+[resumen por tamaño](../../results/current_delivery_audit/model/learning_curve_summary.csv)
+y [calendario creciente](../../results/current_delivery_audit/model/learning_forward_calendar.csv).
 
 ## 3.8 Interpretación de coeficientes y métricas
 
@@ -176,11 +262,52 @@ La [sección 4](14_evaluacion.md) interpreta las métricas, sus unidades,
 la agregación entre activos, ventanas y horizontes y las mejoras frente
 a persistencia.
 
-**Pendiente:** análisis de coeficientes por característica y horizonte,
-considerando el escalado de entradas y objetivos. El SVR es lineal respecto
-a las características transformadas; sus coeficientes no se interpretan
-directamente como efectos sobre los precios originales ni como efectos
-causales.
+Los coeficientes de cada horizonte se extrajeron de los 16 modelos
+guardados y se deshicieron **ambos escaladores**. Si $a_{j,h}$ y $c_h$
+son los coeficientes e intercepto del regresor estandarizado, y
+$(\mu_{X,j},s_{X,j})$, $(\mu_{z,h},s_{z,h})$ son las medias y escalas
+aprendidas en entrenamiento, entonces
+
+$$
+\beta_{j,h}=\frac{s_{z,h}a_{j,h}}{s_{X,j}},\qquad
+\beta_{0,h}=\mu_{z,h}+s_{z,h}c_h-\sum_j\mu_{X,j}\beta_{j,h}.
+$$
+
+Así, $\hat z_h=\beta_{0,h}+\sum_j\beta_{j,h}X_j$ está en unidades de
+**corrección relativa a persistencia**. La predicción sigue siendo
+$\hat\sigma_{t+h}=\max(b_t(1+\hat z_h),0)$. La reconstrucción reproduce
+las 40.096 predicciones guardadas dentro de la tolerancia numérica de
+$10^{-10}$, respetando el recorte a cero.
+
+Para comparar magnitudes se publica $\beta_{j,h}s_{X,j}$: el cambio en
+$\hat z_h$ ante una desviación estándar de esa entrada de entrenamiento,
+manteniendo las demás entradas. Antes del recorte y con $b_t$ fijo, el
+cambio en volatilidad sería $b_t\beta_{j,h}\Delta X_j$. Es una lectura
+algebraica del modelo, no una intervención posible sobre los precios.
+Las entradas están correlacionadas y comparten denominadores; sus
+coeficientes no representan efectos marginales físicos ni causales.
+
+![Magnitudes de coeficientes por grupo y horizonte](../figures/current_model_coefficients.png)
+
+La figura promedia la magnitud absoluta **por característica** dentro de
+cada grupo y luego entre configuraciones, para no favorecer grupos con
+más columnas. Las características de salida conocida de la ventana tienen
+la mayor magnitud media en horizontes 1–5; la volatilidad realizada por
+minuto la tiene en 6–7. Esto describe los pesos del ajuste regularizado,
+sin atribuir importancia independiente ni significancia a cada entrada.
+
+Por ejemplo, BTC con ventana de 28 días y horizonte 7 asigna 0,21379 a
+`minute_realized_lag6`; una desviación estándar de esa entrada corresponde
+a 0,09001 de corrección relativa. Con $b_t=2$ puntos porcentuales y las
+demás entradas fijas, serían aproximadamente 0,18002 puntos porcentuales
+antes del recorte. Los signos y magnitudes varían por activo y horizonte.
+
+Descargas: [coeficientes por característica y horizonte](../../results/current_delivery_audit/model/coefficients_engineered_units.csv),
+[interceptos reconstruidos](../../results/current_delivery_audit/model/intercepts_engineered_units.csv),
+[resumen por grupos](../../results/current_delivery_audit/model/coefficient_groups.csv)
+y [verificación de predicciones](../../results/current_delivery_audit/model/coefficient_prediction_verification.csv).
+La inversión del escalado de objetivos sigue el comportamiento documentado
+de [TransformedTargetRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.compose.TransformedTargetRegressor.html).
 
 ## 3.9 Nota crítica ante un desempeño alto
 
@@ -196,7 +323,9 @@ con los controles y limitaciones de la guía:
 - Revisar la dificultad del objetivo: aumentar la ventana cambia y suaviza
   la variable pronosticada; un R² mayor no demuestra por sí solo una mejor
   capacidad predictiva para otro objetivo.
-- Documentar los diagnósticos pendientes y confirmar el procedimiento en
-  un periodo nunca explorado. El conocimiento previo de 2025 impide
-  presentarlo como una prueba independiente de generalización.
+- Considerar los diagnósticos de 3.6–3.8 y la evaluación adicional de
+  enero–agosto de 2026 documentada en la sección 4. Se aplicaron los
+  mismos modelos a un periodo ausente de los artefactos previos auditados;
+  no se ha establecido su uso externo anterior. El conocimiento previo
+  de 2025 impide presentarlo como una prueba inicialmente intacta.
 

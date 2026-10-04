@@ -12,3 +12,5 @@ jobs:
       - run: python -m unittest discover -s tests -p 'test_daily*.py' -v
       - run: python -m unittest discover -s tests -p 'test_minute*.py' -v
       - run: python -m unittest discover -s tests -p 'test_cv_comparison.py' -v
+      - run: python -m unittest discover -s tests -p 'test_current_*_audit.py' -v
+      - run: python src/audit_current_eda.py --check

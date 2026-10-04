@@ -1,0 +1,61 @@
+{
+  "status": "complete",
+  "seed": 20261004,
+  "repetitions": 2000,
+  "block_days": [
+    35,
+    56,
+    70
+  ],
+  "bootstrap": "Circular moving blocks on daily origins shared by all 112 series and both models; percentile intervals; recomputed per-series R2/RMSE then macro averages",
+  "paired_test": "Mean squared loss difference per origin, centered block bootstrap under zero mean; two-sided; Holm over 16 configurations separately for each length",
+  "n_origins": 358,
+  "first_origin": "2025-01-01 00:00:00+00:00",
+  "last_origin": "2025-12-24 00:00:00+00:00",
+  "n_configurations": 16,
+  "n_residual_series": 112,
+  "hac_maxlags": 35,
+  "normality": "JB nominal, complemented by skewness/excess-kurtosis Wald using delta-method Bartlett HAC influence-function covariance; Holm family of 112",
+  "heteroscedasticity": "Squared residual regressed on standardized fitted volatility, its square and current volatility; joint slopes Wald with Bartlett HAC(35); conditional second-moment diagnostic, potentially affected by conditional mean bias; Holm family of 112",
+  "correlation": "ACF and Yule-Walker PACF 1..56; Ljung-Box lags 7/14/28/35/56, model_df=0 (2025 model fixed, not estimated on its residuals); nominal p, Holm family of 560 per residual/squared-residual series type",
+  "learning": "Fixed configurations selected for delivery; six original 2024 forward cuts; nested most recent 25/50/75/100 percent training rows; same validation per cut; 384 additional diagnostic fits; no 2025 labels in fit/validation",
+  "learning_limitation": "2024 also selected these configurations, so curve is descriptive/conditional rather than new unbiased validation; calendar periods and regime also affect error",
+  "inference_limitation": "2025 retrospective; fixed fitted models; uncertainty conditional on observed period and approximate local stationarity, not selection or refitting uncertainty; 358 days provide few long blocks",
+  "original_files_sha256": {
+    "results\\optimized_minute_2023_2025\\predictions.csv.gz": "a4fe23a96a16aa49a5a7f9d314a9033d8af61d9554fb9a39d7406eb481ca1f81",
+    "results\\optimized_minute_2023_2025\\selected_metrics.csv": "10b12e41d07bf5a71887e4f9cf8a506122ecfc4901f90d5d1f9fa1cceed99851",
+    "results\\optimized_minute_2023_2025\\selected_inputs.csv": "53b160d6dbcd26210fc830c217a4e9f09ced60cea06ac7a7ee2291717d3cc5f4",
+    "results\\optimized_minute_2023_2025\\models\\BNBUSDT_v14.joblib": "23583d76382fe8d4aa9aa481ab3a4d981717915f180c580c29b72090521c4d0f",
+    "results\\optimized_minute_2023_2025\\models\\BNBUSDT_v21.joblib": "10e8a69835558fc647e4dce7bfdb3ac78585d00a4e65f73864a4f1ec67f117bf",
+    "results\\optimized_minute_2023_2025\\models\\BNBUSDT_v28.joblib": "8aad906b0c64149acb46554c780cb3c9cff7940e730d19e0e3375c403323633f",
+    "results\\optimized_minute_2023_2025\\models\\BNBUSDT_v7.joblib": "005697db7936c64056bce1e1c1f844f57a17270c6331c8261069c61d2d84b7f3",
+    "results\\optimized_minute_2023_2025\\models\\BTCUSDT_v14.joblib": "22efe24dc02cbe01abe66ac961ecfe47d2cc1410af3a9f8966407315dbf2b21f",
+    "results\\optimized_minute_2023_2025\\models\\BTCUSDT_v21.joblib": "2d41678cd63fb76d4ac97c0e489182c9bba9d48578fa7c0b6a17c2458f94ec2e",
+    "results\\optimized_minute_2023_2025\\models\\BTCUSDT_v28.joblib": "d0affff36c04ba286bc25415d42c07bef4bd230998c86033e1736d47fac06f41",
+    "results\\optimized_minute_2023_2025\\models\\BTCUSDT_v7.joblib": "451106bbff656188f28db885c29fdb96f9d522213c83910a0e4ba9c8422a65cb",
+    "results\\optimized_minute_2023_2025\\models\\ETHUSDT_v14.joblib": "001c4fe1cad11cee9cae1c5666500deb2d5568a8e8b6c060f74d1845d19a4b93",
+    "results\\optimized_minute_2023_2025\\models\\ETHUSDT_v21.joblib": "2f47eb0bcb720cc5f52c332511ec93095ef3b34782238cfe2082778b5bff6d3c",
+    "results\\optimized_minute_2023_2025\\models\\ETHUSDT_v28.joblib": "d2e648d90907c886849827ed5d9903a355000823689c2372e8225f40785e6fef",
+    "results\\optimized_minute_2023_2025\\models\\ETHUSDT_v7.joblib": "d4c93289e0dfd30d3eb967c48345ff3cbab9b8a0d86bffbffcc3f91c16e52f82",
+    "results\\optimized_minute_2023_2025\\models\\XRPUSDT_v14.joblib": "28f7afdae30d9f8f12be64afafaa719a3a67b90ce19a3d55e8be4bc7496e7cdd",
+    "results\\optimized_minute_2023_2025\\models\\XRPUSDT_v21.joblib": "54a1c12e97c80d6a9a5d24b3fbec9a5ec71d02929768299828ac7b52ea1dc378",
+    "results\\optimized_minute_2023_2025\\models\\XRPUSDT_v28.joblib": "bba7c9dcc0df812476806d02561b88b1097407d7e63c3377ac71e9ae1396bdac",
+    "results\\optimized_minute_2023_2025\\models\\XRPUSDT_v7.joblib": "b5607cd252417024b2b48bb329fd5b7abe0108862f4cc89d18f14cff0fac0419"
+  },
+  "originals_unchanged": true,
+  "input_data_sha256": {
+    "BNBUSDT.npy": "4a7c7d03706474e238689f3b58041440322d5867b7226d13131a4ffc9a2996ee",
+    "BTCUSDT.npy": "a18c60c8622442e7cb11d80f03d25600840548773fc136fc1d772ce27bd0a32d",
+    "ETHUSDT.npy": "098dc6d9c3fcddc678acfcdc206555128801c79f73708a41b5713ed0ce953c3a",
+    "XRPUSDT.npy": "7c138777d7445bdc6bfa5de0a5356c24b57f09e4864885015a4ed326ea6631a7"
+  },
+  "source_sha256": "ed27e1d8f5ff36b4de1565c0a74615d6a00771a60d6799a4d488f0a0caaa1d44",
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "statsmodels": "0.15.0",
+    "joblib": "1.6.0"
+  }
+}

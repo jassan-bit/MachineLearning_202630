@@ -1,0 +1,87 @@
+{
+  "audit": "2023--2025 delivery quality; no mutations of inputs or model artifacts",
+  "period_start": "2023-01-01 00:00:00+00:00",
+  "period_end_exclusive": "2026-01-01 00:00:00+00:00",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "source_files_verified": 144,
+  "processed_hashes": {
+    "BNBUSDT.npy": "4a7c7d03706474e238689f3b58041440322d5867b7226d13131a4ffc9a2996ee",
+    "BTCUSDT.npy": "a18c60c8622442e7cb11d80f03d25600840548773fc136fc1d772ce27bd0a32d",
+    "daily_target_closes.csv": "4d5f4184c2bbee7bd39f431d997d32412ee8179ef66302e131d260d2f8042ef8",
+    "ETHUSDT.npy": "098dc6d9c3fcddc678acfcdc206555128801c79f73708a41b5713ed0ce953c3a",
+    "XRPUSDT.npy": "7c138777d7445bdc6bfa5de0a5356c24b57f09e4864885015a4ed326ea6631a7"
+  },
+  "source_manifest_sha256": "f37a740fc363703678188854bc2a77e3daea1db4294a7d5cc20e107a46456456",
+  "script_sha256": "af96b04bcb2f91d73f07f9a497e8c93164a7e1dadf98ac425ff4042407676abb",
+  "rules": {
+    "near_duplicate": "Same asset/minute; all OHLC and volumes rtol=1e-6 atol=1e-8; equal trades; times within 1s; exclude exact rows",
+    "outlier": "Minute and daily returns, each with its own median +/- 6*1.4826*MAD; thresholds from 2023 only; descriptive counts and sensitivity in 2023/2024 only",
+    "sensitivity": "Winsorize temporary copies of returns; compare daily std/mean rolling volatility and mean intraday realized variation; no model fit or target replacement",
+    "effective_n": "n/(1+2 sum positive ACF until first nonpositive lag or cap 30/60/90); calendar gaps retained; development only; weak-stationarity approximation for mean, not independent-training count"
+  },
+  "missingness_mechanism": "MCAR/MAR/MNAR not identifiable from this synchronized single interruption; operational pattern does not prove a stochastic missingness mechanism",
+  "guarantees": {
+    "raw_reconstruction_matches_processed": true,
+    "original_data_unchanged": true,
+    "no_2025_outlier_tuning": true
+  },
+  "totals": [
+    {
+      "symbol": "BTCUSDT",
+      "expected_minutes": 1578240,
+      "raw_present_minutes": 1578160,
+      "raw_missing_minutes": 80,
+      "excluded_present_minutes": 1,
+      "valid_minutes": 1578159,
+      "processed_missing_minutes": 81,
+      "expected_days": 1096,
+      "complete_days": 1095,
+      "incomplete_days": 1,
+      "reconstructed_matches_processed": true
+    },
+    {
+      "symbol": "ETHUSDT",
+      "expected_minutes": 1578240,
+      "raw_present_minutes": 1578160,
+      "raw_missing_minutes": 80,
+      "excluded_present_minutes": 1,
+      "valid_minutes": 1578159,
+      "processed_missing_minutes": 81,
+      "expected_days": 1096,
+      "complete_days": 1095,
+      "incomplete_days": 1,
+      "reconstructed_matches_processed": true
+    },
+    {
+      "symbol": "BNBUSDT",
+      "expected_minutes": 1578240,
+      "raw_present_minutes": 1578160,
+      "raw_missing_minutes": 80,
+      "excluded_present_minutes": 1,
+      "valid_minutes": 1578159,
+      "processed_missing_minutes": 81,
+      "expected_days": 1096,
+      "complete_days": 1095,
+      "incomplete_days": 1,
+      "reconstructed_matches_processed": true
+    },
+    {
+      "symbol": "XRPUSDT",
+      "expected_minutes": 1578240,
+      "raw_present_minutes": 1578160,
+      "raw_missing_minutes": 80,
+      "excluded_present_minutes": 1,
+      "valid_minutes": 1578159,
+      "processed_missing_minutes": 81,
+      "expected_days": 1096,
+      "complete_days": 1095,
+      "incomplete_days": 1,
+      "reconstructed_matches_processed": true
+    }
+  ]
+}

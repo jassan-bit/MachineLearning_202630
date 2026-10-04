@@ -1,0 +1,16 @@
+{
+  "daily_missingness_matrix.csv": "aabfb0df84c2c65abc6a4108ac7ec103511049cc1b6e6890e1f5e13d160314aa",
+  "derived_missingness_counts.csv": "26a1fad52a3926da3f14910fad8c9ea75e0750aa4486b353d24689fcfcde55a4",
+  "effective_sample_size.csv": "3f33049ac6131ba5a8909b4807953b91a62960af2f72157ce2c5cf1bc78fd810",
+  "excluded_raw_rows.csv": "76781ec7bbde069bb3de8b67473ca8db040ece5f3687da42a44ba05348c7530c",
+  "methodology.json": "5494295b53ed17196c70e66417f719b027398695f89364befb54b31277764033",
+  "minute_missingness_matrix.csv": "c2e398dac2d4d175a21c4e06460d78ad8dbef07b8d79fa2518893cf26657c93b",
+  "missing_spans.csv": "ff73a472677a6c39d4630689d2b4dcb72b986004945cac034b4a4121bd15cabe",
+  "outlier_counts.csv": "92d81d14ddf6628fd9334bc5084324c4c404ec8a8b5c45a6460768cbcd6e903b",
+  "outlier_dates.csv": "b8e3520619f9757d5f474c3096564f12c13a0ab7405b1d3a7794f54179012079",
+  "outlier_sensitivity.csv": "854b19212140160141deee2b7c08fece73eec072cc9a7397559370f558900a4b",
+  "quality_by_asset.csv": "906d69e5b188c7659915cc182aa921089fe496d7abcb8b09830bc4553bc3adff",
+  "raw_field_missingness.csv": "362f8eeb852d1fbd5eddb407f65adcfe2d430c3f7e8bc8ffb61d952d0233b9ad",
+  "raw_file_audit.csv": "bfb52d2009a975ff78e3e15e6784c53715cf33426e54758ddc4de412d8e964de",
+  "target_ranges.csv": "646c93af90ea6797b18ebdbf74dd3ef660a6a4c73a7ead2dd323f7ffcd6fa2d0"
+}

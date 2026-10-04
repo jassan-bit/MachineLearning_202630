@@ -1,0 +1,35 @@
+{
+  "protocol_sha256": "e927c726413773e1145b68a8613736eb51b0a3ca4f6289bb2e757e2627af793e",
+  "evaluated_at_utc": "2026-10-04T15:18:32.344909+00:00",
+  "first_origin": "2026-01-01 00:00:00+00:00",
+  "last_origin": "2026-08-24 00:00:00+00:00",
+  "origins": 236,
+  "forecast_rows": 26432,
+  "configurations": 16,
+  "original_models_unchanged": true,
+  "exported_metrics_verified": true,
+  "macro_metrics": [
+    {
+      "model": "Persistence",
+      "r2": 0.5459985803220241,
+      "rmse": 0.7677830133056314,
+      "mae": 0.4345249330006537,
+      "mse": 0.7951429439695752,
+      "mape": 18.173780664225767
+    },
+    {
+      "model": "SVR_optimized",
+      "r2": 0.7238648420281563,
+      "rmse": 0.5976422486420935,
+      "mae": 0.36252288832269863,
+      "mse": 0.4888101333664053,
+      "mape": 15.577328083513459
+    }
+  ],
+  "missing_minutes": {
+    "BTCUSDT": 0,
+    "ETHUSDT": 0,
+    "BNBUSDT": 0,
+    "XRPUSDT": 0
+  }
+}

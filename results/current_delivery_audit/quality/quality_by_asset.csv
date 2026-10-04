@@ -1,0 +1,5 @@
+symbol,expected_minutes,raw_present_minutes,raw_missing_minutes,excluded_present_minutes,valid_minutes,processed_missing_minutes,expected_days,complete_days,incomplete_days,reconstructed_matches_processed
+BTCUSDT,1578240,1578160,80,1,1578159,81,1096,1095,1,True
+ETHUSDT,1578240,1578160,80,1,1578159,81,1096,1095,1,True
+BNBUSDT,1578240,1578160,80,1,1578159,81,1096,1095,1,True
+XRPUSDT,1578240,1578160,80,1,1578159,81,1096,1095,1,True

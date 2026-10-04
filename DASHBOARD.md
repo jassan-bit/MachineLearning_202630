@@ -2,6 +2,16 @@
 
 ## Alcance del sitio publicado
 
+**Auditoría del 4 de octubre de 2026:** el sitio incorpora los resultados
+de calidad, EDA, bootstrap temporal, diagnósticos de residuos, curva de
+aprendizaje e interpretación de coeficientes de los modelos vigentes.
+Las evidencias están en `results/current_delivery_audit/` y el suplemento
+descargable es `delivery/Entregable1_auditoria_actualizada.zip`.
+La evaluación adicional de enero–agosto de 2026 utiliza los 16 SVR guardados:
+236 orígenes, R² macro 0,7239 y RMSE 0,5976, un 22,16 % menor que persistencia.
+La revisión conserva explícitos los límites del tamaño supervisado, la
+identificación del mecanismo de ausencia y la exploración previa de 2025.
+
 El sitio https://jassan-bit.github.io/MachineLearning_202630/ contiene únicamente
 el modelo base de persistencia y el SVR lineal. El dashboard comparativo y los
 experimentos con otros modelos se conservan localmente y quedan fuera del sitio.

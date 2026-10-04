@@ -1,0 +1,17 @@
+{
+  "consulted_at_utc": "2026-10-04T15:18:37.617253+00:00",
+  "upstream_commit": "bd110bb04caad6ad964a0098809f18343b1e104b",
+  "upstream_commit_utc": "2026-09-30T12:17:13Z",
+  "upstream_blob_sha": "87d04e216f62c86a2c797fbb7637404d6d602687",
+  "immutable_source": "https://github.com/binance/binance-public-data/blob/bd110bb04caad6ad964a0098809f18343b1e104b/TERMS_AND_CONDITIONS.md",
+  "terms_version": "1.0",
+  "terms_stated_last_updated": "2026-08-26",
+  "snapshot_sha256": "dcf358e9d18f598a7a635fac80f6e643fa24a0e111a4d39bda47f1e246b31eb1",
+  "dataset_license": "CC BY-NC-SA 4.0",
+  "archives": 144,
+  "earliest_local_creation": "2026-10-01T13:38:37.876435+00:00",
+  "latest_local_creation": "2026-10-01T13:41:37.181256+00:00",
+  "chronology": "The immutable public terms commit predates the local creation timestamps of all 144 source archives.",
+  "scope": "Archived historical public terms, local file metadata and source hashes; local timestamps are not signed original download receipts or a legal certification.",
+  "attribution_file": "DATA_LICENSE.md"
+}
