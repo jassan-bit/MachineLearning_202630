@@ -1,5 +1,33 @@
 # Dashboard comparativo de volatilidad
 
+## Mejora propuesta: HAR-Ridge + XGBoost
+
+El comparativo vigente conserva los seis modelos clásicos e incorpora
+**HAR-Ridge + XGBoost**, sin redes neuronales. Combina XGBoost con una
+regresión Ridge de resúmenes causales de volatilidad. Las penalizaciones y
+pesos se seleccionan en seis bloques expansivos de 2024; el ajuste final
+utiliza etiquetas anteriores a 2025.
+
+| Modelo | R² macro | RMSE macro | MAE macro |
+| --- | ---: | ---: | ---: |
+| Persistencia | 0.5377 | 0.74770 | 0.49719 |
+| XGBoost | 0.7155 | 0.57976 | 0.38864 |
+| HAR-Ridge + XGBoost | 0.7380 | 0.55817 | 0.37557 |
+
+Los valores promedian cuatro activos y cuatro ventanas. El RMSE macro
+mejora un 3.73 % frente a XGBoost. La evaluación de 2025 es retrospectiva;
+no constituye un test independiente nuevo. Las tablas por ventana más
+abajo documentan los seis modelos originales.
+
+La pestaña de comparación también incluye pruebas de Diebold–Mariano
+sobre errores diarios alineados, con varianza HAC Bartlett, corrección
+Harvey–Leybourne–Newbold y ajuste Holm dentro de cada selección.
+No rechazar igualdad de pérdida no demuestra equivalencia.
+
+GitHub Pages publica este informe estático. Para usar los filtros y las
+gráficas del dashboard, ejecutar la aplicación Python indicada abajo o
+desplegarla en Render siguiendo `DASHBOARD.md`.
+
 El dashboard local resume seis modelos clásicos sobre las mismas observaciones de test. Se ejecuta desde la raíz del repositorio:
 
     .\.venv-repro\Scripts\python.exe -m volatility_dashboard.app

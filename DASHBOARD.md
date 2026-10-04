@@ -1,5 +1,11 @@
 > **Entregable vigente:** las métricas optimizadas están en http://localhost:8051, servidas desde `results/optimized_minute_2023_2025`. El dashboard/API descritos a continuación corresponden al modelo original y permanecen como referencia histórica.
 
+## Documentación de la auditoría del entregable
+
+El [informe del estudio vigente](book/sections/07_estudio_minuto.md) incluye la pregunta de investigación, justificación del dataset, fuente y condiciones de uso consultadas el 3 de octubre de 2026, estructura temporal multiactivo y diccionario de variables con tipos, unidades y disponibilidad. También relaciona los hallazgos del EDA con las decisiones metodológicas.
+
+El SVR es el modelo de referencia frente a persistencia; el comparativo conserva seis modelos clásicos y añade HAR-Ridge + XGBoost. La evaluación de 2025 es retrospectiva. Quedan abiertos la evidencia de condiciones aplicables en la fecha de descarga, la consolidación de controles de calidad y sensibilidad a extremos del dataset vigente, y una evaluación en un periodo nunca explorado con el procedimiento fijado previamente. Estos pendientes no se presentan como verificaciones completadas.
+
 # Dashboard y API del estudio 2023–2025
 
 Ejecutar `python dashboard.py` y abrir http://localhost:8050.
