@@ -1,5 +1,11 @@
 > **Entregable vigente:** las métricas optimizadas están en http://localhost:8051, servidas desde `results/optimized_minute_2023_2025`. El dashboard/API descritos a continuación corresponden al modelo original y permanecen como referencia histórica.
 
+## Alcance del sitio publicado
+
+El sitio https://jassan-bit.github.io/MachineLearning_202630/ contiene únicamente
+el modelo base de persistencia y el SVR lineal. El dashboard comparativo y los
+experimentos con otros modelos se conservan localmente y quedan fuera del sitio.
+
 ## Documentación de la auditoría del entregable
 
 El [informe del estudio vigente](book/sections/07_estudio_minuto.md) incluye la pregunta de investigación, justificación del dataset, fuente y condiciones de uso consultadas el 3 de octubre de 2026, estructura temporal multiactivo y diccionario de variables con tipos, unidades y disponibilidad. También relaciona los hallazgos del EDA con las decisiones metodológicas.

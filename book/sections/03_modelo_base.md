@@ -4,7 +4,7 @@
 
 ## Adaptación de la guía
 
-Se conserva Binance y se sustituye el MLP de la guía por **SVR lineal**, según el alcance acordado.
+Se conserva Binance y se utiliza **SVR lineal**, comparado con el modelo base de persistencia.
 Se instala `timeseries-cv==0.1.5` y se importa `tsxv`. La firma real de la versión instalada es
 `split_train_val_test_groupKFold(sequence, numInputs, numOutputs, numJumps)`;
 los nombres de argumentos de algunos ejemplos de la guía no coinciden con esta versión.

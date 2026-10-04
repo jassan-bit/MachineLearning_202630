@@ -13,7 +13,6 @@ project:
     - file: book/sections/04_resultados_diarios.md
     - file: book/sections/05_conclusiones.md
     - file: book/sections/06_dashboard.md
-    - file: book/sections/10_dashboard_comparativo.md
 site:
   template: book-theme
   options:

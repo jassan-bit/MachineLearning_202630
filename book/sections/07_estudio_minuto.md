@@ -55,7 +55,7 @@ En las siguientes definiciones, los retornos diarios y de minuto se expresan com
 | `volatility_window` / `input_window` | Entera | Días | Ventana del objetivo `w` y cantidad de días de entrada `L`. |
 | `horizon` | Entera | Días | Distancia futura de la salida, de 1 a 7. |
 
-El diccionario cubre las entradas compartidas del SVR y los seis modelos clásicos del comparativo. HAR-Ridge + XGBoost añade resúmenes propios, documentados en `src/improve_classical_forecast.py`; no se confunden sus entradas adicionales con las `6L+7` del SVR. Los archivos originales contienen otros campos OHLCV; volumen y rango OHLC no forman parte del dataset procesado compartido.
+El diccionario cubre las entradas del SVR lineal, con dimensión `6L+7`. Los archivos originales contienen otros campos OHLCV; volumen y rango OHLC no forman parte del dataset procesado compartido.
 
 ## Retornos, volatilidad y salidas
 
@@ -104,7 +104,7 @@ La descarga implementa controles de orden, duplicados, precios finitos positivos
 
 2025 ya se exploró en experimentos anteriores y el EDA publicado incluye 2023–2025. Por ello, no se acredita una reserva inicial intacta del test. La selección programada utiliza 2024 y el escalado se ajusta dentro de cada entrenamiento, pero estos controles no revierten el conocimiento previo de 2025. Los resultados de ese año se presentan como retrospectivos.
 
-Para cerrar este requisito se debe fijar previamente el procedimiento completo —activos, variables, ventanas, hiperparámetros, métricas y exclusiones— y evaluarlo una sola vez en un periodo con objetivos completos que nunca haya intervenido en exploración o decisiones. No se declara aquí un periodo nuevo como independiente ni una evaluación realizada. El SVR queda como modelo de referencia; HAR-Ridge + XGBoost es una extensión del comparativo, también retrospectiva.
+Para cerrar este requisito se debe fijar previamente el procedimiento completo —activos, variables, ventanas, hiperparámetros, métricas y exclusiones— y evaluarlo una sola vez en un periodo con objetivos completos que nunca haya intervenido en exploración o decisiones. No se declara aquí un periodo nuevo como independiente ni una evaluación realizada. El estudio compara el modelo base de persistencia con el SVR lineal.
 
 ## Preprocesamiento y características
 

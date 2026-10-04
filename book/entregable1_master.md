@@ -2,6 +2,10 @@
 
 **Jassan Arteta y Mateo Bernal**
 
+**Alcance del sitio:** modelo base de persistencia y SVR lineal.
+El modelo base mantiene la volatilidad observada en el origen para los siete
+horizontes; el SVR lineal estima su evolución con características históricas.
+
 Estudio Binance de BTC, ETH, BNB y XRP durante **2023–2025**, con datos de **un minuto**, características derivadas en ventanas de **7, 14, 21 y 28 días** y siete salidas diarias de volatilidad. La variante vigente usa correcciones relativas a persistencia, seis cortes temporales crecientes para selección en 2024 y ajuste final con etiquetas anteriores a 2025.
 
 En 358 fechas de prueba de 2025: **R² macro 0,7007**, RMSE **0,5981** y mejora de RMSE frente a persistencia en **16/16 configuraciones**. La evaluación es retrospectiva; 2025 ya había sido examinado.
@@ -20,4 +24,4 @@ El capítulo del estudio incluye los siguientes apartados para revisar los crite
 - [Relación entre hallazgos y decisiones](#hallazgos-decisiones).
 - [Reserva del test y alcance de la evaluación](#reserva-test).
 
-La evaluación de 2025 es retrospectiva. Permanecen pendientes la evidencia de condiciones de uso en la fecha de descarga, la consolidación de controles de calidad y sensibilidad a extremos, y una prueba independiente sobre un periodo nunca explorado. El [dashboard comparativo](sections/10_dashboard_comparativo.md) incluye la extensión HAR-Ridge + XGBoost.
+La evaluación de 2025 es retrospectiva. Permanecen pendientes la evidencia de condiciones de uso en la fecha de descarga, la consolidación de controles de calidad y sensibilidad a extremos, y una prueba independiente sobre un periodo nunca explorado.
