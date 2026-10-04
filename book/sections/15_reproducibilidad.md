@@ -1,6 +1,6 @@
 # 5. Reproducibilidad y referencias
 
-## Reproducción y archivos
+## 5.1 Reproducción y archivos
 
 Desde la raíz, con las dependencias de `requirements.txt` y `requirements-dashboard.txt` instaladas:
 
@@ -15,7 +15,7 @@ La entrega incluye los datos procesados de minuto, los 16 modelos, las 640 búsq
 Notebook vigente: [Entregable_1_Minuto.ipynb](../../notebooks/Entregable_1_Minuto.ipynb). Paquete: [Entregable1_optimizado_2023_2025.zip](../../delivery/Entregable1_optimizado_2023_2025.zip). Resultados: `results/optimized_minute_2023_2025`. El dashboard/API anteriores continúan asociados al modelo original y no sirven los modelos optimizados. El informe vigente se consulta en el HTML incluido o en localhost:8051.
 
 
-## Auditoría adicional ejecutada el 4 de octubre de 2026
+## 5.2 Auditoría adicional ejecutada el 4 de octubre de 2026
 
 La revisión se calculó sobre los datos y los 16 modelos vigentes. Sus
 resultados complementan la entrega original: calidad RAW y procesada,
@@ -75,7 +75,7 @@ Incluye [atribución y licencia de datos y derivados](../../results/current_deli
 El paquete original conserva sus resultados de 2025; el suplemento contiene
 los análisis adicionales y los resultados de 2026.
 
-## Referencias
+## 5.3 Referencias
 
 - Binance. [Datos públicos de mercado](https://data.binance.vision/) y [API](https://www.binance.com/en/binance-api).
 - [timeseries-cv](https://pypi.org/project/timeseries-cv/), versión 0.1.5.

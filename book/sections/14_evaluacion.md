@@ -1,8 +1,8 @@
 # 4. Evaluación, interpretación y limitaciones
 
-## Resultados de prueba de 2025
+## 4.1 Resultados de prueba de 2025
 
-### Tabla comparativa global: persistencia y SVR lineal
+### 4.1.1 Tabla comparativa global: persistencia y SVR lineal
 
 | Métrica | Persistencia | SVR lineal | Mejora del SVR |
 | --- | --- | --- | --- |
@@ -12,7 +12,7 @@
 | MSE ↓ | 0.8282 | 0.53717 | 35.14 % menos error |
 | MAPE (%) ↓ | 18.80771 | 15.63947 | 16.85 % menos error |
 
-### Comparación por criptomoneda
+### 4.1.2 Comparación por criptomoneda
 
 | Criptomoneda | Modelo | R² ↑ | RMSE ↓ | MAE ↓ | MSE ↓ | MAPE (%) ↓ |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -25,7 +25,7 @@
 | XRPUSDT | Persistencia | 0.54275 | 1.0886 | 0.66589 | 1.5292 | 19.31856 |
 | XRPUSDT | SVR lineal | 0.68474 | 0.90466 | 0.58362 | 1.04911 | 17.10168 |
 
-## Análisis de R²
+## 4.2 Análisis de R²
 
 Para cada activo, ventana y horizonte, el coeficiente de determinación se
 calcula sobre las mismas fechas de evaluación:
@@ -41,7 +41,7 @@ error cuadrático de esa media; un valor negativo indica un error mayor.
 R² puede ser negativo y no equivale al cuadrado de una correlación ni a un
 porcentaje de predicciones correctas.
 
-### Mejora global y por activo
+### 4.2.1 Mejora global y por activo
 
 El R² macro del SVR es **0,70073**, frente a **0,53773** de persistencia:
 una mejora de **0,16300 puntos de R²**. Se promedian primero los siete
@@ -62,7 +62,7 @@ ganancia frente a persistencia. Son dos comparaciones diferentes: el nivel
 final y la mejora sobre una referencia. Los valores de cada activo promedian
 cuatro ventanas y siete horizontes.
 
-### Variación según la ventana del objetivo
+### 4.2.2 Variación según la ventana del objetivo
 
 | Ventana de volatilidad | R² de persistencia | R² del SVR lineal | Diferencia |
 | --- | ---: | ---: | ---: |
@@ -85,7 +85,7 @@ y el SVR mejora ese comportamiento. En BNB a 28 días, el SVR alcanza
 **0,94272**, pero persistencia ya obtiene **0,88655**. El valor alto debe
 interpretarse junto con la referencia y la superposición temporal.
 
-### Alcance y precauciones
+### 4.2.3 Alcance y precauciones
 
 El R² medio mejora en las 16 combinaciones de activo y ventana, lo que no
 implica mejorar cada horizonte ni cada fecha. R² no mide calibración,
@@ -98,7 +98,7 @@ de generalización futura.
 Fuente de los cálculos: `results/optimized_minute_2023_2025/selected_metrics.csv`
 y `macro_metrics.csv`; no se modificaron predicciones ni modelos.
 
-### Interpretación de las métricas
+### 4.2.4 Interpretación de las métricas
 
 La comparación utiliza las mismas 358 fechas de prueba de 2025 y los mismos objetivos. Persistencia repite la última volatilidad observada durante los siete horizontes; el SVR lineal optimizado aprende una corrección relativa a esa referencia. ↑ indica que un valor mayor es mejor y ↓ que un valor menor es mejor.
 
@@ -120,7 +120,7 @@ El SVR supera a persistencia en RMSE en **16 de 16 configuraciones seleccionadas
 
 R² se promedia entre siete horizontes; por activo se promedian las cuatro definiciones de volatilidad y el global es la media de las 16 configuraciones. No es el R² de series concatenadas. RMSE es la media de los RMSE por horizonte, no la raíz de un MSE agrupado. RMSE y MAE se expresan en puntos porcentuales de volatilidad, MSE en su cuadrado y MAPE en porcentaje.
 
-### Detalle por ventana objetivo
+### 4.2.5 Detalle por ventana objetivo
 
 | symbol | volatility_window | input_window | model | r2 | rmse | mae |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -158,7 +158,7 @@ R² se promedia entre siete horizontes; por activo se promedian las cuatro defin
 | XRPUSDT | 28 | 7 | Persistence | 0.79232 | 0.62005 | 0.35179 |
 
 
-## Incertidumbre temporal de las métricas de 2025
+## 4.3 Incertidumbre temporal de las métricas de 2025
 
 La auditoría complementaria conserva los modelos, métricas y predicciones
 originales. Recalcula cada métrica sobre 2.000 remuestras de los 358
@@ -182,7 +182,7 @@ pareadas: no se obtienen restando los extremos de intervalos individuales.
 
 ![Intervalos de confianza de R² y RMSE macro](../figures/current_model_confidence_intervals.png)
 
-### Sensibilidad y contraste de pérdida pareado
+### 4.3.1 Sensibilidad y contraste de pérdida pareado
 
 El contraste evalúa la diferencia diaria de pérdidas cuadradas,
 $(y-\hat y_{SVR})^2-(y-\hat y_{persistencia})^2$, promediada sobre las
@@ -218,7 +218,7 @@ Descargas: [intervalos macro y por configuración, las tres longitudes](../../re
 [procedimiento, supuestos y hashes](../../results/current_delivery_audit/model/provenance.json)
 y [paquete completo reproducible](../../results/current_delivery_audit/model/model_audit_evidence.zip).
 
-## Evaluación adicional de enero–agosto de 2026
+## 4.4 Evaluación adicional de enero–agosto de 2026
 
 Se evaluaron los **mismos 16 modelos guardados**, sin reajuste ni nueva
 selección, en 236 orígenes del 1 de enero al 24 de agosto de 2026:
@@ -264,7 +264,7 @@ Descargas: [protocolo congelado](../../results/current_delivery_audit/holdout/pr
 [intervalos y sensibilidad](../../results/current_delivery_audit/holdout/metric_confidence_intervals.csv)
 y [procedencia del bootstrap](../../results/current_delivery_audit/holdout/bootstrap_provenance.json).
 
-## Conclusiones y límites
+## 4.5 Conclusiones y límites
 
 La ingeniería de características, la corrección de persistencia, la regularización y la validación creciente permiten una mejora observada frente al baseline. El modelo anterior obtuvo R² macro −16,0817 y RMSE 4,0266 en las mismas fechas y objetivos; se conserva como referencia histórica.
 
@@ -273,7 +273,7 @@ La comparación cambia varias decisiones simultáneamente, incluido el ajuste fi
 Se verificaron hashes de los datos, elección de hiperparámetros, predicciones de modelos guardados, métricas recalculadas y coincidencia de fechas y objetivos con el experimento original. La auditoría complementaria verifica además el emparejamiento de los bloques, el cálculo macro, la inversión de ambos escaladores y las etiquetas de los cortes de aprendizaje. El informe anterior de BDS corresponde al modelo original; no se atribuye al modelo optimizado.
 
 
-## Diagnósticos completados y alcance
+## 4.6 Diagnósticos completados y alcance
 
 Los apartados [3.5–3.8](13_modelo_base_svr.md) aportan intervalos temporales,
 normalidad y segundo momento condicional con corrección por dependencia,
