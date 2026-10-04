@@ -5,3 +5,19 @@ main p:not(:where(table *, pre *, code *)),
   text-align: justify;
   text-justify: inter-word;
 }
+
+/* Créditos al pie de la barra lateral izquierda. */
+.myst-primary-sidebar-footer .myst-primary-sidebar-footer {
+  padding: 0 0.75rem;
+}
+
+.myst-primary-sidebar-footer p {
+  margin: 0;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.myst-primary-sidebar-footer p + p {
+  margin-top: 0.35rem;
+}

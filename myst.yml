@@ -11,5 +11,10 @@ project:
     - file: book/sections/15_reproducibilidad.md
 site:
   template: book-theme
+  parts:
+    primary_sidebar_footer: |
+      By Jassan Arteta y Mateo Bernal
+
+      © Copyright 2026.
   options:
     style: book/_static/custom.css
