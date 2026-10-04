@@ -25,6 +25,79 @@
 | XRPUSDT | Persistencia | 0.54275 | 1.0886 | 0.66589 | 1.5292 | 19.31856 |
 | XRPUSDT | SVR lineal | 0.68474 | 0.90466 | 0.58362 | 1.04911 | 17.10168 |
 
+## Análisis de R²
+
+Para cada activo, ventana y horizonte, el coeficiente de determinación se
+calcula sobre las mismas fechas de evaluación:
+
+$$
+R^2=1-\frac{\sum_t(y_t-\hat y_t)^2}{\sum_t(y_t-\bar y)^2}.
+$$
+
+Aquí $\bar y$ es la media del objetivo observado en esas fechas. Es una
+referencia matemática para calcular la métrica, no el pronóstico operativo
+de persistencia. Un R² de 1 indica coincidencia perfecta; 0 corresponde al
+error cuadrático de esa media; un valor negativo indica un error mayor.
+R² puede ser negativo y no equivale al cuadrado de una correlación ni a un
+porcentaje de predicciones correctas.
+
+### Mejora global y por activo
+
+El R² macro del SVR es **0,70073**, frente a **0,53773** de persistencia:
+una mejora de **0,16300 puntos de R²**. Se promedian primero los siete
+horizontes de cada configuración y después las 16 configuraciones; por ello,
+no se interpreta como el porcentaje de variación explicado en una única
+serie concatenada. La mejora muestra una reducción del error normalizado
+por la variabilidad de cada objetivo en esta evaluación retrospectiva.
+
+| Activo | R² de persistencia | R² del SVR lineal | Diferencia |
+| --- | ---: | ---: | ---: |
+| BTC | 0,59362 | 0,70947 | +0,11585 |
+| ETH | 0,34257 | 0,59317 | +0,25060 |
+| BNB | 0,67199 | 0,81556 | +0,14357 |
+| XRP | 0,54275 | 0,68474 | +0,14199 |
+
+BNB alcanza el mayor R² medio. ETH obtiene el menor R² final, pero la mayor
+ganancia frente a persistencia. Son dos comparaciones diferentes: el nivel
+final y la mejora sobre una referencia. Los valores de cada activo promedian
+cuatro ventanas y siete horizontes.
+
+### Variación según la ventana del objetivo
+
+| Ventana de volatilidad | R² de persistencia | R² del SVR lineal | Diferencia |
+| --- | ---: | ---: | ---: |
+| 7 días | 0,10009 | 0,40616 | +0,30607 |
+| 14 días | 0,56114 | 0,72849 | +0,16734 |
+| 21 días | 0,68845 | 0,81314 | +0,12469 |
+| 28 días | 0,80125 | 0,85515 | +0,05390 |
+
+Estos valores promedian cuatro activos y siete horizontes. El R² aumenta con
+la ventana en ambos métodos, mientras la ventaja del SVR disminuye. Una
+interpretación compatible con el objetivo móvil es que las ventanas largas
+suavizan la volatilidad y comparten más retornos entre fechas próximas,
+favoreciendo también a persistencia. Es una interpretación, no una prueba
+causal. Cambiar la ventana cambia el objetivo: un R² mayor a 28 días no
+demuestra que esa configuración sea mejor para pronosticar volatilidad a 7 días.
+
+En ETH con ventana de 7 días, persistencia obtiene **−0,14698** y el SVR
+**0,29526**: la referencia tiene más error cuadrático que la media del objetivo,
+y el SVR mejora ese comportamiento. En BNB a 28 días, el SVR alcanza
+**0,94272**, pero persistencia ya obtiene **0,88655**. El valor alto debe
+interpretarse junto con la referencia y la superposición temporal.
+
+### Alcance y precauciones
+
+El R² medio mejora en las 16 combinaciones de activo y ventana, lo que no
+implica mejorar cada horizonte ni cada fecha. R² no mide calibración,
+significancia estadística ni ausencia de fuga; debe acompañarse de RMSE,
+MAE y diagnóstico de residuos. No se han calculado intervalos de confianza
+para estas diferencias. La exploración previa de 2025 y la dependencia de
+los objetivos impiden presentar estos resultados como evidencia independiente
+de generalización futura.
+
+Fuente de los cálculos: `results/optimized_minute_2023_2025/selected_metrics.csv`
+y `macro_metrics.csv`; no se modificaron predicciones ni modelos.
+
 ### Interpretación de las métricas
 
 La comparación utiliza las mismas 358 fechas de prueba de 2025 y los mismos objetivos. Persistencia repite la última volatilidad observada durante los siete horizontes; el SVR lineal optimizado aprende una corrección relativa a esa referencia. ↑ indica que un valor mayor es mejor y ↓ que un valor menor es mejor.
