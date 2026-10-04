@@ -1,38 +1,31 @@
 # 3. Modelo base y SVR lineal
 
+Los apartados 3.1–3.8 siguen los requisitos de la guía para el modelo base.
+El problema es de regresión temporal; el modelo entrenado es un SVR lineal
+y su referencia mínima es persistencia. Los requisitos sin evidencia del
+ajuste vigente se indican como pendientes.
 
-## Línea base trivial: persistencia
+## 3.1 Definición de la variable objetivo
+
+Se pronostica la volatilidad no anualizada de los retornos logarítmicos
+diarios de BTC, ETH, BNB y XRP, en puntos porcentuales. Para cada ventana
+$w\in\{7,14,21,28\}$ días, la salida en el origen $t$ es
+$(\sigma_{t+1}^{(w)},\ldots,\sigma_{t+7}^{(w)})$: siete horizontes diarios.
+Cada ventana define un objetivo distinto.
+
+La fórmula y el uso de `rolling(w).std(ddof=0)` se documentan en
+[2.1.1 Retornos, volatilidad y salidas](12_eda.md).
+Los datos de un minuto aportan características; el objetivo se calcula
+con retornos diarios.
+
+## 3.2 Línea base trivial: persistencia
 
 Para cada origen, activo y ventana, la referencia repite la volatilidad
 actual en los siete horizontes: $\hat y_{t,h}=\sigma_t^{(w)}$.
 No requiere entrenamiento y utiliza únicamente información conocida.
 El único modelo entrenado de esta entrega es el SVR lineal.
 
-## Preprocesamiento y características
-
-Se prueban ventanas de entrada de **7, 14, 21 y 28 días**. Para cada día de la ventana se incluyen seis características: retorno diario, su cuadrado, raíz de la suma de cuadrados de todos los retornos por minuto, suma absoluta de retornos por minuto dividida por la raíz de 1.440, semivolatilidad negativa y máximo retorno absoluto por minuto. Se normalizan por la volatilidad actual conocida, o su cuadrado según la unidad.
-
-Se añaden siete características que describen el efecto de la salida de retornos antiguos de la ventana objetivo. Para horizonte $h$, se conservan los $w-h$ retornos diarios más recientes y se supone varianza futura igual a la actual para construir una referencia. Esta operación usa únicamente retornos ya observados; no utiliza el valor futuro del objetivo.
-
-En unidades porcentuales, con $b_t=\max(\sigma_t^{(w)},10^{-8})$, suma $S$ y suma de cuadrados $Q$ de esos retornos retenidos, la característica es
-
-$$
-\frac{\sqrt{\max((Q+h b_t^2)/w-(S/w)^2,0)}}{b_t}-1.
-$$
-
-La dimensión es **6L+7**: 49, 91, 133 o 175 características según la ventana. Este cambio sustituye las 10.080–40.320 columnas de precios del experimento original por características derivadas de los datos de un minuto. La volatilidad actual y las características de salida de la ventana requieren además la historia de la definición objetivo, de hasta 28 retornos diarios. El calendario común exige suficiente historia para la ventana máxima y siete objetivos completos.
-
-
-## Modelo y justificación
-
-Se mantienen siete regresores **LinearSVR**, uno por horizonte, mediante `MultiOutputRegressor`. Cada uno aprende la corrección relativa $z_{t,h}=\sigma_{t+h}/b_t-1$; la predicción final es $\max(b_t(1+\hat z_{t,h}),0)$. El recorte a cero forma parte del procedimiento evaluado. La persistencia repite la volatilidad actual en las siete salidas.
-
-Esta representación reduce la dependencia del nivel nominal del precio y permite al SVR aprender cuándo corregir persistencia. Se ajustan los escaladores de entradas y objetivos exclusivamente dentro de cada entrenamiento. El modelo es lineal respecto a las características transformadas; el procesamiento completo incorpora transformaciones no lineales.
-
-Se usa pérdida `squared_epsilon_insensitive`, `dual=False`, tolerancia 1e-6, máximo 50.000 iteraciones y semilla 42. La búsqueda evalúa C en {0,0001; 0,001; 0,01; 0,1; 1} y epsilon en {0,01; 0,1}, además de las cuatro entradas: **640 candidatos**, cada uno evaluado en seis cortes. Las advertencias de falta de convergencia interrumpen el ajuste.
-
-
-## Split temporal y validación con tsxv
+## 3.3 División temporal y validación con tsxv
 
 Se usa `timeseries-cv==0.1.5`, desarrollado con la coautoría de Filipe Roberto Ramos. Se ejecutan las funciones nativas `split_train_val_forwardChaining`, `split_train_val_kFold` y `split_train_val_groupKFold` sobre índices diarios del calendario de 2023–2024. Los índices se vinculan a características de datos por minuto y objetivos diarios; no se interpretan siete minutos como siete días.
 
@@ -65,8 +58,45 @@ El método principal conserva seis cortes de entrenamiento nativos de Forward Ch
 
 Se seleccionan C, epsilon y entrada por el RMSE conjunto de las predicciones fuera de muestra de 2024, promediando los siete RMSE por horizonte. Se fijan las 16 configuraciones antes de evaluar 2025. El ajuste final usa todas las muestras elegibles cuyas etiquetas terminan antes de 2025 y permanece fijo durante la prueba. La prueba contiene **358 orígenes diarios** y **40.096 valores pronosticados**.
 
+La partición determina qué muestras pueden intervenir en cada ajuste del
+preprocesamiento. **2025 ya se había explorado** en experimentos anteriores;
+por ello, esta prueba es retrospectiva y no acredita una reserva inicial
+intacta del conjunto de prueba.
 
-## Selección y contraste en validación
+## 3.4 Entrenamiento mediante Pipeline
+
+`src/optimize_minute_svr.py` construye cada ajuste con
+`make_pipeline(StandardScaler(), estimator(C, epsilon))`.
+El estimador incluye `TransformedTargetRegressor`, un escalador de objetivos
+y `MultiOutputRegressor` con siete `LinearSVR`. Los escaladores se ajustan
+solo con el entrenamiento de cada corte; la selección utiliza la validación
+temporal del apartado 3.3.
+
+### 3.4.1 Preprocesamiento y características
+
+Se prueban ventanas de entrada de **7, 14, 21 y 28 días**. Para cada día de la ventana se incluyen seis características: retorno diario, su cuadrado, raíz de la suma de cuadrados de todos los retornos por minuto, suma absoluta de retornos por minuto dividida por la raíz de 1.440, semivolatilidad negativa y máximo retorno absoluto por minuto. Se normalizan por la volatilidad actual conocida, o su cuadrado según la unidad.
+
+Se añaden siete características que describen el efecto de la salida de retornos antiguos de la ventana objetivo. Para horizonte $h$, se conservan los $w-h$ retornos diarios más recientes y se supone varianza futura igual a la actual para construir una referencia. Esta operación usa únicamente retornos ya observados; no utiliza el valor futuro del objetivo.
+
+En unidades porcentuales, con $b_t=\max(\sigma_t^{(w)},10^{-8})$, suma $S$ y suma de cuadrados $Q$ de esos retornos retenidos, la característica es
+
+$$
+\frac{\sqrt{\max((Q+h b_t^2)/w-(S/w)^2,0)}}{b_t}-1.
+$$
+
+La dimensión es **6L+7**: 49, 91, 133 o 175 características según la ventana. Este cambio sustituye las 10.080–40.320 columnas de precios del experimento original por características derivadas de los datos de un minuto. La volatilidad actual y las características de salida de la ventana requieren además la historia de la definición objetivo, de hasta 28 retornos diarios. El calendario común exige suficiente historia para la ventana máxima y siete objetivos completos.
+
+
+### 3.4.2 Modelo y justificación
+
+Se mantienen siete regresores **LinearSVR**, uno por horizonte, mediante `MultiOutputRegressor`. Cada uno aprende la corrección relativa $z_{t,h}=\sigma_{t+h}/b_t-1$; la predicción final es $\max(b_t(1+\hat z_{t,h}),0)$. El recorte a cero forma parte del procedimiento evaluado. La persistencia repite la volatilidad actual en las siete salidas.
+
+Esta representación reduce la dependencia del nivel nominal del precio y permite al SVR aprender cuándo corregir persistencia. Se ajustan los escaladores de entradas y objetivos exclusivamente dentro de cada entrenamiento. El modelo es lineal respecto a las características transformadas; el procesamiento completo incorpora transformaciones no lineales.
+
+Se usa pérdida `squared_epsilon_insensitive`, `dual=False`, tolerancia 1e-6, máximo 50.000 iteraciones y semilla 42. La búsqueda evalúa C en {0,0001; 0,001; 0,01; 0,1; 1} y epsilon en {0,01; 0,1}, además de las cuatro entradas: **640 candidatos**, cada uno evaluado en seis cortes. Las advertencias de falta de convergencia interrumpen el ajuste.
+
+
+### 3.4.3 Selección y contraste en validación
 
 | symbol | volatility_window | input_window | C | epsilon | validation_rmse |
 | --- | --- | --- | --- | --- | --- |
@@ -107,4 +137,66 @@ Se seleccionan C, epsilon y entrada por el RMSE conjunto de las predicciones fue
 | XRPUSDT | 28 | 0.51241 | 0.56346 |
 
 Las entradas elegidas cambian con el activo y la definición de volatilidad; una ventana más larga no mejora necesariamente el pronóstico. Los C seleccionados favorecen regularización fuerte, coherente con limitar el sobreajuste.
+
+## 3.5 Evaluación y comparación con la línea base
+
+Las tablas y su interpretación se presentan en
+[4. Evaluación, interpretación y limitaciones](14_evaluacion.md).
+Se reportan R², RMSE, MAE, MSE y MAPE sobre las mismas fechas y objetivos
+para persistencia y SVR lineal. El SVR obtiene R² macro **0,70073** frente
+a **0,53773** de persistencia y RMSE **0,59808** frente a **0,74770**.
+La comparación es retrospectiva y las métricas macro promedian
+configuraciones y horizontes.
+
+**Pendiente:** intervalos de confianza para las métricas principales mediante
+un procedimiento que respete la dependencia temporal, como bootstrap por
+bloques. Las métricas de clasificación de la guía no aplican al objetivo
+continuo de este estudio.
+
+## 3.6 Diagnóstico de residuos según la estructura de los datos
+
+**Pendiente para el SVR vigente:** análisis de normalidad, heterocedasticidad
+y autocorrelación temporal de los residuos mediante ACF. La dependencia
+residual puede señalar información temporal que el modelo no captura.
+Los diagnósticos del modelo histórico no sustituyen los de este ajuste.
+
+El diagnóstico espacial mediante I de Moran **no aplica**: no hay coordenadas
+ni unidades geográficas en el dataset, como se explica en el apartado 2.7.
+
+## 3.7 Curva de aprendizaje
+
+**Pendiente:** comparar los errores de entrenamiento y validación con tamaños
+crecientes de muestra, manteniendo el orden temporal y el procedimiento
+fijado. La selección de ventanas e hiperparámetros del apartado 3.4.3 no
+sustituye una curva de aprendizaje ni demuestra ausencia de sobreajuste.
+
+## 3.8 Interpretación de coeficientes y métricas
+
+La [sección 4](14_evaluacion.md) interpreta las métricas, sus unidades,
+la agregación entre activos, ventanas y horizontes y las mejoras frente
+a persistencia.
+
+**Pendiente:** análisis de coeficientes por característica y horizonte,
+considerando el escalado de entradas y objetivos. El SVR es lineal respecto
+a las características transformadas; sus coeficientes no se interpretan
+directamente como efectos sobre los precios originales ni como efectos
+causales.
+
+## 3.9 Nota crítica ante un desempeño alto
+
+En BNB con ventana de 28 días el SVR alcanza R² **0,94272**, mientras
+persistencia ya obtiene **0,88655**. Este resultado debe revisarse junto
+con los controles y limitaciones de la guía:
+
+- Verificar fuga de datos y disponibilidad de los predictores, conforme
+  a los apartados 2.5 y 3.3–3.4.
+- Comparar siempre con persistencia sobre las mismas fechas y objetivos.
+- Respetar la estructura temporal en la validación. Las ventanas móviles
+  comparten retornos y pueden favorecer un R² alto en ambos métodos.
+- Revisar la dificultad del objetivo: aumentar la ventana cambia y suaviza
+  la variable pronosticada; un R² mayor no demuestra por sí solo una mejor
+  capacidad predictiva para otro objetivo.
+- Documentar los diagnósticos pendientes y confirmar el procedimiento en
+  un periodo nunca explorado. El conocimiento previo de 2025 impide
+  presentarlo como una prueba independiente de generalización.
 
