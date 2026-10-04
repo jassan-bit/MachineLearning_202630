@@ -1,27 +1,35 @@
-# Entregable 1: volatilidad con SVR lineal
+# Primer Entregable del Proyecto de Investigación
 
-**Jassan Arteta y Mateo Bernal**
+**Jassan Arteta y Mateo Bernal**  
+Universidad del Norte · Machine Learning · 2026-30
 
-**Alcance del sitio:** modelo base de persistencia y SVR lineal.
-El modelo base mantiene la volatilidad observada en el origen para los siete
-horizontes; el SVR lineal estima su evolución con características históricas.
+## Selección de base de datos, EDA e implementación del modelo base
 
-Estudio Binance de BTC, ETH, BNB y XRP durante **2023–2025**, con datos de **un minuto**, características derivadas en ventanas de **7, 14, 21 y 28 días** y siete salidas diarias de volatilidad. La variante vigente usa correcciones relativas a persistencia, seis cortes temporales crecientes para selección en 2024 y ajuste final con etiquetas anteriores a 2025.
+El estudio pronostica volatilidad de BTC, ETH, BNB y XRP con datos de Binance
+de 2023–2025. La entrega contiene **persistencia como línea base trivial** y
+**SVR lineal como único modelo entrenado**.
 
-En 358 fechas de prueba de 2025: **R² macro 0,7007**, RMSE **0,5981** y mejora de RMSE frente a persistencia en **16/16 configuraciones**. La evaluación es retrospectiva; 2025 ya había sido examinado.
+## Ruta de lectura
 
-Consultar el [informe completo](sections/07_estudio_minuto.md), el [notebook ejecutado](../notebooks/Entregable_1_Minuto.ipynb) y la [entrega reproducible](../delivery/Entregable1_optimizado_2023_2025.zip).
+1. [Base de datos](sections/11_base_datos.md): problema, justificación, fuente,
+   condiciones de uso, diccionario, estructura, tamaño y representatividad.
+2. [EDA](sections/12_eda.md): objetivo, análisis unidimensional, bidimensional,
+   multivariado, fuga, componente temporal y preprocesamiento.
+3. [Modelo base y SVR lineal](sections/13_modelo_base_svr.md): persistencia,
+   características, entrenamiento y validación cronológica.
+4. [Evaluación](sections/14_evaluacion.md): comparación en las mismas fechas,
+   interpretación de métricas y limitaciones.
+5. [Reproducibilidad](sections/15_reproducibilidad.md): archivos, dependencias,
+   semilla y comandos.
 
-El [modelo original con precios por minuto](sections/09_referencia_minuto_original.md) y el [estudio diario anterior](sections/08_referencia_diaria.md) quedan como referencias históricas. Los resultados vigentes están en `results/optimized_minute_2023_2025`.
+La ruta corresponde a **regresión temporal**. Los componentes espaciales no
+aplican porque no hay coordenadas. La estructura sigue la guía del entregable,
+que asigna 10 % a base de datos, 60 % a EDA y 30 % a modelo base.
 
-## Auditoría del entregable
+## Resultados y alcance de la evidencia
 
-El capítulo del estudio incluye los siguientes apartados para revisar los criterios de la entrega:
-
-- [Pregunta de investigación y selección del dataset](#seleccion-dataset).
-- [Fuente, condiciones de uso y atribución](#fuente-licencia).
-- [Estructura y diccionario de variables](#diccionario-variables).
-- [Relación entre hallazgos y decisiones](#hallazgos-decisiones).
-- [Reserva del test y alcance de la evaluación](#reserva-test).
-
-La evaluación de 2025 es retrospectiva. Permanecen pendientes la evidencia de condiciones de uso en la fecha de descarga, la consolidación de controles de calidad y sensibilidad a extremos, y una prueba independiente sobre un periodo nunca explorado.
+El SVR obtiene R² macro **0,7007** y RMSE **0,5981**, y mejora el RMSE frente
+a persistencia en las **16 configuraciones** de activo y ventana.
+La evaluación de 2025 es retrospectiva: ese periodo ya había sido explorado.
+El informe identifica los controles verificados y los requisitos pendientes;
+no presenta esos pendientes como resultados realizados.

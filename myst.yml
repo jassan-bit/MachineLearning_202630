@@ -1,18 +1,14 @@
 version: 1
 project:
   id: cd88d8d9-9d15-4270-aec0-4687c9c73a15
-  title: Volatilidad con SVR lineal — Binance 2023–2025
+  title: Primer entregable — Modelo base y SVR lineal
   toc:
     - file: book/entregable1_master.md
-    - file: book/sections/07_estudio_minuto.md
-    - file: book/sections/09_referencia_minuto_original.md
-    - file: book/sections/08_referencia_diaria.md
-    - file: book/sections/01_base_datos.md
-    - file: book/sections/02_eda.md
-    - file: book/sections/03_modelo_base.md
-    - file: book/sections/04_resultados_diarios.md
-    - file: book/sections/05_conclusiones.md
-    - file: book/sections/06_dashboard.md
+    - file: book/sections/11_base_datos.md
+    - file: book/sections/12_eda.md
+    - file: book/sections/13_modelo_base_svr.md
+    - file: book/sections/14_evaluacion.md
+    - file: book/sections/15_reproducibilidad.md
 site:
   template: book-theme
   options:
