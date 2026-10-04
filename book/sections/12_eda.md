@@ -6,7 +6,24 @@ el SVR lineal. No se mezclan estadísticas de versiones históricas.
 El EDA disponible es descriptivo y retrospectivo: 2025 ya se examinó.
 Los requisitos sin evidencia específica se indican como pendientes.
 
-## Retornos, volatilidad y salidas
+(reserva-test)=
+
+**Orden de trabajo:** Reserva del test y alcance de la evaluación
+
+2025 ya se exploró en experimentos anteriores y el EDA publicado incluye 2023–2025. Por ello, no se acredita una reserva inicial intacta del test. La selección programada utiliza 2024 y el escalado se ajusta dentro de cada entrenamiento, pero estos controles no revierten el conocimiento previo de 2025. Los resultados de ese año se presentan como retrospectivos.
+
+Para cerrar este requisito se debe fijar previamente el procedimiento completo —activos, variables, ventanas, hiperparámetros, métricas y exclusiones— y evaluarlo una sola vez en un periodo con objetivos completos que nunca haya intervenido en exploración o decisiones. No se declara aquí un periodo nuevo como independiente ni una evaluación realizada. El estudio compara el modelo base de persistencia con el SVR lineal.
+
+
+## 2.1 Análisis de la Variable Objetivo
+
+El objetivo es volatilidad no anualizada a siete horizontes diarios, con
+ventanas de 7, 14, 21 y 28 días. Cada ventana define un objetivo distinto.
+La dependencia de retornos al cuadrado motiva estudiar la variabilidad;
+no demuestra que el SVR pueda predecirla. Se comparan RMSE y MAE para mostrar
+la sensibilidad a extremos, y R² frente a persistencia en el mismo calendario.
+
+### 2.1.1 Retornos, volatilidad y salidas
 
 Sean $P_t$ el último cierre del día y $r_t=\ln(P_t/P_{t-1})$. El objetivo es
 
@@ -17,7 +34,15 @@ $$
 Se usa `rolling(w).std(ddof=0)`, sin anualizar. Cada salida es $(\sigma_{t+1}^{(w)},\ldots,\sigma_{t+7}^{(w)})$. La volatilidad realizada de los retornos por minuto se emplea como característica; el objetivo sigue siendo la volatilidad de retornos diarios. Son definiciones diferentes.
 
 
-## Exploración y calidad
+## 2.2 Análisis unidimensional
+
+Las figuras de este apartado muestran cierres, distribuciones de retornos y
+dependencia temporal por activo. Los conteos y extremos documentan escalas
+heterogéneas. No se eliminan automáticamente movimientos reales del mercado.
+Falta consolidar para las variables derivadas y el objetivo los percentiles,
+asimetría, curtosis y boxplots sobre el periodo de desarrollo.
+
+### 2.2.1 Exploración y calidad
 
 
 descriptive_statistics.csv contiene estadísticas de cierres y retornos de un minuto y de retornos diarios.
@@ -42,30 +67,6 @@ dependencia en la magnitud de los retornos, sin demostrar por sí sola un modelo
 
 La exploración de 2023–2025 es descriptiva y retrospectiva. Los extremos y la dependencia en retornos al cuadrado motivan estudiar volatilidad y comparar contra persistencia, pero no garantizan capacidad predictiva. Los escaladores y la selección del modelo utilizan únicamente los periodos de desarrollo correspondientes a cada corte.
 
-(hallazgos-decisiones)=
-### Relación entre hallazgos y decisiones
-
-Los huecos motivan mantener el calendario y excluir muestras afectadas, sin interpolar precios. Los extremos de retorno motivan informar MAE junto con errores cuadrados, sin eliminar automáticamente movimientos de mercado reales. La dependencia temporal motiva validación creciente y separación de etiquetas; las correlaciones son descriptivas y no justifican causalidad. La comparación con persistencia mide si las características aportan información frente a la continuidad del nivel actual.
-
-La descarga implementa controles de orden, duplicados, precios finitos positivos, alineación de timestamps y días completos. Un control implementado no sustituye un informe de ejecución sobre todos los archivos vigentes. Para cerrar la auditoría de calidad falta consolidar esos resultados por activo y archivo, con conteos antes y después de cada exclusión y análisis de sensibilidad a extremos. No se atribuyen al dataset de minuto los diagnósticos de versiones históricas de otra frecuencia.
-
-(reserva-test)=
-
-## 2.1 Variable objetivo
-
-El objetivo es volatilidad no anualizada a siete horizontes diarios, con
-ventanas de 7, 14, 21 y 28 días. Cada ventana define un objetivo distinto.
-La dependencia de retornos al cuadrado motiva estudiar la variabilidad;
-no demuestra que el SVR pueda predecirla. Se comparan RMSE y MAE para mostrar
-la sensibilidad a extremos, y R² frente a persistencia en el mismo calendario.
-
-## 2.2 Análisis unidimensional
-
-Las figuras anteriores muestran cierres, distribuciones de retornos y
-dependencia temporal por activo. Los conteos y extremos documentan escalas
-heterogéneas. No se eliminan automáticamente movimientos reales del mercado.
-Falta consolidar para las variables derivadas y el objetivo los percentiles,
-asimetría, curtosis y boxplots sobre el periodo de desarrollo.
 
 ## 2.3 Análisis bidimensional
 
@@ -91,13 +92,6 @@ de la ventana utilizan únicamente retornos pasados. Los escaladores se ajustan
 con cada entrenamiento; las etiquetas terminan antes de la validación.
 El capítulo del modelo documenta los cortes y sus verificaciones.
 
-## Reserva del test y alcance de la evaluación
-
-2025 ya se exploró en experimentos anteriores y el EDA publicado incluye 2023–2025. Por ello, no se acredita una reserva inicial intacta del test. La selección programada utiliza 2024 y el escalado se ajusta dentro de cada entrenamiento, pero estos controles no revierten el conocimiento previo de 2025. Los resultados de ese año se presentan como retrospectivos.
-
-Para cerrar este requisito se debe fijar previamente el procedimiento completo —activos, variables, ventanas, hiperparámetros, métricas y exclusiones— y evaluarlo una sola vez en un periodo con objetivos completos que nunca haya intervenido en exploración o decisiones. No se declara aquí un periodo nuevo como independiente ni una evaluación realizada. El estudio compara el modelo base de persistencia con el SVR lineal.
-
-
 ## 2.6 Componente temporal
 
 La adquisición es de un minuto UTC y la muestra supervisada tiene frecuencia
@@ -107,12 +101,15 @@ describe dependencia; la superposición de objetivos exige validación temporal.
 STL, ADF/KPSS, PACF, estacionalidad y deriva entre periodos quedan pendientes
 de un informe específico del dataset vigente.
 
-## 2.7–2.8 Componente espacial y espacio-temporal
+## 2.7 Componente Espacial
 
-No aplican: el dataset no contiene latitud, longitud ni unidades geográficas.
-Los activos financieros constituyen un panel temporal, no regiones espaciales.
+**No aplica:** el dataset no contiene latitud, longitud ni unidades geográficas. Los activos financieros constituyen un panel temporal, no regiones espaciales.
 
-## 2.9 Preprocesamiento guiado por el EDA
+## 2.8 Componente Espacio-Temporal
+
+**No aplica:** el dataset contiene tiempo, pero no coordenadas ni zonas geográficas. Las comparaciones entre activos corresponden al componente temporal del apartado 2.6.
+
+## 2.9 Preprocesamiento
 
 | Hallazgo | Decisión aplicada |
 | --- | --- |
@@ -125,3 +122,10 @@ Los activos financieros constituyen un panel temporal, no regiones espaciales.
 La construcción exacta de características y el escalado se presentan en el
 capítulo del modelo. Los pendientes anteriores no se consideran cumplidos
 por disponer de scripts o por haber analizado otra versión del dataset.
+
+(hallazgos-decisiones)=
+### 2.9.1 Relación entre hallazgos y decisiones
+
+Los huecos motivan mantener el calendario y excluir muestras afectadas, sin interpolar precios. Los extremos de retorno motivan informar MAE junto con errores cuadrados, sin eliminar automáticamente movimientos de mercado reales. La dependencia temporal motiva validación creciente y separación de etiquetas; las correlaciones son descriptivas y no justifican causalidad. La comparación con persistencia mide si las características aportan información frente a la continuidad del nivel actual.
+
+La descarga implementa controles de orden, duplicados, precios finitos positivos, alineación de timestamps y días completos. Un control implementado no sustituye un informe de ejecución sobre todos los archivos vigentes. Para cerrar la auditoría de calidad falta consolidar esos resultados por activo y archivo, con conteos antes y después de cada exclusión y análisis de sensibilidad a extremos. No se atribuyen al dataset de minuto los diagnósticos de versiones históricas de otra frecuencia.
