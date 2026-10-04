@@ -6,6 +6,12 @@ El sitio https://jassan-bit.github.io/MachineLearning_202630/ contiene únicamen
 el modelo base de persistencia y el SVR lineal. El dashboard comparativo y los
 experimentos con otros modelos se conservan localmente y quedan fuera del sitio.
 
+La navegación del entregable sigue la guía: Base de datos, EDA, Modelo base y
+SVR lineal, Evaluación y Reproducibilidad. Los capítulos publicados son
+`book/sections/11_base_datos.md` a `book/sections/15_reproducibilidad.md`;
+las versiones históricas no forman parte del menú. Los requisitos sin
+evidencia del dataset vigente se identifican como pendientes.
+
 ## Documentación de la auditoría del entregable
 
 El [informe del estudio vigente](book/sections/07_estudio_minuto.md) incluye la pregunta de investigación, justificación del dataset, fuente y condiciones de uso consultadas el 3 de octubre de 2026, estructura temporal multiactivo y diccionario de variables con tipos, unidades y disponibilidad. También relaciona los hallazgos del EDA con las decisiones metodológicas.
