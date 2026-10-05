@@ -15,7 +15,7 @@ def create_app():
         html.Header([html.Div('ML / VOLATILIDAD',className='brand'),html.H1('Predicción de la volatilidad futura de criptomonedas mediante Machine Learning'),html.P('Binance · cierres de 1 minuto · seis modelos clásicos + mejora HAR-Ridge y XGBoost · evaluación temporal retrospectiva')],className='site-header'),
         dcc.Tabs(id='main-tabs',value='contexto',children=[dcc.Tab(label='1 · Contexto del problema',value='contexto'),dcc.Tab(label='2 · EDA',value='eda'),dcc.Tab(label='3 · Comparación de modelos',value='modelos')]),
         html.Main(dcc.Loading(html.Div(id='tab-content'),type='circle'),className='main-content'),
-        html.Footer('Resultados locales verificados · Unidades y protocolos explícitos · Sin entrenamiento desde el dashboard')])
+        html.Footer([html.Div('By Jassan Arteta y Mateo Bernal'),html.Div('© Copyright 2026.')])])
 
     @app.callback(Output('tab-content','children'),Input('main-tabs','value'))
     def render_tab(tab):
