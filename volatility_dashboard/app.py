@@ -2,7 +2,7 @@
 from pathlib import Path
 import os
 from dash import Dash, Input, Output, dcc, html
-from flask import send_from_directory
+from flask import abort, send_from_directory
 from .data_loader import ROOT, repository
 from .tabs import contexto, eda, modelos
 
@@ -34,6 +34,12 @@ def create_app():
     @app.server.route('/book-report')
     def book_report():
         return send_from_directory(str(ROOT/'book/sections'),'10_dashboard_comparativo.md',as_attachment=False,mimetype='text/plain; charset=utf-8')
+
+    @app.server.route('/har-optimization/<filename>')
+    def har_optimization(filename):
+        if filename not in {'index.html', 'dm_comparisons.csv', 'dm_baseline_comparisons.csv', 'dm_summary.json'}:
+            abort(404)
+        return send_from_directory(str(ROOT/'results/optimized_har_xgboost_2023_2025'),filename)
 
     return app
 

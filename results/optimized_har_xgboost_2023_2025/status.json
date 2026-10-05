@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "seconds": 61.170245885849,
+  "selection_sha256": "6f9649e7b32798c37fcb0591eeaaba191509d581f456a7a36536444944d6c331",
+  "test_origins": 358,
+  "test_data_evaluated": true,
+  "models": 16,
+  "selection_used_test_data": false,
+  "timing_scope": "Ajuste final y evaluación; no incluye la búsqueda OOF previa de 2024"
+}

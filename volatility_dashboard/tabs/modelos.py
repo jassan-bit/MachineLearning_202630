@@ -124,7 +124,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             if path.exists():
                 saved = read_json(path)
                 if 'seconds' in saved:
-                    times.append(dict(model=model,segundos_guardados=saved['seconds'],alcance='Ejecución completa; no separa entrenamiento/predicción',fuente=str(path.relative_to(ROOT))))
+                    times.append(dict(model=model,segundos_guardados=saved['seconds'],alcance=saved.get('timing_scope','Ejecución completa; no separa entrenamiento/predicción'),fuente=str(path.relative_to(ROOT))))
                     break
     return html.Div([
         html.Section([html.H3('Tabla general · mismo test'),html.P(f'Activo: {symbol}; ventana del objetivo: {window}; horizonte: {horizon}. Cuando se elige TODOS, las métricas son promedios de métricas por horizonte y activo, no métricas sobre objetivos concatenados.'),table(view),html.H3('Ranking por '+METRICS[metric]),table(ranking),html.P(numeric_note(global_view,metric),className='interpretation')],className='panel'),

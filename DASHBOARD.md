@@ -45,7 +45,7 @@ El Dockerfile incluye los modelos y metadatos; no descarga datos ni entrena al a
 Un Dockerfile preparado no equivale a un despliegue remoto verificado.
 
 
-## Nuevo modelo propuesto: HAR-Ridge + XGBoost
+## Versión original de HAR-Ridge + XGBoost
 
 Se conservan los modelos anteriores, sus artefactos y sus resultados para la
 comparación. **XGBoost se presenta como modelo individual y HAR-Ridge + XGBoost
@@ -104,6 +104,52 @@ el historial de cierres diarios y resúmenes por minuto hasta el origen.
 El dashboard conserva los seis modelos clásicos e incluye HAR-Ridge + XGBoost
 en las tablas, filtros, rankings y diagnósticos de Comparación de modelos.
 La API conserva su configuración.
+
+## Optimización de HAR-Ridge + XGBoost por horizonte
+
+El 5 de octubre de 2026 se seleccionaron componentes, penalizaciones y
+pesos independientes para cada uno de los siete horizontes, minimizando
+MSE de validación temporal de 2024. La búsqueda compara cinco variantes
+XGBoost y veinte variantes HAR-Ridge por activo y ventana. Incluye
+ponderación por volatilidad al cuadrado, HAR en niveles y decaimiento
+conocido. Mantiene seis folds expansivos y purga de etiquetas de siete días.
+La selección y los 16 artefactos se congelan por SHA-256 antes de evaluar
+2025; la versión original y los seis rivales se conservan.
+
+| Resultado sobre 960 comparaciones HAR | Original | Optimizado |
+| --- | ---: | ---: |
+| Victorias significativas, Holm < 0.05 | 170 | 201 |
+| Sin diferencia significativa | 787 | 759 |
+| Derrotas significativas | 3 | 0 |
+| MSE menor al del rival | 911 | 931 |
+| RMSE macro | 0.55817 | 0.54999 |
+| MAE macro | 0.37557 | 0.35814 |
+
+El objetivo de ganar en todas las pruebas no se alcanza. Ningún filtro
+gana a sus seis rivales simultáneamente. En el filtro TODOS/ventana 7/TODOS,
+las victorias pasan de tres a una, pese a reducir MSE de 1.186401 a 1.173496.
+El RMSE macro mejora 1.46 % y el MAE 4.64 % frente al HAR original;
+no todas las configuraciones mejoran. Holm se mantiene sobre los 21 pares
+de cada selección, sin corrección conjunta por explorar los 160 filtros.
+2024 reutilizado y 2025 previamente examinado: comparación retrospectiva,
+sin confirmación en un periodo nuevo sin examinar.
+
+Reproducir desde la raíz, con los datos y artefactos originales presentes:
+
+```powershell
+.\.venv-repro\Scripts\python.exe src/research_har_candidates.py --jobs 1
+.\.venv-repro\Scripts\python.exe src/optimize_har_xgboost.py --select --evaluate --verify
+.\.venv-repro\Scripts\python.exe src/report_optimized_har.py
+```
+
+Las cachés OOF de 2024 y sus candidatos se conservan en
+`results/har_candidate_research_2024/`. La selección congelada, modelos,
+predicciones y evaluación antes/después están en
+`results/optimized_har_xgboost_2023_2025/`. El dashboard usa esta familia con
+la etiqueta habitual HAR-Ridge + XGBoost y conserva siete modelos en cada
+comparación. El informe está disponible en `/har-optimization/index.html`.
+Los comandos reutilizan selección y evaluación existentes; para investigar
+otra búsqueda se debe utilizar un directorio nuevo, manteniendo el historial.
 
 ## Dashboard comparativo: seis modelos clásicos y mejora propuesta
 

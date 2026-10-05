@@ -1,0 +1,739 @@
+{
+  "evaluation": "retrospective_2025_previously_examined",
+  "new_untouched_test": false,
+  "filters": {
+    "count": 160,
+    "symbols": [
+      "TODOS",
+      "BNBUSDT",
+      "BTCUSDT",
+      "ETHUSDT",
+      "XRPUSDT"
+    ],
+    "volatility_windows": [
+      7,
+      14,
+      21,
+      28
+    ],
+    "horizons": [
+      "TODOS",
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "models": [
+    "HAR-Ridge + XGBoost",
+    "Lasso",
+    "Random Forest",
+    "Ridge",
+    "SVR Lineal",
+    "XGBoost",
+    "k-NN"
+  ],
+  "pairwise_comparisons_per_filter": 21,
+  "pairwise_comparisons_per_version": 3360,
+  "har_comparisons_per_filter": 6,
+  "har_comparisons_per_version": 960,
+  "protocol": {
+    "loss": "squared error, averaged within each daily origin",
+    "test": "two-sided Diebold-Mariano with Harvey-Leybourne-Newbold correction",
+    "hac": "Bartlett; lags=max(window+horizon-2, floor(4*(n/100)^(2/9)))",
+    "alpha": 0.05,
+    "multiplicity": "Holm across all evaluable pairs of the seven models within each filter selection",
+    "multiplicity_across_all_filters": false,
+    "filters_share_observations": true
+  },
+  "alignment": {
+    "identical_keys_and_exact_targets": true,
+    "rival_predictions_unchanged": true,
+    "rival_unadjusted_dm_tests_unchanged": true,
+    "predictions_per_model": 40096,
+    "daily_origins": 358,
+    "first_origin": "2025-01-01T00:00:00+00:00",
+    "last_origin": "2025-12-24T00:00:00+00:00"
+  },
+  "baseline": {
+    "wins": 170,
+    "no_significant_difference": 787,
+    "losses": 3,
+    "not_evaluable": 0,
+    "total": 960,
+    "lower_mse": 911,
+    "equal_mse": 0,
+    "higher_mse": 49,
+    "by_window": [
+      {
+        "volatility_window": 7,
+        "wins": 65,
+        "no_significant_difference": 173,
+        "losses": 2,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 227,
+        "equal_mse": 0,
+        "higher_mse": 13
+      },
+      {
+        "volatility_window": 14,
+        "wins": 44,
+        "no_significant_difference": 195,
+        "losses": 1,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 226,
+        "equal_mse": 0,
+        "higher_mse": 14
+      },
+      {
+        "volatility_window": 21,
+        "wins": 49,
+        "no_significant_difference": 191,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 234,
+        "equal_mse": 0,
+        "higher_mse": 6
+      },
+      {
+        "volatility_window": 28,
+        "wins": 12,
+        "no_significant_difference": 228,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 224,
+        "equal_mse": 0,
+        "higher_mse": 16
+      }
+    ],
+    "by_asset": [
+      {
+        "symbol": "TODOS",
+        "wins": 72,
+        "no_significant_difference": 119,
+        "losses": 1,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 189,
+        "equal_mse": 0,
+        "higher_mse": 3
+      },
+      {
+        "symbol": "BNBUSDT",
+        "wins": 13,
+        "no_significant_difference": 179,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 178,
+        "equal_mse": 0,
+        "higher_mse": 14
+      },
+      {
+        "symbol": "BTCUSDT",
+        "wins": 22,
+        "no_significant_difference": 169,
+        "losses": 1,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 185,
+        "equal_mse": 0,
+        "higher_mse": 7
+      },
+      {
+        "symbol": "ETHUSDT",
+        "wins": 48,
+        "no_significant_difference": 144,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 183,
+        "equal_mse": 0,
+        "higher_mse": 9
+      },
+      {
+        "symbol": "XRPUSDT",
+        "wins": 15,
+        "no_significant_difference": 176,
+        "losses": 1,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 176,
+        "equal_mse": 0,
+        "higher_mse": 16
+      }
+    ],
+    "by_horizon": [
+      {
+        "horizon": "TODOS",
+        "wins": 19,
+        "no_significant_difference": 101,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 118,
+        "equal_mse": 0,
+        "higher_mse": 2
+      },
+      {
+        "horizon": 1,
+        "wins": 44,
+        "no_significant_difference": 73,
+        "losses": 3,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 107,
+        "equal_mse": 0,
+        "higher_mse": 13
+      },
+      {
+        "horizon": 2,
+        "wins": 26,
+        "no_significant_difference": 94,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 113,
+        "equal_mse": 0,
+        "higher_mse": 7
+      },
+      {
+        "horizon": 3,
+        "wins": 19,
+        "no_significant_difference": 101,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 113,
+        "equal_mse": 0,
+        "higher_mse": 7
+      },
+      {
+        "horizon": 4,
+        "wins": 12,
+        "no_significant_difference": 108,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 111,
+        "equal_mse": 0,
+        "higher_mse": 9
+      },
+      {
+        "horizon": 5,
+        "wins": 17,
+        "no_significant_difference": 103,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 114,
+        "equal_mse": 0,
+        "higher_mse": 6
+      },
+      {
+        "horizon": 6,
+        "wins": 15,
+        "no_significant_difference": 105,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 117,
+        "equal_mse": 0,
+        "higher_mse": 3
+      },
+      {
+        "horizon": 7,
+        "wins": 18,
+        "no_significant_difference": 102,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 118,
+        "equal_mse": 0,
+        "higher_mse": 2
+      }
+    ],
+    "by_rival": [
+      {
+        "rival": "Lasso",
+        "wins": 16,
+        "no_significant_difference": 144,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 140,
+        "equal_mse": 0,
+        "higher_mse": 20
+      },
+      {
+        "rival": "Random Forest",
+        "wins": 38,
+        "no_significant_difference": 122,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 154,
+        "equal_mse": 0,
+        "higher_mse": 6
+      },
+      {
+        "rival": "Ridge",
+        "wins": 40,
+        "no_significant_difference": 120,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 158,
+        "equal_mse": 0,
+        "higher_mse": 2
+      },
+      {
+        "rival": "SVR Lineal",
+        "wins": 31,
+        "no_significant_difference": 129,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 156,
+        "equal_mse": 0,
+        "higher_mse": 4
+      },
+      {
+        "rival": "XGBoost",
+        "wins": 12,
+        "no_significant_difference": 145,
+        "losses": 3,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 149,
+        "equal_mse": 0,
+        "higher_mse": 11
+      },
+      {
+        "rival": "k-NN",
+        "wins": 33,
+        "no_significant_difference": 127,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 154,
+        "equal_mse": 0,
+        "higher_mse": 6
+      }
+    ],
+    "filters_won_against_all_six_rivals": 0
+  },
+  "optimized": {
+    "wins": 201,
+    "no_significant_difference": 759,
+    "losses": 0,
+    "not_evaluable": 0,
+    "total": 960,
+    "lower_mse": 931,
+    "equal_mse": 0,
+    "higher_mse": 29,
+    "by_window": [
+      {
+        "volatility_window": 7,
+        "wins": 61,
+        "no_significant_difference": 179,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 229,
+        "equal_mse": 0,
+        "higher_mse": 11
+      },
+      {
+        "volatility_window": 14,
+        "wins": 45,
+        "no_significant_difference": 195,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 231,
+        "equal_mse": 0,
+        "higher_mse": 9
+      },
+      {
+        "volatility_window": 21,
+        "wins": 58,
+        "no_significant_difference": 182,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 235,
+        "equal_mse": 0,
+        "higher_mse": 5
+      },
+      {
+        "volatility_window": 28,
+        "wins": 37,
+        "no_significant_difference": 203,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 240,
+        "lower_mse": 236,
+        "equal_mse": 0,
+        "higher_mse": 4
+      }
+    ],
+    "by_asset": [
+      {
+        "symbol": "TODOS",
+        "wins": 52,
+        "no_significant_difference": 140,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 190,
+        "equal_mse": 0,
+        "higher_mse": 2
+      },
+      {
+        "symbol": "BNBUSDT",
+        "wins": 25,
+        "no_significant_difference": 167,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 191,
+        "equal_mse": 0,
+        "higher_mse": 1
+      },
+      {
+        "symbol": "BTCUSDT",
+        "wins": 76,
+        "no_significant_difference": 116,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 192,
+        "equal_mse": 0,
+        "higher_mse": 0
+      },
+      {
+        "symbol": "ETHUSDT",
+        "wins": 37,
+        "no_significant_difference": 155,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 182,
+        "equal_mse": 0,
+        "higher_mse": 10
+      },
+      {
+        "symbol": "XRPUSDT",
+        "wins": 11,
+        "no_significant_difference": 181,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 192,
+        "lower_mse": 176,
+        "equal_mse": 0,
+        "higher_mse": 16
+      }
+    ],
+    "by_horizon": [
+      {
+        "horizon": "TODOS",
+        "wins": 19,
+        "no_significant_difference": 101,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 117,
+        "equal_mse": 0,
+        "higher_mse": 3
+      },
+      {
+        "horizon": 1,
+        "wins": 60,
+        "no_significant_difference": 60,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 116,
+        "equal_mse": 0,
+        "higher_mse": 4
+      },
+      {
+        "horizon": 2,
+        "wins": 39,
+        "no_significant_difference": 81,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 119,
+        "equal_mse": 0,
+        "higher_mse": 1
+      },
+      {
+        "horizon": 3,
+        "wins": 25,
+        "no_significant_difference": 95,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 119,
+        "equal_mse": 0,
+        "higher_mse": 1
+      },
+      {
+        "horizon": 4,
+        "wins": 21,
+        "no_significant_difference": 99,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 119,
+        "equal_mse": 0,
+        "higher_mse": 1
+      },
+      {
+        "horizon": 5,
+        "wins": 15,
+        "no_significant_difference": 105,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 114,
+        "equal_mse": 0,
+        "higher_mse": 6
+      },
+      {
+        "horizon": 6,
+        "wins": 11,
+        "no_significant_difference": 109,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 114,
+        "equal_mse": 0,
+        "higher_mse": 6
+      },
+      {
+        "horizon": 7,
+        "wins": 11,
+        "no_significant_difference": 109,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 120,
+        "lower_mse": 113,
+        "equal_mse": 0,
+        "higher_mse": 7
+      }
+    ],
+    "by_rival": [
+      {
+        "rival": "Lasso",
+        "wins": 20,
+        "no_significant_difference": 140,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 155,
+        "equal_mse": 0,
+        "higher_mse": 5
+      },
+      {
+        "rival": "Random Forest",
+        "wins": 38,
+        "no_significant_difference": 122,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 157,
+        "equal_mse": 0,
+        "higher_mse": 3
+      },
+      {
+        "rival": "Ridge",
+        "wins": 32,
+        "no_significant_difference": 128,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 159,
+        "equal_mse": 0,
+        "higher_mse": 1
+      },
+      {
+        "rival": "SVR Lineal",
+        "wins": 32,
+        "no_significant_difference": 128,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 158,
+        "equal_mse": 0,
+        "higher_mse": 2
+      },
+      {
+        "rival": "XGBoost",
+        "wins": 22,
+        "no_significant_difference": 138,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 148,
+        "equal_mse": 0,
+        "higher_mse": 12
+      },
+      {
+        "rival": "k-NN",
+        "wins": 57,
+        "no_significant_difference": 103,
+        "losses": 0,
+        "not_evaluable": 0,
+        "total": 160,
+        "lower_mse": 154,
+        "equal_mse": 0,
+        "higher_mse": 6
+      }
+    ],
+    "filters_won_against_all_six_rivals": 0
+  },
+  "macro_metrics": [
+    {
+      "version": "Original",
+      "symbol": "BNBUSDT",
+      "r2": 0.830806499517391,
+      "rmse": 0.401772577656821,
+      "mae": 0.290181814887618,
+      "mse": 0.229079846830011,
+      "mape": 13.749861049027912
+    },
+    {
+      "version": "Original",
+      "symbol": "BTCUSDT",
+      "r2": 0.741735511223539,
+      "rmse": 0.345069545300805,
+      "mae": 0.257067806094908,
+      "mse": 0.164273254405888,
+      "mape": 14.930498326295334
+    },
+    {
+      "version": "Original",
+      "symbol": "ETHUSDT",
+      "r2": 0.636264401559782,
+      "rmse": 0.668065696220331,
+      "mae": 0.452226973046005,
+      "mse": 0.600184566554049,
+      "mape": 14.040588858904316
+    },
+    {
+      "version": "Original",
+      "symbol": "XRPUSDT",
+      "r2": 0.743181852855145,
+      "rmse": 0.817765952289028,
+      "mae": 0.50279891628444,
+      "mse": 0.865186533240416,
+      "mape": 14.527941963891786
+    },
+    {
+      "version": "Original",
+      "symbol": "GLOBAL_MACRO",
+      "r2": 0.737997066288964,
+      "rmse": 0.558168442866746,
+      "mae": 0.375568877578243,
+      "mse": 0.464681050257591,
+      "mape": 14.312222549529835
+    },
+    {
+      "version": "Optimizada",
+      "symbol": "BNBUSDT",
+      "r2": 0.83845823283066,
+      "rmse": 0.392048144488973,
+      "mae": 0.281885956647039,
+      "mse": 0.218594452737878,
+      "mape": 13.216323086782918
+    },
+    {
+      "version": "Optimizada",
+      "symbol": "BTCUSDT",
+      "r2": 0.760447842955508,
+      "rmse": 0.332092276527881,
+      "mae": 0.244756918174644,
+      "mse": 0.152147509185701,
+      "mape": 14.110197740584868
+    },
+    {
+      "version": "Optimizada",
+      "symbol": "ETHUSDT",
+      "r2": 0.634652481041538,
+      "rmse": 0.669331012444651,
+      "mae": 0.445749015849478,
+      "mse": 0.607884331081516,
+      "mape": 13.693239496305264
+    },
+    {
+      "version": "Optimizada",
+      "symbol": "XRPUSDT",
+      "r2": 0.746402875347412,
+      "rmse": 0.806501510689452,
+      "mae": 0.460183810639449,
+      "mse": 0.858035559271817,
+      "mape": 12.581964162369758
+    },
+    {
+      "version": "Optimizada",
+      "symbol": "GLOBAL_MACRO",
+      "r2": 0.744990358043779,
+      "rmse": 0.549993236037739,
+      "mae": 0.358143925327652,
+      "mse": 0.459165463069228,
+      "mape": 13.4004311215107
+    }
+  ],
+  "all_har_comparisons_won": false,
+  "outcome_transitions": [
+    {
+      "outcome_baseline": "losses",
+      "outcome_optimized": "no_significant_difference",
+      "count": 3
+    },
+    {
+      "outcome_baseline": "no_significant_difference",
+      "outcome_optimized": "no_significant_difference",
+      "count": 684
+    },
+    {
+      "outcome_baseline": "no_significant_difference",
+      "outcome_optimized": "wins",
+      "count": 103
+    },
+    {
+      "outcome_baseline": "wins",
+      "outcome_optimized": "no_significant_difference",
+      "count": 72
+    },
+    {
+      "outcome_baseline": "wins",
+      "outcome_optimized": "wins",
+      "count": 98
+    }
+  ],
+  "source_sha256": {
+    "results/optimized_minute_knn_2023_2025/predictions.csv.gz": "c422cc4616c4a88816d42f8c7bc948afb840f20e410395ed062298925552a3df",
+    "results/optimized_minute_ridge_2023_2025/predictions.csv.gz": "a1c8658d60f4419b0584aa5d13632207b794bf607ea42232e366688b6efc6ac5",
+    "results/optimized_minute_lasso_2023_2025/predictions.csv.gz": "4347582a2b73b64e82eff48d8541a498eff8832af68d750d8983c7be1e3f5fc5",
+    "results/optimized_minute_randomforest_2023_2025/predictions.csv.gz": "f136ab5970e8fb3f4be2043c9049947268fe78255f963c3a6d333e2d0e8c9fc8",
+    "results/optimized_minute_xgboost_2023_2025/predictions.csv.gz": "e1dc9173f9f774472e49c43bc9620122c5009d62ee06096b7e9c67f679f0caf0",
+    "results/optimized_minute_2023_2025/predictions.csv.gz": "a4fe23a96a16aa49a5a7f9d314a9033d8af61d9554fb9a39d7406eb481ca1f81",
+    "results/improved_classical_2023_2025/predictions.csv.gz": "0beb533b255e98daf9aeb79abdfdb8b38f35d6c1a83163c28b1d37848bc20971",
+    "results/optimized_har_xgboost_2023_2025/predictions.csv.gz": "2af75a519e773e8de0f3f4b986690dc22ce913f2efe6ed539b89206cecd1659e",
+    "results/improved_classical_2023_2025/macro_metrics.csv": "df8f6cd305c924707fd5f02945e1cee2510f1d57bd3a66e7ca76b462efbe82aa",
+    "results/optimized_har_xgboost_2023_2025/macro_metrics.csv": "b01f0d560e345781e4bd9df70f0f2c16d42b71f1a5adbc5b154aa84034d6cde8",
+    "volatility_dashboard/diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585",
+    "src/report_optimized_har.py": "a74833bc491403a82832dfb30904a465ed291d1b2a4c3780b6b5bbbbad2dccfc"
+  }
+}

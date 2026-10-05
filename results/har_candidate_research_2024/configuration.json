@@ -1,0 +1,29 @@
+{
+  "last_available_day": "2024-12-31 00:00:00+00:00",
+  "validation_year": 2024,
+  "training": "2023 plus observed earlier 2024 labels; six purged expanding folds",
+  "objective": "absolute MSE across all seven horizons",
+  "alphas": [
+    1.0,
+    10.0,
+    100.0,
+    1000.0,
+    10000.0
+  ],
+  "candidate_selection": "2024 only; search scores include model-selection optimism",
+  "source_selection_sha256": "2b5c1bcd43e6a80eb97037f1159303af7d48df9485d5a3ca52d8ae860f7c74b6",
+  "xgb_variants": true,
+  "boosters": [
+    "source_relative",
+    "mse_relative",
+    "mse_decay",
+    "mse_shallow",
+    "level_correction"
+  ],
+  "ridge_modes": [
+    "relative",
+    "mse_relative",
+    "level",
+    "decay"
+  ]
+}

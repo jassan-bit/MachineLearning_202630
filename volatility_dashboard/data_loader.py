@@ -27,7 +27,7 @@ FAMILIES = {
     'Random Forest': 'optimized_minute_randomforest_2023_2025',
     'XGBoost': 'optimized_minute_xgboost_2023_2025',
     'SVR Lineal': 'optimized_minute_2023_2025',
-    'HAR-Ridge + XGBoost': 'improved_classical_2023_2025',
+    'HAR-Ridge + XGBoost': 'optimized_har_xgboost_2023_2025',
 }
 FEATURES = ['retorno_diario_relativo','retorno_cuadrado_relativo','volatilidad_minuto_relativa',
             'retorno_absoluto_minuto_relativo','volatilidad_negativa_relativa','max_retorno_minuto_relativo']
@@ -140,8 +140,12 @@ def repository():
                 X, y, base = arrays(symbol,lag,window)
                 models = [artifact['model']] if label != 'HAR-Ridge + XGBoost' else []
                 if label == 'HAR-Ridge + XGBoost':
-                    H, _, _ = har_features(panel[symbol], minute_summary(symbol), window)
-                    np.testing.assert_allclose(artifact['ridge_model'].named_steps['standardscaler'].mean_, H[train].mean(axis=0))
+                    if artifact.get('format_version') == 2:
+                        from optimize_har_xgboost import verify_training_components
+                        verify_training_components(artifact, panel[symbol], minute_summary(symbol), train)
+                    else:
+                        H, _, _ = har_features(panel[symbol], minute_summary(symbol), window)
+                        np.testing.assert_allclose(artifact['ridge_model'].named_steps['standardscaler'].mean_, H[train].mean(axis=0))
                 for model in models:
                     if hasattr(model,'named_steps') and 'standardscaler' in model.named_steps:
                         np.testing.assert_allclose(model.named_steps['standardscaler'].mean_,X[train].mean(axis=0))
@@ -213,6 +217,13 @@ def eda_frame(symbol, window, horizon):
 def hyperparameters(model, symbol, window):
     artifact = artifact_for(model, symbol, window)
     if model == 'HAR-Ridge + XGBoost':
+        if artifact.get('format_version') == 2:
+            return dict(input_window=artifact['input_window'],
+                        selection='MSE de validación temporal 2024; componentes y pesos independientes por horizonte',
+                        horizon_parameters=artifact['horizons'],
+                        components={key: {name: value for name, value in component.items() if name != 'model'}
+                                    for key, component in artifact['components'].items()},
+                        escalamiento='StandardScaler solo train en HAR-Ridge; XGBoost sin escalador')
         return dict(input_window=artifact['input_window'], alpha=artifact['alpha'],
                     ridge_weight=artifact['ridge_weight'], xgboost_weight=1-artifact['ridge_weight'],
                     escalamiento='StandardScaler solo train en HAR-Ridge; XGBoost sin escalador',
@@ -233,6 +244,17 @@ def hyperparameters(model, symbol, window):
 def importance(model, symbol, window, horizon):
     artifact = artifact_for(model, symbol, window)
     if model == 'HAR-Ridge + XGBoost':
+        if artifact.get('format_version') == 2:
+            from optimize_har_xgboost import feature_names as optimized_feature_names
+            choice = artifact['horizons'][horizon-1]
+            component = artifact['components'][choice['ridge_key']]
+            names = optimized_feature_names(component['feature_set'])
+            values = component['model'].named_steps['ridge'].coef_[horizon-1]
+            frame = pd.DataFrame({'feature': names, 'importance': values})
+            description = (f'Coeficientes del componente HAR-Ridge estandarizado del horizonte {horizon}; '
+                           f'peso {choice["ridge_weight"]:.3f}, objetivo {component["mode"]}. '
+                           'No representan la importancia del conjunto combinado')
+            return frame.reindex(frame.importance.abs().sort_values(ascending=False).index).head(15), description
         names = []
         for span in [1,3,7,14,28]:
             names.extend([f'{name}_media_{span}d' for name in

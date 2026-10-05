@@ -1,0 +1,64 @@
+{
+  "model": "HAR_Ridge_XGBoost",
+  "format_version": 2,
+  "horizon_days": 7,
+  "objective": "Independent horizon MSE on six purged expanding 2024 validation blocks",
+  "selection": "Select component pair and convex weight per horizon from 2024 forecasts only",
+  "research_configuration": {
+    "last_available_day": "2024-12-31 00:00:00+00:00",
+    "validation_year": 2024,
+    "training": "2023 plus observed earlier 2024 labels; six purged expanding folds",
+    "objective": "absolute MSE across all seven horizons",
+    "alphas": [
+      1.0,
+      10.0,
+      100.0,
+      1000.0,
+      10000.0
+    ],
+    "candidate_selection": "2024 only; search scores include model-selection optimism",
+    "source_selection_sha256": "2b5c1bcd43e6a80eb97037f1159303af7d48df9485d5a3ca52d8ae860f7c74b6",
+    "xgb_variants": true,
+    "boosters": [
+      "source_relative",
+      "mse_relative",
+      "mse_decay",
+      "mse_shallow",
+      "level_correction"
+    ],
+    "ridge_modes": [
+      "relative",
+      "mse_relative",
+      "level",
+      "decay"
+    ]
+  },
+  "code_sha256": {
+    "optimize_har_xgboost.py": "6997423971fec8527e839864e0e356d89502d6faf2387d81ff663557a6595be7",
+    "research_har_candidates.py": "3cf7b4d541cd8d371442758d24a025ae81a9e41eea28091ed7e3bb234060ba35"
+  },
+  "oof_sha256": {
+    "BTCUSDT_v7.npz": "9abe248d75eac02d25d14a1f04b587d2d35bf78b099c6ea87d0f847be708b5ed",
+    "BTCUSDT_v14.npz": "47a74e5587f9baaa84b5d03a3d189dc18965fc14ec9b10a3a0a85b97d13c0d27",
+    "BTCUSDT_v21.npz": "2364f75561835330dd750d1c362390ef7cc1ca134a305fd8df7ffa9f0ec4a013",
+    "BTCUSDT_v28.npz": "c2ecba8578b456851ad671efea49fd4a75c4fc314d6fc1f476cd216fbc2c7f8e",
+    "ETHUSDT_v7.npz": "1ead0d24b2b1ba5f7ee2386cf676ab5bd975287cd76fd5435c799c349e5aab06",
+    "ETHUSDT_v14.npz": "cf0b31a15cb23f00973995ff381baa23494b34246fa3c945b3e343f240f06e41",
+    "ETHUSDT_v21.npz": "5435f608c95122202d046ac2aa8c41f255e08460bfc1f827171db3beaf7435a5",
+    "ETHUSDT_v28.npz": "a02de9eeb1d0e12e9e72fd6e0b028490975295b4398a760f8669508f9c9138e4",
+    "BNBUSDT_v7.npz": "d321fdba9e6f1c5816a051f5cffce627ef6dc43a9b9b355e1e3aff1858a6c9ac",
+    "BNBUSDT_v14.npz": "063ead8228f5ddc1d7fbb9dbb3f4717586ae6d01e7784bb0d57fb6452260aa54",
+    "BNBUSDT_v21.npz": "4d370560726a6012230eddd992e64f5e67900ed3590d96234ac88024d8eceeb4",
+    "BNBUSDT_v28.npz": "58c04db3b8bad867d75bdf32ef67d84dcb5eff45733b27ef82217678d132b15b",
+    "XRPUSDT_v7.npz": "aaec6347fce41f7dc339dcfebee1d86255810723cf6304b2de8ebcdd08502adb",
+    "XRPUSDT_v14.npz": "3d195c6eadd7821bf15a3c7316259fc0f6d3303a76bbcdf0b18e54805f770107",
+    "XRPUSDT_v21.npz": "7c4c183f1e93f59d0283bc90a0ae90a0e9836f2a6beabf70ea5751f5c9e3f28d",
+    "XRPUSDT_v28.npz": "d4d6c8d6c1eea2c3682834c8a927ceb0f63e0ec3bbe3cafee86b7ba1d34ec6bd"
+  },
+  "source_choices_sha256": "2b5c1bcd43e6a80eb97037f1159303af7d48df9485d5a3ca52d8ae860f7c74b6",
+  "final_fit": "All eligible labels ending before 2025; static models throughout 2025",
+  "target": "Rolling population volatility of daily percentage log returns; seven future horizons",
+  "warning": "2024 reused for tuning; 2025 already inspected: retrospective evaluation, not an untouched test",
+  "dm": "Existing bilateral DM, HLN, Bartlett HAC and Holm over 21 pairs per filter are unchanged",
+  "uncertainty": "No guarantee of significant superiority; no correction for exploration across 160 overlapping filters"
+}
