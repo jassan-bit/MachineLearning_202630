@@ -134,7 +134,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             table(dm_results) if not dm_results.empty else html.P('Selecciona al menos dos modelos.'),
             html.A('Referencia metodológica',href='https://pkg.robjhyndman.com/forecast/reference/dm.test.html',target='_blank')],className='panel'),
         html.Div(figures,className='grid-three'),
-        graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}. SOL no tiene resultados y no participa en el promedio.'),
+        graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}.'),
         html.Section([html.H3('Comparación global por activo'),table(pivot.reset_index())],className='panel'),
         graph_card('Error por horizonte',horizon_fig,hnote+'. Promedios homogéneos para la ventana seleccionada.'),
         html.H3(f'Diagnóstico individual · {focus} · {focused_asset} · h={focused_h}'),

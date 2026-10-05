@@ -200,7 +200,7 @@ servidor con el codigo actualizado y recargar con Ctrl+F5. El dashboard carga
 los recursos JavaScript de Plotly y las tablas desde la pagina inicial, y
 reserva altura para las graficas. En Render, volver a desplegar estos cambios.
 
-El loader audita hashes, fechas, objetivos, calendario, medias del scaler y predicciones serializadas. Las inconsistencias se excluyen con su motivo. BTC, ETH, BNB y XRP estan disponibles; SOL no tiene datos comparables.
+El loader audita hashes, fechas, objetivos, calendario, medias del scaler y predicciones serializadas. Las inconsistencias se excluyen con su motivo. Las tarjetas y los filtros muestran los activos del dataset analizado: BTC, ETH, BNB y XRP.
 
 Informe detallado: book/sections/10_dashboard_comparativo.md. No hay volumen procesado, pruebas residuales alineadas ni tiempos separados completos. MAPE no se incluye automaticamente. Las importancias de k-NN son diagnosticos descriptivos por grupos de lags, sin tuning.
 
