@@ -1,10 +1,13 @@
 """Run with python -m volatility_dashboard.app; no experiment is trained."""
 from pathlib import Path
+import logging
 import os
 from dash import Dash, Input, Output, dcc, html
 from flask import send_from_directory
 from .data_loader import ROOT, repository
 from .tabs import contexto, eda, modelos
+
+LOGGER = logging.getLogger(__name__)
 
 
 def create_app():
@@ -21,8 +24,9 @@ def create_app():
     def render_tab(tab):
         try:
             return {'contexto':contexto.layout,'eda':eda.layout,'modelos':modelos.layout}[tab]()
-        except (OSError,ValueError,KeyError) as exc:
-            return html.Div([html.H2('Datos no disponibles'),html.P(str(exc))],className='notice')
+        except (OSError,ValueError,KeyError,IndexError,TypeError):
+            LOGGER.exception('No se pudo cargar la pestaña %s.', tab)
+            return html.Div([html.H2('Datos no disponibles'),html.P('Vuelve a seleccionar la pestaña para intentarlo de nuevo.')],className='notice')
 
     eda.register(app)
     modelos.register(app)

@@ -1,4 +1,5 @@
 import json
+import logging
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -9,21 +10,24 @@ from ..metrics import aggregate
 from ..diebold_mariano import comparisons
 from ..utils import COLORS, METRICS, graph_card, table, acf_figure
 
+LOGGER = logging.getLogger(__name__)
+
 
 def layout():
-    available = repository()[0].model.unique().tolist()
+    available = list(FAMILIES)
+    assets = list(dataset().columns)
     return html.Div([
         html.H2('Comparación de modelos'),html.P('Test común: 1 enero–24 diciembre de 2025. RMSE y MAE en puntos porcentuales de volatilidad. R² sin ajustar. No se combinan métricas en un score.'),
         html.Div([
-            html.Div([html.Label('Activo del ranking'),dcc.Dropdown(['TODOS']+list(dataset().columns),'TODOS',id='models-symbol',clearable=False)]),
+            html.Div([html.Label('Activo del ranking'),dcc.Dropdown(['TODOS']+assets,'TODOS',id='models-symbol',clearable=False)]),
             html.Div([html.Label('Ventana del objetivo (días)'),dcc.Dropdown([7,14,21,28],7,id='models-window',clearable=False)]),
             html.Div([html.Label('Horizonte del ranking'),dcc.Dropdown([{'label':'Promedio de los 7 horizontes','value':'TODOS'}]+[{'label':f'Día {h}','value':h} for h in range(1,8)],'TODOS',id='models-horizon',clearable=False)]),
             html.Div([html.Label('Modelos comparados'),dcc.Dropdown(available,available,multi=True,id='models-selected')]),
             html.Div([html.Label('Métrica para ordenar'),dcc.Dropdown([{'label':v,'value':k} for k,v in METRICS.items()],'rmse',id='models-metric',clearable=False)]),
             html.Div([html.Label('Modelo para diagnóstico'),dcc.Dropdown(available,'XGBoost' if 'XGBoost' in available else available[0],id='models-focus',clearable=False)]),
-            html.Div([html.Label('Activo para diagnóstico individual'),dcc.Dropdown(list(dataset().columns),'BTCUSDT',id='models-asset',clearable=False)]),
+            html.Div([html.Label('Activo para diagnóstico individual'),dcc.Dropdown(assets,'BTCUSDT',id='models-asset',clearable=False)]),
             html.Div([html.Label('Horizonte para diagnóstico individual'),dcc.Dropdown(list(range(1,8)),1,id='models-detail-h',clearable=False)])],className='filters'),
-        dcc.Loading(html.Div(id='models-content'),type='circle')])
+        dcc.Loading(html.Div(html.P('Cargando resultados de los modelos…',className='notice'),id='models-content'),type='circle')])
 
 
 def numeric_note(frame,metric):
@@ -39,6 +43,16 @@ def numeric_note(frame,metric):
 
 
 def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
+    try:
+        return _render(symbol,window,horizon,models,metric,focus,asset,detail_h)
+    except (OSError,ValueError,KeyError,IndexError,TypeError):
+        LOGGER.exception('No se pudo cargar la comparación de modelos.')
+        return html.Div([
+            html.H3('No se pudo cargar la comparación'),
+            html.P('Vuelve a seleccionar la pestaña o cambia los filtros para intentarlo de nuevo.')],className='notice')
+
+
+def _render(symbol,window,horizon,models,metric,focus,asset,detail_h):
     predictions, all_metrics, audit = repository()
     if not models:
         return html.P('Selecciona al menos un modelo.',className='notice')

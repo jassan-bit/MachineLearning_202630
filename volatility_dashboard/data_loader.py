@@ -14,12 +14,15 @@ from threadpoolctl import threadpool_limits
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT/'src') not in sys.path:
     sys.path.insert(0, str(ROOT/'src'))
-from optimize_minute_svr import load_panel, calendars, minute_features, features, predict
+from optimize_minute_svr import load_panel, minute_features, features, predict
 from volatility_experiment import targets
 from improve_classical_forecast import har_features, predict_bundle
+from .calendar import saved_calendar
 from .metrics import metric_table
+from .runtime_audit import read_audit, check_forecast
 
 DATA = ROOT/'data/processed/minute_2023_2025'
+RUNTIME_AUDIT = ROOT/'dashboard_data/comparative_audit.json'
 FAMILIES = {
     'k-NN': 'optimized_minute_knn_2023_2025',
     'Ridge': 'optimized_minute_ridge_2023_2025',
@@ -72,11 +75,15 @@ def dataset():
 
 @lru_cache(maxsize=1)
 def temporal_calendar():
-    return calendars(dataset())
+    return saved_calendar(dataset(), ROOT/'results/optimized_minute_2023_2025')
 
 
 @serialized_cache
-def repository():
+def repository(verify_models=False):
+    # Publication runs the full replay once. Serving verifies the exact audited
+    # files and parsed forecasts, rather than replaying 112 models per worker.
+    runtime_audit = (None if verify_models
+                     else read_audit(ROOT, RUNTIME_AUDIT, FAMILIES))
     frames, audit = [], []
     panel = dataset()
     folds, eligible, native_audit = temporal_calendar()
@@ -115,6 +122,8 @@ def repository():
                 raise ValueError('Predicciones duplicadas.')
             if not np.isfinite(frame[['actual','forecast']]).all().all():
                 raise ValueError('Predicciones u objetivos no finitos.')
+            if runtime_audit is not None:
+                check_forecast(frame, label, runtime_audit)
             indexed = frame.set_index(KEYS).sort_index()
             if not indexed.index.equals(expected_keys):
                 raise ValueError('El test no contiene exactamente las observaciones elegibles del calendario común.')
@@ -133,6 +142,8 @@ def repository():
                 for h, rows in group.groupby('horizon'):
                     y = expected.shift(-int(h)).reindex(pd.to_datetime(rows.origin, utc=True))
                     np.testing.assert_allclose(y, rows.actual, rtol=1e-10)
+                if runtime_audit is not None:
+                    continue
                 artifact = artifact_for(label, symbol, window)
                 if pd.Timestamp(artifact['fitted_through']) >= pd.Timestamp('2025-01-01', tz='UTC'):
                     raise ValueError('El entrenamiento final incluye etiquetas de test.')

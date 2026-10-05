@@ -200,10 +200,30 @@ servidor con el codigo actualizado y recargar con Ctrl+F5. El dashboard carga
 los recursos JavaScript de Plotly y las tablas desde la pagina inicial, y
 reserva altura para las graficas. En Render, volver a desplegar estos cambios.
 
-El loader audita hashes, fechas, objetivos, calendario, medias del scaler y predicciones serializadas. Las inconsistencias se excluyen con su motivo. BTC, ETH, BNB y XRP estan disponibles; SOL no tiene datos comparables.
+La auditoría previa comprueba hashes, fechas, objetivos, calendario, medias del scaler y predicciones serializadas. El dashboard verifica los archivos y las predicciones contra esa auditoría y mantiene los controles de comparabilidad. BTC, ETH, BNB y XRP estan disponibles; SOL no tiene datos comparables.
 
 Informe detallado: book/sections/10_dashboard_comparativo.md. No hay volumen procesado, pruebas residuales alineadas ni tiempos separados completos. MAPE no se incluye automaticamente. Las importancias de k-NN son diagnosticos descriptivos por grupos de lags, sin tuning.
 
 Validar:
 
     .\.venv-repro\Scripts\python.exe -m unittest discover -s tests -p test_comparative_dashboard.py
+
+
+## Carga de Render con los modelos originales
+
+Antes de publicar, ejecutar `python src/build_dashboard_audit.py`. Este comando
+reproduce los 112 artefactos originales, sin entrenar ni modificar predicciones,
+y escribe `dashboard_data/comparative_audit.json`. Publicar este archivo junto
+con el código y los resultados. Comprobarlo con
+`python src/build_dashboard_audit.py --check` desde el directorio que se publica.
+
+La web verifica los hashes de datos, modelos, fuentes y resultados, además del
+contenido numérico de las predicciones, las fechas y los objetivos. Reutiliza
+los seis cortes temporales guardados y evita reconstruir cientos de matrices
+nativas o volver a predecir con todos los modelos durante la primera petición.
+La auditoría completa sigue disponible mediante el comando de publicación.
+Si cambian sus archivos fuente, regenerar el manifiesto antes de desplegar.
+
+HAR-Ridge + XGBoost conserva `results/improved_classical_2023_2025/`, sus
+predicciones y la prueba Diebold–Mariano original: MSE 1.186401 en
+TODOS / ventana 7 / TODOS. Las pruebas y el ajuste Holm conservan su protocolo.
