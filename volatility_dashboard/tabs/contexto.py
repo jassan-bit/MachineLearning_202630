@@ -29,17 +29,7 @@ def layout():
     fig.update_yaxes(autorange='reversed')
     fold_rows = [dict(fold=i,train_n=len(tr),train_inicio=str(panel.index[tr.min()].date()),train_fin=str(panel.index[tr.max()].date()),
         ultima_etiqueta_train=str(panel.index[tr.max()+7].date()),validation_n=len(va),validation_inicio=str(panel.index[va.min()].date()),validation_fin=str(panel.index[va.max()].date())) for i,(tr,va) in enumerate(folds,1)]
-    cards = [html.Div([html.Strong(symbol.replace('USDT','')),html.P('Disponible · fuente Binance 1 min')],className='stat-card') for symbol in panel.columns]
-    har_family = FAMILIES['HAR-Ridge + XGBoost']
-    har_macro = pd.read_csv(ROOT/'results'/har_family/'macro_metrics.csv').query("symbol == 'GLOBAL_MACRO'")
-    har_rmse = float(har_macro.loc[har_macro.model == 'HAR_Ridge_XGBoost', 'rmse'].iloc[0])
-    reference_rmse = float(har_macro.loc[har_macro.model == 'XGBoost_reference', 'rmse'].iloc[0])
-    relative_change = 100*(har_rmse/reference_rmse-1)
-    har_note = (f'Promedios macro de 2025 sobre BTC, ETH, BNB y XRP y cuatro ventanas. '
-                f'Diferencia relativa de RMSE frente a XGBoost: {relative_change:+.2f} %; un valor negativo indica menor error. '
-                'Evaluación retrospectiva. La pestaña Comparación de modelos incluye los siete métodos y las pruebas de Diebold–Mariano por filtro.')
-    if har_family == 'optimized_har_xgboost_2023_2025':
-        har_note += ' La versión optimizada selecciona componentes y pesos por horizonte usando MSE de validación temporal de 2024.'
+    cards = [html.Div([html.Strong(symbol.replace('USDT','')),html.P('Disponible · fuente Binance 1 min' if symbol in panel else 'No disponible en el dataset y test comparables')],className='stat-card' if symbol in panel else 'stat-card unavailable') for symbol in ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT']]
     return html.Div([
         html.Div([html.Span('REGRESIÓN · ESTUDIO 2023–2025',className='eyebrow'),html.H2('Estimar el riesgo futuro con información histórica'),
             html.P('Se estiman siete volatilidades diarias futuras usando cierres y retornos observados hasta cada origen. Los resultados son retrospectivos: 2025 ya se había examinado.')],className='hero'),
@@ -56,13 +46,12 @@ def layout():
         html.Div([html.Div([html.H4(model),html.P(description)],className='stat-card') for model,description in DESCRIPTIONS.items()],className='cards'),
         html.Section([html.H3('Mejora propuesta: HAR-Ridge + XGBoost'),
             html.P('Se conservan los seis modelos anteriores. XGBoost se presenta como modelo individual; HAR-Ridge + XGBoost es un nuevo modelo propuesto que combina árboles con una regresión regularizada de resúmenes de volatilidad.'),
-            table(har_macro[['model','r2','rmse','mae']]
+            table(pd.read_csv(ROOT/'results/improved_classical_2023_2025/macro_metrics.csv')
+                  .query("symbol == 'GLOBAL_MACRO'")[['model','r2','rmse','mae']]
                   .replace({'model': {'HAR_Ridge_XGBoost': 'HAR-Ridge + XGBoost (mejora propuesta)',
                                       'XGBoost_reference': 'XGBoost (modelo individual)',
                                       'Persistence': 'Persistencia'}})),
-            html.P(har_note),
-            html.A('Evaluación completa de los 160 filtros: antes y después',href='/har-optimization/index.html',className='button')
-                if har_family == 'optimized_har_xgboost_2023_2025' else None],className='panel'),
+            html.P('Promedios macro de 2025 sobre BTC, ETH, BNB y XRP y cuatro ventanas. El RMSE mejora un 3.73 % frente a XGBoost individual. La mejora no ocurre en todas las métricas: XRP tiene un MAE ligeramente mayor. Evaluación retrospectiva, sin prueba de significancia estadística La pestaña Comparación de modelos incluye los siete métodos con filtros comunes.')],className='panel'),
         html.Details([html.Summary('Auditoría de comparabilidad y archivos fuente'),table(audit),html.P('Solo se comparan resultados con las mismas claves activo/ventana/origen/horizonte y el mismo y real. Selecciones verificadas por hash; se comprueban fechas de ajuste y los objetivos contra el dataset.'),
             html.P('Se conservan seis modelos clásicos y se añade HAR-Ridge + XGBoost como mejora propuesta, sin redes neuronales. El ranking es descriptivo, no una prueba de superioridad estadística.')],className='panel'),
         html.A('Leer capítulo del Jupyter Book (Markdown)',href='/book-report',className='button')])

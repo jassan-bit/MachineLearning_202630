@@ -2,7 +2,7 @@
 from pathlib import Path
 import os
 from dash import Dash, Input, Output, dcc, html
-from flask import abort, send_from_directory
+from flask import send_from_directory
 from .data_loader import ROOT, repository
 from .tabs import contexto, eda, modelos
 
@@ -15,7 +15,7 @@ def create_app():
         html.Header([html.Div('ML / VOLATILIDAD',className='brand'),html.H1('Predicción de la volatilidad futura de criptomonedas mediante Machine Learning'),html.P('Binance · cierres de 1 minuto · seis modelos clásicos + mejora HAR-Ridge y XGBoost · evaluación temporal retrospectiva')],className='site-header'),
         dcc.Tabs(id='main-tabs',value='contexto',children=[dcc.Tab(label='1 · Contexto del problema',value='contexto'),dcc.Tab(label='2 · EDA',value='eda'),dcc.Tab(label='3 · Comparación de modelos',value='modelos')]),
         html.Main(dcc.Loading(html.Div(id='tab-content'),type='circle'),className='main-content'),
-        html.Footer([html.Div('By Jassan Arteta y Mateo Bernal'),html.Div('© Copyright 2026.')])])
+        html.Footer('Resultados locales verificados · Unidades y protocolos explícitos · Sin entrenamiento desde el dashboard')])
 
     @app.callback(Output('tab-content','children'),Input('main-tabs','value'))
     def render_tab(tab):
@@ -34,12 +34,6 @@ def create_app():
     @app.server.route('/book-report')
     def book_report():
         return send_from_directory(str(ROOT/'book/sections'),'10_dashboard_comparativo.md',as_attachment=False,mimetype='text/plain; charset=utf-8')
-
-    @app.server.route('/har-optimization/<filename>')
-    def har_optimization(filename):
-        if filename not in {'index.html', 'dm_comparisons.csv', 'dm_baseline_comparisons.csv', 'dm_summary.json'}:
-            abort(404)
-        return send_from_directory(str(ROOT/'results/optimized_har_xgboost_2023_2025'),filename)
 
     return app
 

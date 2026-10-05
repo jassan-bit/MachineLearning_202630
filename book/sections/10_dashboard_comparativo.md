@@ -12,10 +12,10 @@ utiliza etiquetas anteriores a 2025.
 | --- | ---: | ---: | ---: |
 | Persistencia | 0.5377 | 0.74770 | 0.49719 |
 | XGBoost | 0.7155 | 0.57976 | 0.38864 |
-| HAR-Ridge + XGBoost (optimizado por horizonte) | 0.7450 | 0.54999 | 0.35814 |
+| HAR-Ridge + XGBoost | 0.7380 | 0.55817 | 0.37557 |
 
 Los valores promedian cuatro activos y cuatro ventanas. El RMSE macro
-mejora un 5.14 % frente a XGBoost. La evaluación de 2025 es retrospectiva;
+mejora un 3.73 % frente a XGBoost. La evaluación de 2025 es retrospectiva;
 no constituye un test independiente nuevo. Las tablas por ventana más
 abajo documentan los seis modelos originales.
 
@@ -23,36 +23,6 @@ La pestaña de comparación también incluye pruebas de Diebold–Mariano
 sobre errores diarios alineados, con varianza HAC Bartlett, corrección
 Harvey–Leybourne–Newbold y ajuste Holm dentro de cada selección.
 No rechazar igualdad de pérdida no demuestra equivalencia.
-
-### Optimización por horizonte del 5 de octubre de 2026
-
-La selección usa exclusivamente seis bloques expansivos de validación de
-2024, con purga de etiquetas de siete días. Se comparan cinco variantes
-XGBoost y veinte variantes HAR-Ridge; cada horizonte selecciona sus
-componentes, penalización y peso convexo por MSE en unidades originales.
-Se incluyen ponderación por el cuadrado de la volatilidad actual, HAR en
-niveles y correcciones del decaimiento conocido de la ventana. Los modelos
-y la selección se congelan por SHA-256 antes de evaluar 2025.
-
-En los 160 filtros (960 comparaciones de HAR), las victorias significativas
-con Holm pasan de **170 a 201**, los resultados sin diferencia significativa
-de **787 a 759** y las derrotas de **3 a 0**. El MSE es menor al del rival en
-931 de las 960 comparaciones, frente a 911 originalmente. **No se consigue
-ganar en todos los filtros**: ninguna de las 160 selecciones gana a los seis
-rivales a la vez. En TODOS/ventana 7/TODOS, las victorias pasan de 3 a 1,
-aunque el MSE baja de 1.186401 a 1.173496.
-
-El RMSE macro baja de 0.55817 a 0.54999 (1.46 %) y el MAE de 0.37557 a
-0.35814 (4.64 %). Estas medias no implican mejoras en cada activo, ventana
-y horizonte. Holm conserva los 21 pares de cada selección; los 160 filtros
-comparten observaciones y no se corrige conjuntamente su exploración.
-2024 fue reutilizado y 2025 ya se había examinado: la evaluación es
-retrospectiva y no confirma superioridad en un test nuevo independiente.
-
-El informe completo antes/después está en
-`results/optimized_har_xgboost_2023_2025/index.html`, junto a los dos CSV
-de 3360 comparaciones y `dm_summary.json`. La versión original se conserva
-en `results/improved_classical_2023_2025/`.
 
 GitHub Pages publica este informe estático. Para usar los filtros y las
 gráficas del dashboard, ejecutar la aplicación Python indicada abajo o
@@ -68,7 +38,7 @@ Abrir <http://127.0.0.1:8050/>. Contiene exactamente tres pestañas: contexto, E
 
 La fuente principal es data/processed/minute_2023_2025/daily_target_closes.csv: 1.096 fechas UTC de 2023–2025 y cierres diarios de BTCUSDT, ETHUSDT, BNBUSDT y XRPUSDT. Los archivos .npy de la misma carpeta conservan cierres por minuto. Los hashes se verifican contra results/minute_2023_2025/data_manifest.json.
 
-Las tarjetas y filtros incluyen BTC, ETH, BNB y XRP, los cuatro activos analizados. El dataset procesado no contiene volumen relativo ni rangos OHLC; esas variables no se incluyen en las características ni en el EDA.
+SOLUSDT no forma parte de este dataset ni del test comparable. Se muestra como no disponible. El dataset procesado no contiene volumen relativo ni rangos OHLC; esas variables no se incluyen en las características ni en el EDA.
 
 ## Preprocesamiento y objetivo
 
@@ -85,7 +55,7 @@ La ventana incluye el retorno actual y utiliza ddof=0. El objetivo es \(y_{t,h}=
 
 Para cada uno de los L días de entrada se incorporan seis características: retorno diario, retorno diario al cuadrado y cuatro resúmenes de retornos por minuto (raíz de suma de cuadrados, suma de absolutos dividida por raíz de 1.440, semivolatilidad negativa y máximo absoluto). Se normalizan por la volatilidad actual o su cuadrado. Siete características adicionales representan la salida conocida de retornos antiguos de la ventana.
 
-La dimensión de las entradas originales de XGBoost y los seis modelos clásicos es 6L+7. HAR-Ridge utiliza 44 características relativas o 52 características en niveles, según el componente seleccionado por horizonte. Estas son características derivadas de cierres, no ventanas crudas de precios.
+La dimensión es 6L+7. Estas son características derivadas de cierres, no ventanas crudas de precios. El dashboard no altera esta metodología.
 
 ## Protocolo temporal y entrenamiento
 
@@ -95,7 +65,7 @@ El ajuste final utiliza orígenes elegibles con todas sus etiquetas anteriores a
 
 El escalador se ajusta exclusivamente con train por fold y con train final para los artefactos de test. Random Forest y XGBoost no utilizan un escalador ajustado. La aplicación comprueba las medias del escalador contra las características de entrenamiento.
 
-Los seis modelos clásicos aprenden correcciones relativas a la volatilidad actual. HAR-Ridge + XGBoost también permite ajustes en niveles y correcciones del decaimiento conocido. Todas las predicciones se reconstruyen en unidades originales y se limitan inferiormente a cero.
+Los modelos aprenden correcciones relativas a la volatilidad actual. La predicción se reconstruye en unidades originales y se limita inferiormente a cero.
 
 ## Archivos de resultados utilizados
 
@@ -107,7 +77,6 @@ Los seis modelos clásicos aprenden correcciones relativas a la volatilidad actu
 | Random Forest | optimized_minute_randomforest_2023_2025 |
 | XGBoost | optimized_minute_xgboost_2023_2025 |
 | SVR Lineal | optimized_minute_2023_2025 |
-| HAR-Ridge + XGBoost | optimized_har_xgboost_2023_2025 |
 
 Se leen predicciones, selecciones, configuraciones, auditorías temporales, verificaciones y artefactos ya entrenados. Los nombres knn y svr se normalizan a forecast exclusivamente en memoria. Los archivos fuente permanecen intactos.
 

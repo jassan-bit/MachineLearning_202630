@@ -124,7 +124,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             if path.exists():
                 saved = read_json(path)
                 if 'seconds' in saved:
-                    times.append(dict(model=model,segundos_guardados=saved['seconds'],alcance=saved.get('timing_scope','Ejecución completa; no separa entrenamiento/predicción'),fuente=str(path.relative_to(ROOT))))
+                    times.append(dict(model=model,segundos_guardados=saved['seconds'],alcance='Ejecución completa; no separa entrenamiento/predicción',fuente=str(path.relative_to(ROOT))))
                     break
     return html.Div([
         html.Section([html.H3('Tabla general · mismo test'),html.P(f'Activo: {symbol}; ventana del objetivo: {window}; horizonte: {horizon}. Cuando se elige TODOS, las métricas son promedios de métricas por horizonte y activo, no métricas sobre objetivos concatenados.'),table(view),html.H3('Ranking por '+METRICS[metric]),table(ranking),html.P(numeric_note(global_view,metric),className='interpretation')],className='panel'),
@@ -134,7 +134,7 @@ def render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             table(dm_results) if not dm_results.empty else html.P('Selecciona al menos dos modelos.'),
             html.A('Referencia metodológica',href='https://pkg.robjhyndman.com/forecast/reference/dm.test.html',target='_blank')],className='panel'),
         html.Div(figures,className='grid-three'),
-        graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}.'),
+        graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}. SOL no tiene resultados y no participa en el promedio.'),
         html.Section([html.H3('Comparación global por activo'),table(pivot.reset_index())],className='panel'),
         graph_card('Error por horizonte',horizon_fig,hnote+'. Promedios homogéneos para la ventana seleccionada.'),
         html.H3(f'Diagnóstico individual · {focus} · {focused_asset} · h={focused_h}'),

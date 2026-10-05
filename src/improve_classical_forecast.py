@@ -67,9 +67,6 @@ def choose_blend(actual, boosted, ridge_predictions):
 
 def predict_bundle(bundle, close, minutes, origins):
     """Rebuild causal features and reproduce exported forecasts."""
-    if bundle.get('format_version') == 2:
-        from optimize_har_xgboost import predict_optimized_bundle
-        return predict_optimized_bundle(bundle, close, minutes, origins)
     X, _, base = features(close, minutes, bundle['input_window'], bundle['volatility_window'])
     H, _, _ = har_features(close, minutes, bundle['volatility_window'])
     if not np.isfinite(X[origins]).all() or not np.isfinite(H[origins]).all():
