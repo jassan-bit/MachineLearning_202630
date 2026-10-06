@@ -29,7 +29,7 @@ def layout():
     fig.update_yaxes(autorange='reversed')
     fold_rows = [dict(fold=i,train_n=len(tr),train_inicio=str(panel.index[tr.min()].date()),train_fin=str(panel.index[tr.max()].date()),
         ultima_etiqueta_train=str(panel.index[tr.max()+7].date()),validation_n=len(va),validation_inicio=str(panel.index[va.min()].date()),validation_fin=str(panel.index[va.max()].date())) for i,(tr,va) in enumerate(folds,1)]
-    cards = [html.Div([html.Strong(symbol.replace('USDT','')),html.P('Disponible · fuente Binance 1 min' if symbol in panel else 'No disponible en el dataset y test comparables')],className='stat-card' if symbol in panel else 'stat-card unavailable') for symbol in ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT']]
+    cards = [html.Div([html.Strong(symbol.replace('USDT','')),html.P('Disponible · fuente Binance 1 min')],className='stat-card') for symbol in panel.columns]
     return html.Div([
         html.Div([html.Span('REGRESIÓN · ESTUDIO 2023–2025',className='eyebrow'),html.H2('Estimar el riesgo futuro con información histórica'),
             html.P('Se estiman siete volatilidades diarias futuras usando cierres y retornos observados hasta cada origen. Los resultados son retrospectivos: 2025 ya se había examinado.')],className='hero'),

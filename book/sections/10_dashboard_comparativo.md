@@ -38,7 +38,7 @@ Abrir <http://127.0.0.1:8050/>. Contiene exactamente tres pestañas: contexto, E
 
 La fuente principal es data/processed/minute_2023_2025/daily_target_closes.csv: 1.096 fechas UTC de 2023–2025 y cierres diarios de BTCUSDT, ETHUSDT, BNBUSDT y XRPUSDT. Los archivos .npy de la misma carpeta conservan cierres por minuto. Los hashes se verifican contra results/minute_2023_2025/data_manifest.json.
 
-SOLUSDT no forma parte de este dataset ni del test comparable. Se muestra como no disponible. El dataset procesado no contiene volumen relativo ni rangos OHLC; esas variables no se incluyen en las características ni en el EDA.
+El dashboard muestra BTC, ETH, BNB y XRP, los cuatro activos del dataset y del test comparable. El dataset procesado no contiene volumen relativo ni rangos OHLC; esas variables no se incluyen en las características ni en el EDA.
 
 ## Preprocesamiento y objetivo
 
@@ -120,7 +120,7 @@ La validación de 2024 se reutilizó durante varias mejoras y 2025 ya se examin�
 
 La igualdad del test permite una comparación descriptiva sobre las mismas observaciones. No iguala los presupuestos de tuning ni demuestra diferencias estadísticamente significativas. Las interpretaciones automáticas describen cifras observadas y evitan conclusiones causales.
 
-No hay SOL, volumen procesado, pruebas residuales alineadas completas ni tiempos separados de entrenamiento/predicción para todas las variantes. Los tiempos globales existentes se etiquetan con su alcance y no se usan como ranking de velocidad.
+No hay volumen procesado, pruebas residuales alineadas completas ni tiempos separados de entrenamiento/predicción para todas las variantes. Los tiempos globales existentes se etiquetan con su alcance y no se usan como ranking de velocidad.
 
 La aplicación reutiliza los resultados y mantiene intactos los experimentos. El informe detallado previo se conserva en el Book; esta sección documenta la integración comparativa.
 
