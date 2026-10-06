@@ -1,0 +1,124 @@
+{
+  "status": "passed",
+  "input_artifacts_unchanged": true,
+  "inputs_fingerprinted": 17,
+  "previous_open_reports_unchanged": true,
+  "only_original_and_six_ml_rivals": true,
+  "daily_losses_recomputed": true,
+  "forecasts_and_targets_aligned": true,
+  "direct_hac_matches_dm_hln": true,
+  "legacy_window7_holm21_reproduced": true,
+  "views": 10,
+  "comparisons": 60,
+  "model_training": false,
+  "github_or_render_updated": false,
+  "alignment": {
+    "2025": [
+      {
+        "model": "k-NN",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Ridge",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Lasso",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Random Forest",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "XGBoost",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "SVR Lineal",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "HAR-Ridge + XGBoost",
+        "origins": 358,
+        "predictions": 40096,
+        "max_abs_actual_error": 0.0
+      }
+    ],
+    "2026": [
+      {
+        "model": "k-NN",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Ridge",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Lasso",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "Random Forest",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "XGBoost",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "SVR Lineal",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      },
+      {
+        "model": "HAR-Ridge + XGBoost",
+        "origins": 236,
+        "predictions": 26432,
+        "max_abs_actual_error": 0.0
+      }
+    ]
+  },
+  "input_sha256_after": {
+    "results/hansen_spa_comparison_20261006/report.html": "9da494b17669a83136156dabd7098af95067a52f7b49aea1b6aac49bc2294db5",
+    "results/har_residual_xgboost_research_20261006/evaluation/report.html": "56ebd03ec2a3008eacaaea08cd877ffabb9fb82719d52706a574bf2c47bb2778",
+    "results/har_spca_research_20261005/baseline_2026/predictions.csv.gz": "0c514282505fef3c20261b43df997a0891ac8323b30467f1b48e17b5e87d3997",
+    "results/har_spca_research_20261005/evaluation/report.html": "64b37c6187b28911259c9f24ad1ededd749cee499037002d0579e0071212a074",
+    "results/har_spca_research_20261005/evaluation/summary.json": "d66e267f7eb8c93ae3fbd4756dc1a5315164ae00d4f615356cb85e6ec80fdb7e",
+    "results/har_spca_research_20261005/evaluation/verification.json": "dc2b77553314c958c02e8816d7cff1cd743629da945703f102e0ef7cfd4d9b6b",
+    "results/improved_classical_2023_2025/predictions.csv.gz": "0beb533b255e98daf9aeb79abdfdb8b38f35d6c1a83163c28b1d37848bc20971",
+    "results/optimized_minute_2023_2025/predictions.csv.gz": "a4fe23a96a16aa49a5a7f9d314a9033d8af61d9554fb9a39d7406eb481ca1f81",
+    "results/optimized_minute_knn_2023_2025/predictions.csv.gz": "c422cc4616c4a88816d42f8c7bc948afb840f20e410395ed062298925552a3df",
+    "results/optimized_minute_lasso_2023_2025/predictions.csv.gz": "4347582a2b73b64e82eff48d8541a498eff8832af68d750d8983c7be1e3f5fc5",
+    "results/optimized_minute_randomforest_2023_2025/predictions.csv.gz": "f136ab5970e8fb3f4be2043c9049947268fe78255f963c3a6d333e2d0e8c9fc8",
+    "results/optimized_minute_ridge_2023_2025/predictions.csv.gz": "a1c8658d60f4419b0584aa5d13632207b794bf607ea42232e366688b6efc6ac5",
+    "results/optimized_minute_xgboost_2023_2025/predictions.csv.gz": "e1dc9173f9f774472e49c43bc9620122c5009d62ee06096b7e9c67f679f0caf0",
+    "src/evaluate_har_spca_experiment.py": "879c3a1a8e23f3302e16184fb1bf16feb1086d7bf2faa31934db212f4d2b4372",
+    "src/evaluate_original_ml_intervals.py": "7d42e68ccdbcf33736d1dec3b082579d0a0b1c3e8ae8a94a7aab011a9e78d5d0",
+    "src/mse_hac_intervals.py": "e9a026ba639a58508eb2a90af81fde9426a56f8e0171125af5abdb8407fc6fb2",
+    "volatility_dashboard/diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585"
+  }
+}

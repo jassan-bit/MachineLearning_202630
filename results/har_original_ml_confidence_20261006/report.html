@@ -1,0 +1,920 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HAR-Ridge + XGBoost original · IC de diferencias de MSE</title><style>body{font:16px/1.55 system-ui,sans-serif;color:#172c4d;background:#f2f5fb;max-width:1500px;margin:2rem auto;padding:0 1rem}h1,h2{color:#18375f}.models{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:1rem;margin:1.5rem 0}article{border:1px solid #dae3f1;border-top:3px solid #2563eb;border-radius:12px;padding:1rem;background:white}article h3{margin:.3rem 0;font-size:16px}article p{font-size:14px;color:#59708d}table{border-collapse:collapse;background:white;display:block;overflow:auto;font-size:13px;margin:1rem 0}td,th{border:1px solid #dce3ed;padding:9px;text-align:left;white-space:nowrap}figure{background:white;padding:1rem;border:1px solid #dae3f1;border-radius:12px;margin:1rem 0}img{width:100%;height:auto}.controls{display:flex;gap:1.5rem;flex-wrap:wrap;margin:1.5rem 0}label{font-weight:600}select{font:inherit;margin-left:.5rem;padding:.4rem;border:1px solid #becbe0;border-radius:6px}a{color:#175bbb}@media(max-width:1000px){.models{grid-template-columns:repeat(3,1fr)}}@media(max-width:560px){.models{grid-template-columns:repeat(2,1fr)}}</style></head><body><h1>Intervalos de confianza · HAR-Ridge + XGBoost original</h1><p>Comparación exclusivamente frente a <strong>k-NN, Ridge, Lasso, Random Forest, XGBoost y SVR Lineal</strong>. Se utilizan las predicciones originales, con las mismas fechas, activos y horizontes para cada pareja.</p><div class="models"><article><h3>k-NN</h3><p>Promedia vecinos históricos según la distancia entre características.</p></article><article><h3>Ridge</h3><p>Regresión lineal con penalización L2.</p></article><article><h3>Lasso</h3><p>Regresión lineal con penalización L1.</p></article><article><h3>Random Forest</h3><p>Combina árboles de regresión.</p></article><article><h3>XGBoost</h3><p>Añade árboles sucesivos para reducir los errores.</p></article><article><h3>SVR Lineal</h3><p>Regresión con margen epsilon y regularización.</p></article></div><h2>Resultado global por periodo</h2><p>Estas filas promedian todas las ventanas, activos y horizontes. 2026 es el periodo principal; 2025 aporta contexto retrospectivo.</p><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Año</th>
+      <th>Fechas</th>
+      <th>MSE original</th>
+      <th>Victorias del original · Holm6</th>
+      <th>Sin diferencia significativa · Holm6</th>
+      <th>Victorias del rival · Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>358</td>
+      <td>0.464681</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>236</td>
+      <td>0.456042</td>
+      <td>0</td>
+      <td>6</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table><h2>Forest plot y comparación por pareja</h2><p><strong>Ganancia MSE = MSE del rival − MSE del original.</strong> A la derecha de cero se favorece al original. Un IC completamente a la derecha favorece al original en la comparación individual; a la izquierda favorece al rival. Si incluye cero, hay evidencia insuficiente de una diferencia. <strong>Esto no demuestra un empate ni equivalencia.</strong></p><p>Los intervalos son <strong>IC 95 % individuales HAC</strong>. Las estrellas y las victorias ajustadas usan <strong>DM-HLN + Holm6</strong>, para las seis comparaciones solicitadas contra el original. La tabla conserva además <strong>Holm21</strong>, el ajuste de los 21 pares entre los siete modelos que aparece en el dashboard anterior. Las dos familias pueden dar resultados diferentes; los IC dibujados no son intervalos simultáneos ajustados por Holm.</p><div class="controls"><label>Periodo <select id="year"><option value="2025">2025</option><option value="2026">2026</option></select></label><label>Ventana de volatilidad <select id="window"><option value="7">7 días</option><option value="14">14 días</option><option value="21">21 días</option><option value="28">28 días</option><option value="global">Todas · global</option></select></label></div><section class="view" data-view="2025_global"><h3>2025 · Todas las ventanas</h3><p>358 fechas · rezagos HAC: 33. Holm6: <strong>6 victorias del original</strong>, 0 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2025/global/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2025/global/forest_plot.svg">Descargar SVG</a> · <a href="2025/global/forest_plot.png">Descargar PNG</a> · <a href="2025/global/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.464681</td>
+      <td>0.520606</td>
+      <td>0.055925</td>
+      <td>[0.019249, 0.092600]</td>
+      <td>Favorece original</td>
+      <td>0.003558</td>
+      <td>Gana el original</td>
+      <td>0.056926</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.464681</td>
+      <td>0.537024</td>
+      <td>0.072343</td>
+      <td>[0.036501, 0.108185]</td>
+      <td>Favorece original</td>
+      <td>0.000499</td>
+      <td>Gana el original</td>
+      <td>0.002302</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.464681</td>
+      <td>0.563582</td>
+      <td>0.098900</td>
+      <td>[0.047051, 0.150750]</td>
+      <td>Favorece original</td>
+      <td>0.000558</td>
+      <td>Gana el original</td>
+      <td>0.004741</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.464681</td>
+      <td>0.524570</td>
+      <td>0.059889</td>
+      <td>[0.030606, 0.089173]</td>
+      <td>Favorece original</td>
+      <td>0.000499</td>
+      <td>Gana el original</td>
+      <td>0.001995</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.464681</td>
+      <td>0.496539</td>
+      <td>0.031858</td>
+      <td>[0.020469, 0.043247]</td>
+      <td>Favorece original</td>
+      <td>0.000001</td>
+      <td>Gana el original</td>
+      <td>0.000003</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.464681</td>
+      <td>0.537172</td>
+      <td>0.072491</td>
+      <td>[0.036599, 0.108384]</td>
+      <td>Favorece original</td>
+      <td>0.000499</td>
+      <td>Gana el original</td>
+      <td>0.002302</td>
+      <td>Gana el original</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2025_7"><h3>2025 · Ventana de 7 días</h3><p>358 fechas · rezagos HAC: 12. Holm6: <strong>5 victorias del original</strong>, 1 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2025/7/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2025/7/forest_plot.svg">Descargar SVG</a> · <a href="2025/7/forest_plot.png">Descargar PNG</a> · <a href="2025/7/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>1.186401</td>
+      <td>1.323149</td>
+      <td>0.136748</td>
+      <td>[0.044002, 0.229495]</td>
+      <td>Favorece original</td>
+      <td>0.014426</td>
+      <td>Gana el original</td>
+      <td>0.086555</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>1.186401</td>
+      <td>1.338345</td>
+      <td>0.151944</td>
+      <td>[0.083233, 0.220656]</td>
+      <td>Favorece original</td>
+      <td>0.000160</td>
+      <td>Gana el original</td>
+      <td>0.000561</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>1.186401</td>
+      <td>1.395908</td>
+      <td>0.209507</td>
+      <td>[0.078161, 0.340853]</td>
+      <td>Favorece original</td>
+      <td>0.009233</td>
+      <td>Gana el original</td>
+      <td>0.043855</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>1.186401</td>
+      <td>1.263555</td>
+      <td>0.077154</td>
+      <td>[-0.025774, 0.180082]</td>
+      <td>Incluye cero</td>
+      <td>0.150037</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>1.186401</td>
+      <td>1.253739</td>
+      <td>0.067338</td>
+      <td>[0.012870, 0.121807]</td>
+      <td>Favorece original</td>
+      <td>0.035764</td>
+      <td>Gana el original</td>
+      <td>0.303995</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>1.186401</td>
+      <td>1.338715</td>
+      <td>0.152313</td>
+      <td>[0.077553, 0.227074]</td>
+      <td>Favorece original</td>
+      <td>0.000529</td>
+      <td>Gana el original</td>
+      <td>0.002118</td>
+      <td>Gana el original</td>
+    </tr>
+  </tbody>
+</table><p><strong>Relación con la tabla anterior:</strong> Holm21 conserva las tres diferencias significativas frente a Lasso, Ridge y SVR Lineal. La familia focal Holm6 también conserva XGBoost y k-NN. Los intervalos se calcularon desde las pérdidas diarias, sin aproximarlos dividiendo la diferencia de MSE entre el DM corregido.</p></section><section class="view" data-view="2025_14"><h3>2025 · Ventana de 14 días</h3><p>358 fechas · rezagos HAC: 19. Holm6: <strong>6 victorias del original</strong>, 0 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2025/14/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2025/14/forest_plot.svg">Descargar SVG</a> · <a href="2025/14/forest_plot.png">Descargar PNG</a> · <a href="2025/14/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.368885</td>
+      <td>0.413330</td>
+      <td>0.044445</td>
+      <td>[0.011625, 0.077266]</td>
+      <td>Favorece original</td>
+      <td>0.016073</td>
+      <td>Gana el original</td>
+      <td>0.126796</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.368885</td>
+      <td>0.452337</td>
+      <td>0.083452</td>
+      <td>[0.026136, 0.140769]</td>
+      <td>Favorece original</td>
+      <td>0.016073</td>
+      <td>Gana el original</td>
+      <td>0.091083</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.368885</td>
+      <td>0.474398</td>
+      <td>0.105513</td>
+      <td>[0.045535, 0.165491]</td>
+      <td>Favorece original</td>
+      <td>0.003950</td>
+      <td>Gana el original</td>
+      <td>0.015799</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.368885</td>
+      <td>0.434713</td>
+      <td>0.065828</td>
+      <td>[0.032129, 0.099527]</td>
+      <td>Favorece original</td>
+      <td>0.001195</td>
+      <td>Gana el original</td>
+      <td>0.004183</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.368885</td>
+      <td>0.388671</td>
+      <td>0.019786</td>
+      <td>[0.008259, 0.031313]</td>
+      <td>Favorece original</td>
+      <td>0.004212</td>
+      <td>Gana el original</td>
+      <td>0.020006</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.368885</td>
+      <td>0.434912</td>
+      <td>0.066027</td>
+      <td>[0.019067, 0.112986]</td>
+      <td>Favorece original</td>
+      <td>0.016073</td>
+      <td>Gana el original</td>
+      <td>0.108323</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2025_21"><h3>2025 · Ventana de 21 días</h3><p>358 fechas · rezagos HAC: 26. Holm6: <strong>6 victorias del original</strong>, 0 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2025/21/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2025/21/forest_plot.svg">Descargar SVG</a> · <a href="2025/21/forest_plot.png">Descargar PNG</a> · <a href="2025/21/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.184440</td>
+      <td>0.212005</td>
+      <td>0.027565</td>
+      <td>[0.003422, 0.051708]</td>
+      <td>Favorece original</td>
+      <td>0.044253</td>
+      <td>Gana el original</td>
+      <td>0.429797</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.184440</td>
+      <td>0.219793</td>
+      <td>0.035353</td>
+      <td>[0.017061, 0.053646]</td>
+      <td>Favorece original</td>
+      <td>0.001160</td>
+      <td>Gana el original</td>
+      <td>0.004640</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.184440</td>
+      <td>0.254732</td>
+      <td>0.070293</td>
+      <td>[0.011434, 0.129151]</td>
+      <td>Favorece original</td>
+      <td>0.044253</td>
+      <td>Gana el original</td>
+      <td>0.354024</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.184440</td>
+      <td>0.239755</td>
+      <td>0.055315</td>
+      <td>[0.030418, 0.080212]</td>
+      <td>Favorece original</td>
+      <td>0.000147</td>
+      <td>Gana el original</td>
+      <td>0.000515</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.184440</td>
+      <td>0.208017</td>
+      <td>0.023578</td>
+      <td>[0.011288, 0.035867]</td>
+      <td>Favorece original</td>
+      <td>0.001160</td>
+      <td>Gana el original</td>
+      <td>0.004892</td>
+      <td>Gana el original</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.184440</td>
+      <td>0.235996</td>
+      <td>0.051557</td>
+      <td>[0.018448, 0.084665]</td>
+      <td>Favorece original</td>
+      <td>0.008762</td>
+      <td>Gana el original</td>
+      <td>0.052572</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2025_28"><h3>2025 · Ventana de 28 días</h3><p>358 fechas · rezagos HAC: 33. Holm6: <strong>1 victorias del original</strong>, 5 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2025/28/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2025/28/forest_plot.svg">Descargar SVG</a> · <a href="2025/28/forest_plot.png">Descargar PNG</a> · <a href="2025/28/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.118999</td>
+      <td>0.133938</td>
+      <td>0.014939</td>
+      <td>[0.000714, 0.029165]</td>
+      <td>Favorece original</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.660533</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.118999</td>
+      <td>0.137620</td>
+      <td>0.018622</td>
+      <td>[0.002500, 0.034744]</td>
+      <td>Favorece original</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.483445</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.118999</td>
+      <td>0.129288</td>
+      <td>0.010290</td>
+      <td>[-0.001496, 0.022075]</td>
+      <td>Incluye cero</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.118999</td>
+      <td>0.160258</td>
+      <td>0.041259</td>
+      <td>[0.010335, 0.072183]</td>
+      <td>Favorece original</td>
+      <td>0.053249</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.202348</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.118999</td>
+      <td>0.135729</td>
+      <td>0.016730</td>
+      <td>[0.001860, 0.031601]</td>
+      <td>Favorece original</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.527799</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.118999</td>
+      <td>0.139066</td>
+      <td>0.020067</td>
+      <td>[0.005908, 0.034227]</td>
+      <td>Favorece original</td>
+      <td>0.040202</td>
+      <td>Gana el original</td>
+      <td>0.134008</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2026_global"><h3>2026 · Todas las ventanas</h3><p>236 fechas · rezagos HAC: 33. Holm6: <strong>0 victorias del original</strong>, 6 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2026/global/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2026/global/forest_plot.svg">Descargar SVG</a> · <a href="2026/global/forest_plot.png">Descargar PNG</a> · <a href="2026/global/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.456042</td>
+      <td>0.513275</td>
+      <td>0.057234</td>
+      <td>[-0.004783, 0.119250]</td>
+      <td>Incluye cero</td>
+      <td>0.319530</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.456042</td>
+      <td>0.488895</td>
+      <td>0.032853</td>
+      <td>[0.001997, 0.063709]</td>
+      <td>Favorece original</td>
+      <td>0.261295</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.914533</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.456042</td>
+      <td>0.485804</td>
+      <td>0.029762</td>
+      <td>[-0.004884, 0.064408]</td>
+      <td>Incluye cero</td>
+      <td>0.319530</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.456042</td>
+      <td>0.467501</td>
+      <td>0.011459</td>
+      <td>[-0.024301, 0.047219]</td>
+      <td>Incluye cero</td>
+      <td>0.541949</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.456042</td>
+      <td>0.472173</td>
+      <td>0.016132</td>
+      <td>[-0.005824, 0.038087]</td>
+      <td>Incluye cero</td>
+      <td>0.325427</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.456042</td>
+      <td>0.488810</td>
+      <td>0.032768</td>
+      <td>[0.001830, 0.063707]</td>
+      <td>Favorece original</td>
+      <td>0.261295</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.914533</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2026_7"><h3>2026 · Ventana de 7 días</h3><p>236 fechas · rezagos HAC: 12. Holm6: <strong>0 victorias del original</strong>, 6 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2026/7/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2026/7/forest_plot.svg">Descargar SVG</a> · <a href="2026/7/forest_plot.png">Descargar PNG</a> · <a href="2026/7/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>1.053336</td>
+      <td>1.213302</td>
+      <td>0.159966</td>
+      <td>[0.006360, 0.313572]</td>
+      <td>Favorece original</td>
+      <td>0.289912</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>1.053336</td>
+      <td>1.130184</td>
+      <td>0.076848</td>
+      <td>[-0.017250, 0.170946]</td>
+      <td>Incluye cero</td>
+      <td>0.496502</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>1.053336</td>
+      <td>1.102747</td>
+      <td>0.049411</td>
+      <td>[-0.051673, 0.150494]</td>
+      <td>Incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>1.053336</td>
+      <td>1.084568</td>
+      <td>0.031232</td>
+      <td>[-0.071472, 0.133935]</td>
+      <td>Incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>1.053336</td>
+      <td>1.098253</td>
+      <td>0.044917</td>
+      <td>[-0.031724, 0.121558]</td>
+      <td>Incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>1.053336</td>
+      <td>1.126102</td>
+      <td>0.072766</td>
+      <td>[-0.011045, 0.156577]</td>
+      <td>Incluye cero</td>
+      <td>0.496502</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2026_14"><h3>2026 · Ventana de 14 días</h3><p>236 fechas · rezagos HAC: 19. Holm6: <strong>0 victorias del original</strong>, 6 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2026/14/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2026/14/forest_plot.svg">Descargar SVG</a> · <a href="2026/14/forest_plot.png">Descargar PNG</a> · <a href="2026/14/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.395552</td>
+      <td>0.430612</td>
+      <td>0.035061</td>
+      <td>[0.002225, 0.067896]</td>
+      <td>Favorece original</td>
+      <td>0.171843</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.773292</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.395552</td>
+      <td>0.440759</td>
+      <td>0.045207</td>
+      <td>[0.010446, 0.079969]</td>
+      <td>Favorece original</td>
+      <td>0.083334</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.277779</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.395552</td>
+      <td>0.416836</td>
+      <td>0.021284</td>
+      <td>[-0.012332, 0.054900]</td>
+      <td>Incluye cero</td>
+      <td>0.686183</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.395552</td>
+      <td>0.407074</td>
+      <td>0.011522</td>
+      <td>[-0.030283, 0.053327]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.395552</td>
+      <td>0.400487</td>
+      <td>0.004935</td>
+      <td>[-0.012729, 0.022599]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.395552</td>
+      <td>0.424231</td>
+      <td>0.028679</td>
+      <td>[0.004678, 0.052681]</td>
+      <td>Favorece original</td>
+      <td>0.118293</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.449512</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2026_21"><h3>2026 · Ventana de 21 días</h3><p>236 fechas · rezagos HAC: 26. Holm6: <strong>0 victorias del original</strong>, 6 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2026/21/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2026/21/forest_plot.svg">Descargar SVG</a> · <a href="2026/21/forest_plot.png">Descargar PNG</a> · <a href="2026/21/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.225210</td>
+      <td>0.242240</td>
+      <td>0.017031</td>
+      <td>[-0.010980, 0.045041]</td>
+      <td>Incluye cero</td>
+      <td>0.990757</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.225210</td>
+      <td>0.224884</td>
+      <td>-0.000325</td>
+      <td>[-0.019437, 0.018786]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.225210</td>
+      <td>0.264499</td>
+      <td>0.039289</td>
+      <td>[-0.015752, 0.094330]</td>
+      <td>Incluye cero</td>
+      <td>0.874848</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.225210</td>
+      <td>0.231048</td>
+      <td>0.005838</td>
+      <td>[-0.014331, 0.026007]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.225210</td>
+      <td>0.239451</td>
+      <td>0.014241</td>
+      <td>[-0.001802, 0.030285]</td>
+      <td>Incluye cero</td>
+      <td>0.551985</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.225210</td>
+      <td>0.245038</td>
+      <td>0.019829</td>
+      <td>[-0.015544, 0.055201]</td>
+      <td>Incluye cero</td>
+      <td>0.990757</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><section class="view" data-view="2026_28"><h3>2026 · Ventana de 28 días</h3><p>236 fechas · rezagos HAC: 33. Holm6: <strong>0 victorias del original</strong>, 6 comparaciones sin diferencia significativa y 0 victorias del rival.</p><figure><img src="2026/28/forest_plot.png" alt="Diferencias emparejadas de MSE con intervalos de confianza HAC"><figcaption><a href="2026/28/forest_plot.svg">Descargar SVG</a> · <a href="2026/28/forest_plot.png">Descargar PNG</a> · <a href="2026/28/comparisons.csv">Descargar las seis comparaciones</a></figcaption></figure><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>MSE original</th>
+      <th>MSE rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC 95 % HAC de la ganancia</th>
+      <th>Resultado IC individual</th>
+      <th>p Holm6</th>
+      <th>Resultado Holm6</th>
+      <th>p Holm21</th>
+      <th>Resultado Holm21 anterior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.150069</td>
+      <td>0.166946</td>
+      <td>0.016877</td>
+      <td>[0.001275, 0.032479]</td>
+      <td>Favorece original</td>
+      <td>0.242018</td>
+      <td>Sin diferencia significativa</td>
+      <td>0.847064</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.150069</td>
+      <td>0.159752</td>
+      <td>0.009682</td>
+      <td>[-0.013514, 0.032878]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.150069</td>
+      <td>0.159133</td>
+      <td>0.009064</td>
+      <td>[-0.003236, 0.021364]</td>
+      <td>Incluye cero</td>
+      <td>0.807386</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.150069</td>
+      <td>0.147314</td>
+      <td>-0.002755</td>
+      <td>[-0.018436, 0.012925]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.150069</td>
+      <td>0.150503</td>
+      <td>0.000433</td>
+      <td>[-0.004107, 0.004973]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.150069</td>
+      <td>0.159870</td>
+      <td>0.009800</td>
+      <td>[-0.011840, 0.031441]</td>
+      <td>Incluye cero</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+      <td>1.000000</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table></section><h2>Cómo se calcularon los intervalos</h2><p>Para cada rival se forma gₜ = pérdida cuadrática del rival − pérdida cuadrática del original y se estima su media. El intervalo es media(gₜ) ± 1,959964 × SE HAC de esa media, con autocovarianzas de denominador n y pesos Bartlett. El SE se calcula directamente desde esa serie temporal emparejada. La dependencia entre activos y horizontes se conserva promediando dentro de cada fecha.</p><p>Cada fecha global contiene 112 pronósticos: cuatro activos × cuatro ventanas × siete horizontes. Cada ventana contiene 28. El número de observaciones de inferencia es 358 días en 2025 y 236 en 2026. HAC usa 33 rezagos globalmente y ventana + 5 en cada ventana. DM usa la corrección HLN con horizonte 7 y distribución t con n−1 grados de libertad; los intervalos normales individuales no incorporan esa corrección.</p><p>Holm6 controla las seis comparaciones contra el original dentro de cada periodo y vista. Holm21 controla los 21 pares de esos siete modelos por vista. No se aplica un ajuste conjunto a las diez vistas. Ambos periodos ya se inspeccionaron, por lo que el análisis es retrospectivo; un IC que cruza cero no demuestra equivalencia.</p><p>Los intervalos se calcularon a partir de los pronósticos originales congelados, sin entrenar ni reemplazar modelos. Este informe publica las gráficas y tablas verificadas de la comparación contra los seis modelos de ML.</p><p><a href="comparison_summary.csv">Resumen de las diez vistas</a> · <a href="all_comparisons.csv">Todas las comparaciones contra el original</a> · <a href="protocol.json">Protocolo</a> · <a href="verification.json">Verificación</a>. Fuentes: <a href="https://doi.org/10.2307/1913610">Newey–West</a>, <a href="https://pkg.robjhyndman.com/forecast/reference/dm.test.html">DM-HLN y Bartlett</a>, <a href="https://www.jstor.org/stable/4615733">Holm</a>.</p><script>const year=document.getElementById("year"),win=document.getElementById("window");function update(){const key=year.value+"_"+win.value;document.querySelectorAll(".view").forEach(section=>section.hidden=section.dataset.view!==key);}year.addEventListener("change",update);win.addEventListener("change",update);update();</script></body></html>

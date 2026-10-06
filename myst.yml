@@ -12,6 +12,8 @@ project:
 site:
   template: book-theme
   actions:
+    - title: Gráficas HAR-Ridge + XGBoost
+      url: https://machinelearning-202630.onrender.com/confidence-intervals/
     - title: Descargar JBook completo
       url: https://github.com/jassan-bit/MachineLearning_202630/releases/download/jbook-completo-202630/JBook_Completo_202630.zip
   parts:

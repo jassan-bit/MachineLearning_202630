@@ -8,6 +8,7 @@ from dash import dcc, html, Input, Output
 from ..data_loader import ROOT, FAMILIES, repository, dataset, artifact_for, hyperparameters, importance, tuning, read_json
 from ..metrics import aggregate
 from ..diebold_mariano import comparisons
+from ..confidence_intervals import confidence_intervals
 from ..utils import COLORS, METRICS, graph_card, table, acf_figure
 
 LOGGER = logging.getLogger(__name__)
@@ -64,6 +65,14 @@ def _render(symbol,window,horizon,models,metric,focus,asset,detail_h):
     ranking = global_view.sort_values(metric,ascending=metric!='r2').reset_index(drop=True)
     ranking.insert(0,'posición',range(1,len(ranking)+1))
     dm_results = comparisons(predictions,symbol,window,horizon,models)
+    confidence_figure, confidence_table, confidence_details = confidence_intervals(
+        predictions, symbol=symbol, window=window, horizon=horizon)
+    confidence_display = confidence_table[[
+        'model','mse_original','mse_rival','gain','ci_low_gain','ci_high_gain',
+        'p_holm6','conclusion_5pct']].rename(columns={
+            'model':'Rival','mse_original':'MSE original','mse_rival':'MSE rival',
+            'gain':'Ganancia MSE','ci_low_gain':'IC 95 % inferior','ci_high_gain':'IC 95 % superior',
+            'p_holm6':'p Holm6','conclusion_5pct':'Conclusión Holm6'})
     figures = [graph_card(f'Comparación · {METRICS[m]}',px.bar(global_view,x='model',y=m,color='model',color_discrete_map=COLORS),numeric_note(global_view,m)) for m in ['rmse','mae','r2']]
     all_assets = aggregate(all_metrics,'TODOS',int(window),horizon,models)
     matrix = all_assets.pivot(index='model',columns='symbol',values=metric)
@@ -147,6 +156,20 @@ def _render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             html.P('TODOS promedia las pérdidas de activos y horizontes dentro de cada origen diario; no los trata como observaciones independientes. Los rezagos HAC cubren ventana + horizonte − 2, con un mínimo automático. La evaluación de 2025 es retrospectiva; la prueba no elimina el sesgo por selección previa ni implica equivalencia cuando no se rechaza H₀.'),
             table(dm_results) if not dm_results.empty else html.P('Selecciona al menos dos modelos.'),
             html.A('Referencia metodológica',href='https://pkg.robjhyndman.com/forecast/reference/dm.test.html',target='_blank')],className='panel'),
+        graph_card('IC 95 % HAC · HAR-Ridge + XGBoost original frente a seis modelos de ML',
+            confidence_figure,confidence_details['note']),
+        html.Section([
+            html.H3('Diferencias de MSE frente al modelo original'),
+            html.P('Esta comparación siempre incluye los seis modelos clásicos y el original. '
+                'Respeta los filtros de activo, ventana y horizonte. Ganancia positiva: menor MSE '
+                'del original. Si el IC incluye cero, no se demuestra una diferencia individual; '
+                'eso no prueba un empate. Los intervalos son individuales y no se ajustan por Holm.'),
+            html.P('Las estrellas y esta tabla usan Holm sobre las seis comparaciones contra el '
+                'original. La tabla DM anterior ajusta todos los pares de los modelos seleccionados '
+                '(21 pares cuando están los siete); sus valores p pueden ser diferentes.'),
+            table(confidence_display),
+            html.A('Ver gráficas globales y por ventana · 2025 y 2026',
+                href='/confidence-intervals/',target='_blank',rel='noopener')],className='panel'),
         html.Div(figures,className='grid-three'),
         graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}.'),
         html.Section([html.H3('Comparación global por activo'),table(pivot.reset_index())],className='panel'),

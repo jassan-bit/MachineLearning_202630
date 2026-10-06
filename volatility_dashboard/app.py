@@ -41,6 +41,12 @@ def create_app():
     def book_report():
         return send_from_directory(str(ROOT/'book/sections'),'10_dashboard_comparativo.md',as_attachment=False,mimetype='text/plain; charset=utf-8')
 
+    @app.server.route('/confidence-intervals/', defaults={'filename': 'report.html'})
+    @app.server.route('/confidence-intervals/<path:filename>')
+    def confidence_report(filename):
+        return send_from_directory(
+            str(ROOT/'results/har_original_ml_confidence_20261006'), filename)
+
     return app
 
 
