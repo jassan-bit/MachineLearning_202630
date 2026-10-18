@@ -1,0 +1,299 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DM: original frente a 28 modelos optimizados, w=21</title><style>body{font:16px/1.5 system-ui;color:#17324d;max-width:1250px;margin:35px auto;padding:0 18px}h1{line-height:1.2}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:9px;border-bottom:1px solid #ccd7df;text-align:left}th{background:#edf4f7}.scroll{overflow-x:auto}.notice{background:#fbf4e5;border-left:5px solid #bd811f;padding:15px}a{color:#087f8c}section{margin:32px 0} @media print{section{break-inside:avoid}body{font-size:12px}table{font-size:10px}}</style>
+<aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="4afae6e55b1609c627d055a0dfd0555878f30e78631ee899465517c3e4a62c96"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>HAR-Ridge + XGBoost original frente a 28 modelos optimizados</h1>
+<p><b>2025; w=21 días; BTC, ETH, BNB y XRP; siete horizontes; 358 orígenes diarios del 01/01 al 24/12.</b></p>
+<p>Modelo A en las 28 filas: <b>HAR-Ridge + XGBoost original, sin modificar</b>. Modelo B: cada uno de los siete benchmarks reoptimizados con el método de su tabla. No se incluyen las cuatro variantes nuevas HAR-XG.</p>
+<p>H₀: igualdad de pérdida esperada. DM &lt; 0 favorece al original; DM &gt; 0 favorece al rival. Se promedian 28 errores cuadrados por origen (4 activos × 7 horizontes): n=358, no 10.024 observaciones independientes. DM bilateral con HLN(7), Bartlett HAC(26), referencia t con 357 grados de libertad.</p>
+<p><b>Holm7</b>: siete contrastes dentro de cada optimizador. <b>Holm28</b>: las 28 comparaciones dirigidas al original conjuntamente; no los 406 pares posibles entre 29 procedimientos. Las decisiones de la última columna usan Holm7; Holm28 se muestra como control del conjunto completo.</p>
+<div class="notice">Análisis exploratorio retrospectivo solicitado después de inspeccionar resultados. Los ajustes no corrigen toda la exploración previa ni restauran un periodo nunca examinado. No rechazar H₀ no demuestra equivalencia. Los resultados MCS/SPA globales no se trasladan a este filtro.</div>
+<section id="grid"><h2>Grid Search</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>Decisión al 5 % (Holm7)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,080</td>
+      <td>0,0022</td>
+      <td>0,0134</td>
+      <td>0,0536</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-1,268</td>
+      <td>0,2056</td>
+      <td>0,6167</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-0,629</td>
+      <td>0,5295</td>
+      <td>0,6385</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-3,463</td>
+      <td>0,0006</td>
+      <td>0,0042</td>
+      <td>0,0162</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-2,633</td>
+      <td>0,0088</td>
+      <td>0,0441</td>
+      <td>0,1500</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-0,997</td>
+      <td>0,3192</td>
+      <td>0,6385</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-1,833</td>
+      <td>0,0676</td>
+      <td>0,2705</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div>
+<p><a href="dm_grid.csv">Descargar esta tabla (valores completos)</a></p></section>
+<section id="random"><h2>Random Search</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>Decisión al 5 % (Holm7)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,076</td>
+      <td>0,0023</td>
+      <td>0,0136</td>
+      <td>0,0536</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-1,628</td>
+      <td>0,1044</td>
+      <td>0,3399</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-1,267</td>
+      <td>0,2059</td>
+      <td>0,4118</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-3,446</td>
+      <td>0,0006</td>
+      <td>0,0044</td>
+      <td>0,0165</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-2,693</td>
+      <td>0,0074</td>
+      <td>0,0371</td>
+      <td>0,1336</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-1,727</td>
+      <td>0,0850</td>
+      <td>0,3399</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-0,280</td>
+      <td>0,7796</td>
+      <td>0,7796</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div>
+<p><a href="dm_random.csv">Descargar esta tabla (valores completos)</a></p></section>
+<section id="bayesian"><h2>Bayesiana (Optuna TPE)</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>Decisión al 5 % (Holm7)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,080</td>
+      <td>0,0022</td>
+      <td>0,0134</td>
+      <td>0,0536</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-0,925</td>
+      <td>0,3558</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0,869</td>
+      <td>0,3854</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-3,543</td>
+      <td>0,0004</td>
+      <td>0,0031</td>
+      <td>0,0125</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-2,226</td>
+      <td>0,0266</td>
+      <td>0,1332</td>
+      <td>0,4262</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-0,868</td>
+      <td>0,3862</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-0,699</td>
+      <td>0,4848</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div>
+<p><a href="dm_bayesian.csv">Descargar esta tabla (valores completos)</a></p></section>
+<section id="genetic"><h2>Genética (DEAP)</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>Decisión al 5 % (Holm7)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,076</td>
+      <td>0,0023</td>
+      <td>0,0136</td>
+      <td>0,0536</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-1,839</td>
+      <td>0,0668</td>
+      <td>0,2004</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-0,154</td>
+      <td>0,8774</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-3,446</td>
+      <td>0,0006</td>
+      <td>0,0044</td>
+      <td>0,0165</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-3,037</td>
+      <td>0,0026</td>
+      <td>0,0136</td>
+      <td>0,0536</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-2,901</td>
+      <td>0,0040</td>
+      <td>0,0158</td>
+      <td>0,0751</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-0,463</td>
+      <td>0,6438</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div>
+<p><a href="dm_genetic.csv">Descargar esta tabla (valores completos)</a></p></section>
+<h2>Selección y trazabilidad</h2><p>Cada fila agrupa cuatro ajustes, uno por activo. Sus hiperparámetros se seleccionaron con tres bloques internos de desarrollo y 660 orígenes de ajuste, antes de generar las predicciones de 2025. Se mantuvo semilla 42 y presupuesto de ocho evaluaciones únicas por búsqueda. Grid es un prefijo cartesiano limitado; Bayesiana utilizó Optuna TPE, no Hyperopt. SVR es lineal.</p>
+<p>El DM compara MSE diario. La media de RMSE por activo y horizonte es otra agregación y no determina el signo del DM.</p>
+<p><a href="dm_all_28.csv">Las 28 comparaciones</a> · <a href="hyperparameters_112_fits.csv">Hiperparámetros de los 112 ajustes agrupados</a> · <a href="metrics_w21.csv">Métricas de los 29 procedimientos</a> · <a href="tables_w21.tex">Cuatro tablas en LaTeX</a> · <a href="protocol.json">Protocolo</a> · <a href="summary.json">Verificaciones y resumen</a></p>
+<p>Estudio local previo a la publicación de esta revisión el 18/10/2026; se conservan los modelos originales y el plan primario.</p></html>

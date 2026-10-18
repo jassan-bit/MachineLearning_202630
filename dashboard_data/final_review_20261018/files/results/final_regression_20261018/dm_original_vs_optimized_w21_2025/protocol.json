@@ -1,0 +1,57 @@
+{
+  "created_at_utc": "2026-10-18T21:59:04.860383+00:00",
+  "publication": "LOCAL ONLY",
+  "year": 2025,
+  "volatility_window": 21,
+  "original_model_A": "HAR-Ridge + XGBoost",
+  "benchmark_families": [
+    "kNN",
+    "Ridge",
+    "Lasso",
+    "DecisionTree",
+    "RandomForest",
+    "XGBoost",
+    "SVR"
+  ],
+  "optimizers": [
+    "grid",
+    "random",
+    "bayesian",
+    "genetic"
+  ],
+  "comparisons": 28,
+  "primary_plan_unchanged": true,
+  "retrospective_exploratory": true,
+  "no_retraining": true,
+  "no_new_forecasts": true,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "horizons": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "daily_loss": "One mean of28paired squared errors per origin; original minus optimized benchmark",
+  "dm": "Bilateral DM-HLN7, BartlettHAC26, t357",
+  "holm": "Holm7 per optimizer and Holm28 across all28original-versus-benchmark comparisons",
+  "family_selection_warning": "Adjustments cover these contrasts, not prior window/year/model exploration",
+  "input_source_sha256": {
+    "results\\final_regression_20261018\\predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "results\\final_regression_20261018\\selected_inputs.csv": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+    "results\\final_regression_20261018\\evaluation\\macro_by_window.csv": "0c439147c64bd464d9b37758fa63ca155faff73a7ee6699bcdb6e44b9db8855b",
+    "results\\final_regression_20261018\\inference_plan.json": "91749cb6f26b468e43b8880ec2398b200a6a775a81843490fa9e7bab40ca5090",
+    "results\\final_regression_20261018\\selection_freeze.json": "80626f43ece8925c4c9e5dd3c769f2273d4fecdea8bc7b505748b347acd3b771",
+    "results\\final_regression_20261018\\protected_before.json": "ce7d965b1581a674aa7cb360c7f2c8096444f6291ca9bb431791189310be957c",
+    "src\\report_dm_optimizers_w21.py": "82ec4a6ce923c6ffe55d80d861adc315825327aa7770d8da55f03bf4de8537af",
+    "volatility_dashboard\\diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585"
+  },
+  "github_or_render_updated": false
+}

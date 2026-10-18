@@ -1,0 +1,1519 @@
+{
+  "schema_benchmarks": {
+    "kNN": {
+      "selected_procedure": {
+        "model": "kNN [grid]",
+        "outer_mean_mse_2024": 0.47250427388803257,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "kNN",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.012360716565183632,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "kNN",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.28499039642141405,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "Ridge": {
+      "selected_procedure": {
+        "model": "Ridge [bayesian]",
+        "outer_mean_mse_2024": 0.39242494035997977,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "Ridge",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.11416626568969199,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "Ridge",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.1079398254826214,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 49,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "Lasso": {
+      "selected_procedure": {
+        "model": "Lasso [bayesian]",
+        "outer_mean_mse_2024": 0.39016395292673156,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "Lasso",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": -0.0008618632974055372,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "Lasso",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": -0.04331541727811689,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 49,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "DecisionTree": {
+      "selected_procedure": {
+        "model": "DecisionTree [genetic]",
+        "outer_mean_mse_2024": 0.661021512217914,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "DecisionTree",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.6133039827186322,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "DecisionTree",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.6800490540552206,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "RandomForest": {
+      "selected_procedure": {
+        "model": "RandomForest [grid]",
+        "outer_mean_mse_2024": 0.47382967137930093,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "RandomForest",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.8873297313982683,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "RandomForest",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 1.100608229083448,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "XGBoost": {
+      "selected_procedure": {
+        "model": "XGBoost [grid]",
+        "outer_mean_mse_2024": 0.43566900291487815,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "XGBoost",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": -0.22666697523849158,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "XGBoost",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.5381841267797446,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "SVR": {
+      "selected_procedure": {
+        "model": "SVR [genetic]",
+        "outer_mean_mse_2024": 0.3817266604121963,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "SVR",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": -0.04825108431372058,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "SVR",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.28481523869890657,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 91,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 0,
+        "optimized_har": 0
+      }
+    },
+    "HAR-XG": {
+      "selected_procedure": {
+        "model": "HAR-XG [bayesian]",
+        "outer_mean_mse_2024": 0.37954995549462933,
+        "criterion": "mean 2024 external MSE across all assets/windows/folds; no test input"
+      },
+      "standard": {
+        "model": "HAR-XG",
+        "variant": "standard",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.27516760670075935,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "optimized": {
+        "model": "HAR-XG",
+        "variant": "optimized",
+        "seeds": [
+          42
+        ],
+        "repeats": 3,
+        "train_sizes": [
+          200,
+          400,
+          600
+        ],
+        "feature_counts": [
+          220
+        ],
+        "predict_rows": 32,
+        "training_purge_rows": 7,
+        "runs": 9,
+        "development_data_sha256": "3606a5df9a1a476d7c5ef576816a8d54dc9f95e4549ea582b1312839962e1d2e",
+        "environment": {
+          "platform": "Windows-10-10.0.19045-SP0",
+          "python": "3.10.21",
+          "numpy": "1.26.4",
+          "pandas": "2.3.3"
+        },
+        "empirical_fit_slopes": [
+          {
+            "varying": "train_rows",
+            "fixed": "features",
+            "fixed_value": 220,
+            "fit_log_log_slope": 0.21381294896204053,
+            "distinct_sizes": 3,
+            "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+          }
+        ],
+        "limitations": [
+          "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+          "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+          "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+          "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+          "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+          "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+        ],
+        "sources": {
+          "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+          "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+          "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+        },
+        "github_or_render_updated": false
+      },
+      "diagnostic_units": "original volatility percentage points",
+      "design_columns": {
+        "external_schema": 220,
+        "standard_classical_or_tree": 49,
+        "optimized_classical_or_tree": 91,
+        "standard_har": 44,
+        "optimized_har": 43
+      }
+    }
+  },
+  "solver_scaling": {
+    "kNN": {
+      "model": "kNN",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.18558773965763864,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 0.034935429122339094,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.2254648388075575,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.0029221304211582582,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.01822087079127495,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "Ridge": {
+      "model": "Ridge",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.11650170014977265,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 0.22769847938565912,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.3373893561812609,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.22129803851248483,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.34308241335043715,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "Lasso": {
+      "model": "Lasso",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": -0.2239121029123151,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 0.11288834935185897,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.013266288797462259,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": -0.01685987153596101,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.1224216147120104,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "DecisionTree": {
+      "model": "DecisionTree",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.41597006272438247,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 1.0003673005045526,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.584338559546134,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.5191339995966192,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.6315325869547027,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "RandomForest": {
+      "model": "RandomForest",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.09627661812389658,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 0.6698495787416805,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 1.0389186218730817,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.11961478309656047,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.6432109795560069,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "XGBoost": {
+      "model": "XGBoost",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.4253914324014176,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": -0.04060911190237423,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.27709697907314657,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.6133816488107072,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.5162923178982328,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    },
+    "SVR": {
+      "model": "SVR",
+      "variant": "generic_solver_relative_target",
+      "seeds": [
+        42
+      ],
+      "repeats": 3,
+      "train_sizes": [
+        200,
+        400
+      ],
+      "feature_counts": [
+        50,
+        100,
+        175
+      ],
+      "predict_rows": 32,
+      "training_purge_rows": 7,
+      "runs": 18,
+      "development_data_sha256": "8388f8aa4a665516932999cb91492f60693f25c7e0096dbbe34d9f8aa90c8b68",
+      "environment": {
+        "platform": "Windows-10-10.0.19045-SP0",
+        "python": "3.10.21",
+        "numpy": "1.26.4",
+        "pandas": "2.3.3"
+      },
+      "empirical_fit_slopes": [
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 50,
+          "fit_log_log_slope": 0.22693357298199507,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 100,
+          "fit_log_log_slope": 0.19399298559039818,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "train_rows",
+          "fixed": "features",
+          "fixed_value": 175,
+          "fit_log_log_slope": 0.38594716744499696,
+          "distinct_sizes": 2,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 200,
+          "fit_log_log_slope": 0.216267441498396,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        },
+        {
+          "varying": "features",
+          "fixed": "train_rows",
+          "fixed_value": 400,
+          "fit_log_log_slope": 0.2995124837844865,
+          "distinct_sizes": 3,
+          "interpretation": "descriptive small-grid exponent; overhead and solver iterations may dominate"
+        }
+      ],
+      "limitations": [
+        "Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.",
+        "El RMSE de este benchmark no sustituye las métricas externas de validación anidada.",
+        "RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.",
+        "El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.",
+        "tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.",
+        "Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características."
+      ],
+      "sources": {
+        "scikit-learn computational performance": "https://scikit-learn.org/stable/computing/computational_performance.html",
+        "scikit-learn nearest-neighbor algorithms": "https://scikit-learn.org/stable/modules/neighbors.html",
+        "XGBoost tree methods": "https://xgboost.readthedocs.io/en/stable/treemethod.html"
+      },
+      "github_or_render_updated": false
+    }
+  },
+  "target_units_schema": "original volatility percentage points",
+  "target_units_solver": "relative correction y/base - 1; NOT original-unit RMSE",
+  "solver_limitation": "Generic solver kernels omit production reconstruction and sample weighting; p prefixes are computational controls, never validated feature selection.",
+  "comparison_limitation": "Default or historical architecture versus externally selected procedure need not improve speed or this development diagnostic loss. These benchmarks do not establish predictive improvement.",
+  "complexity_feature_count": "The 220-column transport schema is not learner p: classical/tree designs use 6*input_window+7; historical HAR uses 44 and new HAR 43. Inspect design_columns for each architecture.",
+  "matrix_search_timing_limitation": "The primary matrix resumed from 3 to 6 concurrent workers, recorded in execution_resume.json; search and outer-fit wall times are descriptive under variable load. Controlled benchmarks run serially with one numerical worker.",
+  "chronological_rows": "First 200/400/600 of the 660 eligible development origins; the common final 32 diagnostic rows are excluded from every fit, with an explicit minimum seven-origin purge",
+  "repetitions": 3,
+  "seed": 42,
+  "workers_per_fit": 1,
+  "memory": "Sampled current-process RSS plus Python-traced allocations; no worker RSS; instrumentation affects timings",
+  "github_or_render_updated": false
+}

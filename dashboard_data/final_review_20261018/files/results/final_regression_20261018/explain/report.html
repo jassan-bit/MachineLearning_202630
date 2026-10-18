@@ -1,0 +1,100 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Interpretabilidad local</title><style>body{max-width:1100px;margin:32px auto;font:16px/1.5 system-ui;color:#243447}img{max-width:100%}table{border-collapse:collapse}td,th{padding:8px;border:1px solid #ddd}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="88e455a040abdcc1c17c9aeee3e1b66e4296cccb936190e285f5bdbaa009565b"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Interpretabilidad del modelo congelado</h1><p>Horizonte 1; 236 de 236 observaciones; 220 entradas; fondo de 8 filas exclusivamente de entrenamiento. Semilla: 42.</p><p>Shapley distribuye la diferencia respecto al valor de referencia entre variables. Eficiencia/aditividad exige que las atribuciones sumen esa diferencia; simetría y aditividad caracterizan el reparto teórico. Aquí se aproxima con permutaciones y se comprueba la suma.</p><p>Error máximo de aditividad: 8.88e-16.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>case</th>
+      <th>evaluation_index</th>
+      <th>observed</th>
+      <th>hybrid_prediction</th>
+      <th>hybrid_absolute_error</th>
+      <th>lime_model</th>
+      <th>lime_model_prediction</th>
+      <th>lime_surrogate_prediction</th>
+      <th>lime_surrogate_absolute_gap</th>
+      <th>lime_weighted_local_r2</th>
+      <th>absolute_importance_rank_correlation_shap_lime</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>good</td>
+      <td>217</td>
+      <td>1.293629</td>
+      <td>1.293829</td>
+      <td>0.000201</td>
+      <td>XGBoost [grid]</td>
+      <td>1.294897</td>
+      <td>1.353740</td>
+      <td>0.058843</td>
+      <td>0.960118</td>
+      <td>0.124102</td>
+    </tr>
+    <tr>
+      <td>high_error</td>
+      <td>34</td>
+      <td>3.759790</td>
+      <td>2.451843</td>
+      <td>1.307947</td>
+      <td>XGBoost [grid]</td>
+      <td>2.440101</td>
+      <td>2.543213</td>
+      <td>0.103112</td>
+      <td>0.956498</td>
+      <td>0.043638</td>
+    </tr>
+  </tbody>
+</table><p>Las explicaciones describen predicciones del estimador congelado; no prueban causalidad ni mejora predictiva.</p><p>El enmascaramiento SHAP independiente y las perturbaciones gaussianas LIME pueden crear combinaciones fuera del soporte, especialmente entre características derivadas o correlacionadas.</p><p>SHAP aproxima valores de Shapley con permutaciones; la aditividad se verifica, pero por sí sola no garantiza convergencia de cada atribución.</p><p>La referencia SHAP es el promedio del modelo sobre un fondo de entrenamiento; LIME ajusta una regresión local ponderada. Sus magnitudes y referencias no son equivalentes.</p><p>Los casos de menor/mayor error se eligen retrospectivamente para explicar; no intervienen en el entrenamiento ni en selección de hiperparámetros.</p><p>La fidelidad R² de LIME corresponde a su vecindario sintético, no a R² predictivo fuera de muestra.</p><p>LIME perturba en coordenadas logarítmicas las entradas de soporte positivo y las reconstruye antes de llamar al modelo. Sus coeficientes corresponden a esas coordenadas; SHAP conserva entradas originales.</p><figure><img src="plots/shap_summary.png" alt="shap_summary"></figure><figure><img src="plots/shap_importance.png" alt="shap_importance"></figure><figure><img src="plots/shap_waterfall_good.png" alt="shap_waterfall_good"></figure><figure><img src="plots/shap_waterfall_high_error.png" alt="shap_waterfall_high_error"></figure><figure><img src="plots/shap_lime_good.png" alt="shap_lime_good"></figure><figure><img src="plots/shap_lime_high_error.png" alt="shap_lime_high_error"></figure><p><a href="lime_good.html">LIME: caso de menor error</a> | <a href="lime_high_error.html">LIME: caso de error alto</a></p><p>Referencias: <a href="https://shap.readthedocs.io/en/stable/generated/shap.PermutationExplainer.html">SHAP PermutationExplainer</a> <a href="https://lime-ml.readthedocs.io/en/latest/lime.html">LIME TabularExplainer</a> <a href="https://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions">SHAP paper</a> <a href="https://arxiv.org/abs/1602.04938">LIME paper</a></p><h2>Modelo y calendario verificados</h2><p>HAR-XG [bayesian]; BTCUSDT, w=21, h=1. Procedimiento elegido por MSE externo de 2024, sin métricas de prueba. Elegir entre procedimientos mediante su media externa añade selección: esa media seleccionada no es una estimación independiente del ganador.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>case</th>
+      <th>origin</th>
+      <th>target_date</th>
+      <th>hybrid_absolute_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>good</td>
+      <td>2026-08-06 00:00:00+00:00</td>
+      <td>2026-08-07 00:00:00+00:00</td>
+      <td>0.000201</td>
+    </tr>
+    <tr>
+      <td>high_error</td>
+      <td>2026-02-04 00:00:00+00:00</td>
+      <td>2026-02-05 00:00:00+00:00</td>
+      <td>1.307947</td>
+    </tr>
+  </tbody>
+</table><p>Ambos predictores joblib reproducen sus siete pronósticos guardados y los objetivos en todas las fechas explicadas.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>origins</th>
+      <th>horizons</th>
+      <th>max_absolute_replay_error</th>
+      <th>max_absolute_actual_error</th>
+      <th>atol</th>
+      <th>rtol</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR-XG [bayesian]</td>
+      <td>236</td>
+      <td>7</td>
+      <td>8.881784e-16</td>
+      <td>8.881784e-16</td>
+      <td>1.000000e-12</td>
+      <td>1.000000e-12</td>
+    </tr>
+    <tr>
+      <td>XGBoost [grid]</td>
+      <td>236</td>
+      <td>7</td>
+      <td>8.881784e-16</td>
+      <td>8.881784e-16</td>
+      <td>1.000000e-12</td>
+      <td>1.000000e-12</td>
+    </tr>
+  </tbody>
+</table></html>

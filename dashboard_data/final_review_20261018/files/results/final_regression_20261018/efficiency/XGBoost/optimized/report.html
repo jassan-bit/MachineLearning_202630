@@ -1,0 +1,207 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Eficiencia computacional</title><style>body{margin:30px;font:15px/1.5 system-ui;color:#243447}table{border-collapse:collapse;font-size:12px}td,th{padding:7px;border:1px solid #ccc}img{max-width:100%}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="7a5bd41278d869983fe7ff947f3d2bf77e3c0070eae046a533748c313b709dc0"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>XGBoost: optimized</h1><p>Datos de desarrollo únicamente. El conjunto diagnóstico final se excluye del ajuste. Las mediciones incluyen instrumentación de memoria y no equivalen a latencia de producción sin instrumentación.</p><img src="fit_scaling.png" alt="Escalamiento de tiempos con n y p"><h2>Mediciones repetidas</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>variant</th>
+      <th>train_rows</th>
+      <th>features</th>
+      <th>fit_wall_seconds_mean</th>
+      <th>fit_wall_seconds_std</th>
+      <th>predict_wall_seconds_mean</th>
+      <th>predict_wall_seconds_std</th>
+      <th>predict_seconds_per_row_mean</th>
+      <th>predict_seconds_per_row_std</th>
+      <th>fit_python_traced_peak_bytes_mean</th>
+      <th>fit_python_traced_peak_bytes_std</th>
+      <th>fit_sampled_rss_peak_bytes_mean</th>
+      <th>fit_sampled_rss_peak_bytes_std</th>
+      <th>fit_sampled_rss_increment_bytes_mean</th>
+      <th>fit_sampled_rss_increment_bytes_std</th>
+      <th>predict_python_traced_peak_bytes_mean</th>
+      <th>predict_python_traced_peak_bytes_std</th>
+      <th>predict_sampled_rss_peak_bytes_mean</th>
+      <th>predict_sampled_rss_peak_bytes_std</th>
+      <th>predict_sampled_rss_increment_bytes_mean</th>
+      <th>predict_sampled_rss_increment_bytes_std</th>
+      <th>diagnostic_rmse_mean</th>
+      <th>diagnostic_rmse_std</th>
+      <th>diagnostic_mae_mean</th>
+      <th>diagnostic_mae_std</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>XGBoost</td>
+      <td>optimized</td>
+      <td>200</td>
+      <td>220</td>
+      <td>0.249227</td>
+      <td>0.008843</td>
+      <td>0.001669</td>
+      <td>0.000271</td>
+      <td>0.000052</td>
+      <td>8.458359e-06</td>
+      <td>188592.000000</td>
+      <td>148.000000</td>
+      <td>2.313653e+08</td>
+      <td>684955.225273</td>
+      <td>4.572501e+06</td>
+      <td>2.468952e+04</td>
+      <td>36612.000000</td>
+      <td>0.000000</td>
+      <td>2.272256e+08</td>
+      <td>477091.699228</td>
+      <td>35498.666667</td>
+      <td>18469.886988</td>
+      <td>0.204427</td>
+      <td>0.0</td>
+      <td>0.154177</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>optimized</td>
+      <td>400</td>
+      <td>220</td>
+      <td>0.296779</td>
+      <td>0.037223</td>
+      <td>0.001582</td>
+      <td>0.000026</td>
+      <td>0.000049</td>
+      <td>8.030888e-07</td>
+      <td>348060.666667</td>
+      <td>1938.042655</td>
+      <td>2.325709e+08</td>
+      <td>21673.994740</td>
+      <td>2.636459e+06</td>
+      <td>2.152963e+06</td>
+      <td>36609.333333</td>
+      <td>4.618802</td>
+      <td>2.313353e+08</td>
+      <td>251706.893075</td>
+      <td>17749.333333</td>
+      <td>2364.826703</td>
+      <td>0.194749</td>
+      <td>0.0</td>
+      <td>0.158469</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>optimized</td>
+      <td>600</td>
+      <td>220</td>
+      <td>0.467581</td>
+      <td>0.081249</td>
+      <td>0.001897</td>
+      <td>0.000047</td>
+      <td>0.000059</td>
+      <td>1.462283e-06</td>
+      <td>505384.000000</td>
+      <td>0.000000</td>
+      <td>2.339280e+08</td>
+      <td>125402.726435</td>
+      <td>8.164693e+05</td>
+      <td>1.195263e+06</td>
+      <td>36710.666667</td>
+      <td>170.895680</td>
+      <td>2.337205e+08</td>
+      <td>309358.743968</td>
+      <td>19114.666667</td>
+      <td>2364.826703</td>
+      <td>0.169490</td>
+      <td>0.0</td>
+      <td>0.134997</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table><h2>Exponentes empíricos</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>varying</th>
+      <th>fixed</th>
+      <th>fixed_value</th>
+      <th>fit_log_log_slope</th>
+      <th>distinct_sizes</th>
+      <th>interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>train_rows</td>
+      <td>features</td>
+      <td>220</td>
+      <td>0.538184</td>
+      <td>3</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+  </tbody>
+</table><p>Un exponente medido con pocos tamaños no demuestra una complejidad asintótica. Los tiempos incluyen escalado, asignaciones, llamadas de biblioteca e iteraciones dependientes de datos; comparar con la expresión del solver y los parámetros realmente usados.</p><h2>Complejidad teórica condicional</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>training</th>
+      <th>inference</th>
+      <th>memory</th>
+      <th>condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>O(n p) copy/storage for brute-force search</td>
+      <td>O(m n p + m n log k) conservative brute-force distance/neighbor selection</td>
+      <td>O(n p + n q)</td>
+      <td>Euclidean brute-force; argpartition can reduce neighbor selection cost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>O(n p² + p³ + n p q) using dense normal equations/Cholesky, n &gt;= p</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p² + p q)</td>
+      <td>Solver-dependent; iterative lsqr instead costs O(I n p q), SVD has a different factorization cost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>O(I n p q) coordinate-descent sweeps</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p q)</td>
+      <td>I is actual sweeps to convergence; conditioning, alpha and tolerance affect I</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>O(p n log n) balanced-tree heuristic; O(p n²) degenerate worst case</td>
+      <td>O(m d q)</td>
+      <td>O(n q) nodes plus training workspace</td>
+      <td>Split implementation and max_features modify p; q output work is implementation-dependent</td>
+    </tr>
+    <tr>
+      <td>RandomForest</td>
+      <td>O(T p n log n) balanced trees, plus multioutput split work</td>
+      <td>O(m T d q)</td>
+      <td>O(T n q)</td>
+      <td>T trees; bounded depth/sampled rows and p_split &lt;= p change constants; parallel wall time is hardware-dependent</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>O(q T [n p d + 2^d p B]) rough histogram-growth bound</td>
+      <td>O(m q T d)</td>
+      <td>O(n p + p B 2^d + q T 2^d)</td>
+      <td>One regressor per output, histogram bins B; conservative row scans per depth. Cached quantization, histogram subtraction, sampling and early stopping change actual cost</td>
+    </tr>
+    <tr>
+      <td>LinearSVR</td>
+      <td>O(q I n p) linear primal/dual iteration heuristic</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p q)</td>
+      <td>Liblinear iteration counts are data-dependent; this bound is not for kernel SVR</td>
+    </tr>
+    <tr>
+      <td>HAR-Ridge+XGBoost</td>
+      <td>O(n p_H² + p_H³ + n p_H q) + XGBoost training cost on p_X</td>
+      <td>O(m p_H q + m q T d)</td>
+      <td>Ridge workspace + XGBoost workspace/model</td>
+      <td>p_H HAR inputs and p_X tree inputs; weighted prediction adds O(m q); serial component fits are summed</td>
+    </tr>
+  </tbody>
+</table><p>n: training observations; p: input columns; q: outputs (seven here); m: inference rows; T: trees; d: tree depth; I: solver iterations; k: neighbors; B: histogram bins</p><p>Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.</p><p>El RMSE de este benchmark no sustituye las métricas externas de validación anidada.</p><p>RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.</p><p>El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.</p><p>tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.</p><p>Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características.</p><p>Referencias: <a href="https://scikit-learn.org/stable/computing/computational_performance.html">scikit-learn computational performance</a> | <a href="https://scikit-learn.org/stable/modules/neighbors.html">scikit-learn nearest-neighbor algorithms</a> | <a href="https://xgboost.readthedocs.io/en/stable/treemethod.html">XGBoost tree methods</a></p></html>

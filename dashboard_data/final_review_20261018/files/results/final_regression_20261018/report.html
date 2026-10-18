@@ -1,0 +1,1262 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Regresión final: estudio local anidado</title><style>body{font:17px/1.55 system-ui;color:#17324d;max-width:1180px;margin:35px auto;padding:0 20px}h1{line-height:1.2}table{border-collapse:collapse;font-size:13px;width:100%;margin:15px 0}td,th{padding:7px;border-bottom:1px solid #ccc;text-align:left}th{background:#edf4f7}.scroll{overflow-x:auto}img{max-width:100%;height:auto}.decision{background:#fbf4e5;padding:20px;border-left:5px solid #bd811f}a{color:#087f8c}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}</style>
+<aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="9d92783df398d087bf6a1428185b26d08db6913333968b3e8613ab6a678043b1"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Regresión final: modelos, optimización y validación temporal</h1><p>18 de octubre de 2026 · estudio local</p>
+<div class="decision"><b>Ningún candidato cumple la regla retrospectiva reforzada de reemplazo.</b><p>Al generarse este informe local, GitHub y Render todavía no se habían actualizado. Esta copia publica la revisión el 18/10/2026 y conserva los modelos vigentes y la presentación original. Los años 2025 y 2026 ya habían sido examinados; este estudio produce evidencia retrospectiva y no una confirmación en datos nunca observados.</p></div>
+<h2>Qué se implementó y ejecutó</h2><ul><li>Siete familias exigidas: k-NN, Ridge, Lasso, Decision Tree, Random Forest, XGBoost y SVR; cuatro optimizadores por familia.</li><li>448 combinaciones de referencia (7×4×4 activos×4 ventanas) y 64 HAR-XG adicionales; 512 modelos finales congelados antes de generar pronósticos de prueba.</li><li>Validación anidada: seis bloques externos de 2024, dos bloques internos por entrenamiento externo y tres bloques internos para seleccionar el ajuste final de 660 orígenes. Cada etiqueta de entrenamiento termina estrictamente antes del bloque que se evalúa.</li><li>Grid, Random, TPE bayesiano y DEAP genético; ocho evaluaciones únicas por búsqueda. Grid recorre un prefijo cartesiano: es una búsqueda acotada, no exhaustiva. TPE y genética disponen de pocas iteraciones adaptativas; no se afirma convergencia ni superioridad universal.</li></ul>
+<p>Se registraron 28,672 evaluaciones internas y 3,072 evaluaciones externas. El error interno guía la selección; el error externo evalúa el procedimiento. Elegir posteriormente un procedimiento por su media externa es un paso adicional de selección.</p>
+<h2>HAR-XG optimizado frente al modelo original</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>mse2025</th>
+      <th>mse2026</th>
+      <th>reduction2026_pct</th>
+      <th>p_dm_holm4</th>
+      <th>gain_ci_low</th>
+      <th>gain_ci_high</th>
+      <th>strong_retrospective_gate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR-XG [grid]</td>
+      <td>0,451651</td>
+      <td>0,437531</td>
+      <td>4,05888</td>
+      <td>0,656685</td>
+      <td>-0,000675315</td>
+      <td>0,0455451</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [random]</td>
+      <td>0,481248</td>
+      <td>0,444195</td>
+      <td>2,59777</td>
+      <td>0,759366</td>
+      <td>-0,0112749</td>
+      <td>0,0432099</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,458839</td>
+      <td>0,442956</td>
+      <td>2,86938</td>
+      <td>0,759366</td>
+      <td>-0,00554905</td>
+      <td>0,0378098</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [genetic]</td>
+      <td>0,466882</td>
+      <td>0,440576</td>
+      <td>3,39133</td>
+      <td>0,759366</td>
+      <td>-0,00519269</td>
+      <td>0,041059</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>La regla reforzada requiere menor MSE en 2026, DM-HLN/HAC con Holm4 favorable, intervalo estacionario de ganancia completamente positivo, pertenencia al MCS, rechazo SPA global y menor MSE en 2025. Todos los candidatos y ambos años se muestran, sin escoger el filtro o la familia de pruebas más favorable. Se requieren al menos 1.000 réplicas para MCS, SPA y los intervalos.</p><p>MSE y los intervalos de ganancia se expresan en puntos porcentuales de volatilidad al cuadrado. RMSE y MAE se expresan en puntos porcentuales; R² y la reducción porcentual son adimensionales.</p>
+<h2>Detalle por ventana objetivo</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>volatility_window</th>
+      <th>model</th>
+      <th>original_mse</th>
+      <th>mse</th>
+      <th>mse_reduction_pct</th>
+      <th>rmse</th>
+      <th>mae</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026</td>
+      <td>7</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>1,05334</td>
+      <td>1,02172</td>
+      <td>3,00112</td>
+      <td>0,933637</td>
+      <td>0,582868</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>7</td>
+      <td>HAR-XG [genetic]</td>
+      <td>1,05334</td>
+      <td>1,02052</td>
+      <td>3,11569</td>
+      <td>0,93586</td>
+      <td>0,580641</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>7</td>
+      <td>HAR-XG [grid]</td>
+      <td>1,05334</td>
+      <td>1,0111</td>
+      <td>4,00973</td>
+      <td>0,927012</td>
+      <td>0,574805</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>7</td>
+      <td>HAR-XG [random]</td>
+      <td>1,05334</td>
+      <td>1,01837</td>
+      <td>3,31967</td>
+      <td>0,931843</td>
+      <td>0,58323</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>14</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,395552</td>
+      <td>0,385608</td>
+      <td>2,51395</td>
+      <td>0,574303</td>
+      <td>0,327015</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>14</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,395552</td>
+      <td>0,381248</td>
+      <td>3,61608</td>
+      <td>0,570528</td>
+      <td>0,323303</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>14</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,395552</td>
+      <td>0,378244</td>
+      <td>4,37565</td>
+      <td>0,566976</td>
+      <td>0,319745</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>14</td>
+      <td>HAR-XG [random]</td>
+      <td>0,395552</td>
+      <td>0,385008</td>
+      <td>2,66545</td>
+      <td>0,573464</td>
+      <td>0,342762</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>21</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,22521</td>
+      <td>0,216182</td>
+      <td>4,00847</td>
+      <td>0,427918</td>
+      <td>0,226329</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>21</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,22521</td>
+      <td>0,217273</td>
+      <td>3,52397</td>
+      <td>0,426321</td>
+      <td>0,234547</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>21</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,22521</td>
+      <td>0,215776</td>
+      <td>4,18891</td>
+      <td>0,424679</td>
+      <td>0,227195</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>21</td>
+      <td>HAR-XG [random]</td>
+      <td>0,22521</td>
+      <td>0,227802</td>
+      <td>-1,15123</td>
+      <td>0,434258</td>
+      <td>0,244433</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>28</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,150069</td>
+      <td>0,14831</td>
+      <td>1,17215</td>
+      <td>0,351553</td>
+      <td>0,191655</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>28</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,150069</td>
+      <td>0,143264</td>
+      <td>4,53465</td>
+      <td>0,346807</td>
+      <td>0,18597</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>28</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,150069</td>
+      <td>0,145006</td>
+      <td>3,37376</td>
+      <td>0,348526</td>
+      <td>0,186725</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>28</td>
+      <td>HAR-XG [random]</td>
+      <td>0,150069</td>
+      <td>0,145599</td>
+      <td>2,97855</td>
+      <td>0,349444</td>
+      <td>0,190585</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>7</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>1,1864</td>
+      <td>1,17714</td>
+      <td>0,780608</td>
+      <td>0,984618</td>
+      <td>0,678098</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>7</td>
+      <td>HAR-XG [genetic]</td>
+      <td>1,1864</td>
+      <td>1,2066</td>
+      <td>-1,70291</td>
+      <td>1,00012</td>
+      <td>0,688469</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>7</td>
+      <td>HAR-XG [grid]</td>
+      <td>1,1864</td>
+      <td>1,16901</td>
+      <td>1,4662</td>
+      <td>0,980148</td>
+      <td>0,672721</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>7</td>
+      <td>HAR-XG [random]</td>
+      <td>1,1864</td>
+      <td>1,21302</td>
+      <td>-2,24382</td>
+      <td>0,999288</td>
+      <td>0,687794</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>14</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,368885</td>
+      <td>0,368528</td>
+      <td>0,0969393</td>
+      <td>0,546777</td>
+      <td>0,355756</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>14</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,368885</td>
+      <td>0,358819</td>
+      <td>2,72893</td>
+      <td>0,538634</td>
+      <td>0,346002</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>14</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,368885</td>
+      <td>0,353349</td>
+      <td>4,21174</td>
+      <td>0,536168</td>
+      <td>0,344087</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>14</td>
+      <td>HAR-XG [random]</td>
+      <td>0,368885</td>
+      <td>0,373592</td>
+      <td>-1,27608</td>
+      <td>0,550721</td>
+      <td>0,361718</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>21</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,18444</td>
+      <td>0,181088</td>
+      <td>1,81726</td>
+      <td>0,382346</td>
+      <td>0,244879</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>21</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,18444</td>
+      <td>0,183766</td>
+      <td>0,365166</td>
+      <td>0,384988</td>
+      <td>0,249018</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>21</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,18444</td>
+      <td>0,177353</td>
+      <td>3,84215</td>
+      <td>0,378897</td>
+      <td>0,239478</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>21</td>
+      <td>HAR-XG [random]</td>
+      <td>0,18444</td>
+      <td>0,193755</td>
+      <td>-5,0509</td>
+      <td>0,392398</td>
+      <td>0,254753</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>28</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,118999</td>
+      <td>0,108602</td>
+      <td>8,73691</td>
+      <td>0,293899</td>
+      <td>0,18222</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>28</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,118999</td>
+      <td>0,11834</td>
+      <td>0,553609</td>
+      <td>0,304174</td>
+      <td>0,189147</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>28</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,118999</td>
+      <td>0,106896</td>
+      <td>10,1707</td>
+      <td>0,292855</td>
+      <td>0,181663</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>28</td>
+      <td>HAR-XG [random]</td>
+      <td>0,118999</td>
+      <td>0,144623</td>
+      <td>-21,5332</td>
+      <td>0,324977</td>
+      <td>0,200773</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Comparaciones descriptivas dentro de cada objetivo. Una reducción negativa indica empeoramiento. La regla estadística principal se aplica al agregado global previamente declarado; estas filas no generan una búsqueda de la ventana más favorable ni nuevas afirmaciones de significancia.</p>
+<h2>Resultados externos de 2024</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>rmse_mean</th>
+      <th>rmse_sd</th>
+      <th>mae_mean</th>
+      <th>mae_sd</th>
+      <th>mse_mean</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,497868</td>
+      <td>0,131285</td>
+      <td>0,372755</td>
+      <td>0,0947326</td>
+      <td>0,37955</td>
+    </tr>
+    <tr>
+      <td>SVR [genetic]</td>
+      <td>0,495407</td>
+      <td>0,146329</td>
+      <td>0,368194</td>
+      <td>0,109061</td>
+      <td>0,381727</td>
+    </tr>
+    <tr>
+      <td>SVR [bayesian]</td>
+      <td>0,496078</td>
+      <td>0,147854</td>
+      <td>0,367813</td>
+      <td>0,110317</td>
+      <td>0,3826</td>
+    </tr>
+    <tr>
+      <td>SVR [random]</td>
+      <td>0,496473</td>
+      <td>0,146329</td>
+      <td>0,370779</td>
+      <td>0,109161</td>
+      <td>0,383962</td>
+    </tr>
+    <tr>
+      <td>SVR [grid]</td>
+      <td>0,496602</td>
+      <td>0,147437</td>
+      <td>0,370849</td>
+      <td>0,112113</td>
+      <td>0,387646</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [grid]</td>
+      <td>0,499273</td>
+      <td>0,139302</td>
+      <td>0,37556</td>
+      <td>0,102408</td>
+      <td>0,388394</td>
+    </tr>
+    <tr>
+      <td>Lasso [bayesian]</td>
+      <td>0,492708</td>
+      <td>0,149398</td>
+      <td>0,368462</td>
+      <td>0,110944</td>
+      <td>0,390164</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [genetic]</td>
+      <td>0,501602</td>
+      <td>0,132306</td>
+      <td>0,373913</td>
+      <td>0,0964755</td>
+      <td>0,392267</td>
+    </tr>
+    <tr>
+      <td>Ridge [bayesian]</td>
+      <td>0,500881</td>
+      <td>0,143968</td>
+      <td>0,372794</td>
+      <td>0,104478</td>
+      <td>0,392425</td>
+    </tr>
+    <tr>
+      <td>Lasso [genetic]</td>
+      <td>0,491984</td>
+      <td>0,154097</td>
+      <td>0,368888</td>
+      <td>0,114955</td>
+      <td>0,392718</td>
+    </tr>
+    <tr>
+      <td>Ridge [genetic]</td>
+      <td>0,502413</td>
+      <td>0,147335</td>
+      <td>0,376258</td>
+      <td>0,112164</td>
+      <td>0,39295</td>
+    </tr>
+    <tr>
+      <td>Lasso [grid]</td>
+      <td>0,514015</td>
+      <td>0,161067</td>
+      <td>0,390004</td>
+      <td>0,125294</td>
+      <td>0,431555</td>
+    </tr>
+    <tr>
+      <td>XGBoost [grid]</td>
+      <td>0,520555</td>
+      <td>0,146827</td>
+      <td>0,388103</td>
+      <td>0,111305</td>
+      <td>0,435669</td>
+    </tr>
+    <tr>
+      <td>HAR-XG [random]</td>
+      <td>0,524137</td>
+      <td>0,130921</td>
+      <td>0,391285</td>
+      <td>0,0956957</td>
+      <td>0,435706</td>
+    </tr>
+    <tr>
+      <td>Ridge [grid]</td>
+      <td>0,519161</td>
+      <td>0,160169</td>
+      <td>0,395221</td>
+      <td>0,123814</td>
+      <td>0,436534</td>
+    </tr>
+    <tr>
+      <td>XGBoost [bayesian]</td>
+      <td>0,527816</td>
+      <td>0,140569</td>
+      <td>0,391037</td>
+      <td>0,106514</td>
+      <td>0,438401</td>
+    </tr>
+    <tr>
+      <td>Ridge [random]</td>
+      <td>0,524435</td>
+      <td>0,154672</td>
+      <td>0,402026</td>
+      <td>0,120115</td>
+      <td>0,438728</td>
+    </tr>
+    <tr>
+      <td>Lasso [random]</td>
+      <td>0,52416</td>
+      <td>0,151321</td>
+      <td>0,400537</td>
+      <td>0,120868</td>
+      <td>0,444427</td>
+    </tr>
+    <tr>
+      <td>XGBoost [random]</td>
+      <td>0,533958</td>
+      <td>0,145368</td>
+      <td>0,394918</td>
+      <td>0,109019</td>
+      <td>0,449657</td>
+    </tr>
+    <tr>
+      <td>XGBoost [genetic]</td>
+      <td>0,536877</td>
+      <td>0,131922</td>
+      <td>0,400949</td>
+      <td>0,0981171</td>
+      <td>0,457156</td>
+    </tr>
+    <tr>
+      <td>kNN [grid]</td>
+      <td>0,555092</td>
+      <td>0,13884</td>
+      <td>0,411482</td>
+      <td>0,110098</td>
+      <td>0,472504</td>
+    </tr>
+    <tr>
+      <td>RandomForest [grid]</td>
+      <td>0,551563</td>
+      <td>0,14531</td>
+      <td>0,415702</td>
+      <td>0,111035</td>
+      <td>0,47383</td>
+    </tr>
+    <tr>
+      <td>kNN [random]</td>
+      <td>0,559567</td>
+      <td>0,137884</td>
+      <td>0,416056</td>
+      <td>0,107981</td>
+      <td>0,478945</td>
+    </tr>
+    <tr>
+      <td>RandomForest [genetic]</td>
+      <td>0,560342</td>
+      <td>0,15773</td>
+      <td>0,417642</td>
+      <td>0,115738</td>
+      <td>0,492698</td>
+    </tr>
+    <tr>
+      <td>RandomForest [bayesian]</td>
+      <td>0,566617</td>
+      <td>0,156141</td>
+      <td>0,421909</td>
+      <td>0,114579</td>
+      <td>0,501574</td>
+    </tr>
+    <tr>
+      <td>RandomForest [random]</td>
+      <td>0,568778</td>
+      <td>0,150159</td>
+      <td>0,422704</td>
+      <td>0,110007</td>
+      <td>0,50277</td>
+    </tr>
+    <tr>
+      <td>kNN [bayesian]</td>
+      <td>0,572112</td>
+      <td>0,130458</td>
+      <td>0,422441</td>
+      <td>0,105463</td>
+      <td>0,505273</td>
+    </tr>
+    <tr>
+      <td>kNN [genetic]</td>
+      <td>0,578494</td>
+      <td>0,127255</td>
+      <td>0,42461</td>
+      <td>0,104793</td>
+      <td>0,516063</td>
+    </tr>
+    <tr>
+      <td>DecisionTree [genetic]</td>
+      <td>0,652629</td>
+      <td>0,151573</td>
+      <td>0,471463</td>
+      <td>0,119244</td>
+      <td>0,661022</td>
+    </tr>
+    <tr>
+      <td>DecisionTree [bayesian]</td>
+      <td>0,654248</td>
+      <td>0,15216</td>
+      <td>0,472742</td>
+      <td>0,120212</td>
+      <td>0,670734</td>
+    </tr>
+    <tr>
+      <td>DecisionTree [grid]</td>
+      <td>0,653783</td>
+      <td>0,16424</td>
+      <td>0,470749</td>
+      <td>0,129463</td>
+      <td>0,679666</td>
+    </tr>
+    <tr>
+      <td>DecisionTree [random]</td>
+      <td>0,673808</td>
+      <td>0,155238</td>
+      <td>0,481087</td>
+      <td>0,120474</td>
+      <td>0,720185</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Primero se promedian activos y ventanas dentro de cada bloque; la desviación de esta tabla se calcula entre los seis bloques. La tabla por configuración conserva sus seis resultados. El original elegido utilizando todo 2024 se excluye de estas pruebas externas.</p>
+<h2>Convergencia numérica de Lasso</h2>
+<p>Se inspeccionaron 64 modelos Lasso finales y 448 salidas: 0 modelos y 0 horizontes alcanzan max_iter. No se asume que todos los ajustes convergieron. Alcanzar el límite puede perjudicar el resultado de Lasso; la comparación describe los procedimientos ejecutados, sin demostrar superioridad universal frente a toda implementación convergida.</p><p>Se conservan n_iter_, dual_gap_, tol y max_iter. El dual gap se reporta crudo: su umbral depende de la escala del target centrado y ponderado de entrenamiento. Detenerse antes del límite no se presenta como certificación independiente. Esta inspección de modelos finales no reconstruye las advertencias de los ajustes internos/externos. No se reentrenaron ni excluyeron resultados. <a href="lasso_convergence/report.html">Abrir auditoría por modelo y horizonte</a>.</p>
+<h2>Evaluaciones retrospectivas</h2>
+<h3>2026</h3>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>model</th>
+      <th>mse</th>
+      <th>rmse</th>
+      <th>mae</th>
+      <th>r2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [genetic]</td>
+      <td>0,427513</td>
+      <td>0,562446</td>
+      <td>0,316601</td>
+      <td>0,754606</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [bayesian]</td>
+      <td>0,429275</td>
+      <td>0,563763</td>
+      <td>0,315734</td>
+      <td>0,752896</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [grid]</td>
+      <td>0,433918</td>
+      <td>0,560853</td>
+      <td>0,31743</td>
+      <td>0,753927</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [random]</td>
+      <td>0,435653</td>
+      <td>0,562656</td>
+      <td>0,322304</td>
+      <td>0,752286</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [grid]</td>
+      <td>0,436465</td>
+      <td>0,567429</td>
+      <td>0,322496</td>
+      <td>0,750949</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,437531</td>
+      <td>0,566798</td>
+      <td>0,327117</td>
+      <td>0,751143</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [genetic]</td>
+      <td>0,437929</td>
+      <td>0,568245</td>
+      <td>0,324059</td>
+      <td>0,750202</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [grid]</td>
+      <td>0,43827</td>
+      <td>0,563217</td>
+      <td>0,319862</td>
+      <td>0,752255</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [bayesian]</td>
+      <td>0,438435</td>
+      <td>0,568941</td>
+      <td>0,320598</td>
+      <td>0,749568</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [random]</td>
+      <td>0,43971</td>
+      <td>0,568864</td>
+      <td>0,321899</td>
+      <td>0,748755</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [random]</td>
+      <td>0,440311</td>
+      <td>0,565966</td>
+      <td>0,32282</td>
+      <td>0,750532</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,440576</td>
+      <td>0,569879</td>
+      <td>0,331115</td>
+      <td>0,747099</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [genetic]</td>
+      <td>0,44079</td>
+      <td>0,570459</td>
+      <td>0,322513</td>
+      <td>0,747683</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,442956</td>
+      <td>0,571853</td>
+      <td>0,331967</td>
+      <td>0,747202</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [random]</td>
+      <td>0,444195</td>
+      <td>0,572252</td>
+      <td>0,340252</td>
+      <td>0,745424</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [bayesian]</td>
+      <td>0,444992</td>
+      <td>0,57352</td>
+      <td>0,325931</td>
+      <td>0,745329</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,456042</td>
+      <td>0,579586</td>
+      <td>0,344786</td>
+      <td>0,740759</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [bayesian]</td>
+      <td>0,45743</td>
+      <td>0,579546</td>
+      <td>0,335222</td>
+      <td>0,739029</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [grid]</td>
+      <td>0,459136</td>
+      <td>0,58086</td>
+      <td>0,33483</td>
+      <td>0,737646</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [random]</td>
+      <td>0,467443</td>
+      <td>0,592736</td>
+      <td>0,35033</td>
+      <td>0,731481</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [genetic]</td>
+      <td>0,467662</td>
+      <td>0,585395</td>
+      <td>0,34279</td>
+      <td>0,730643</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [genetic]</td>
+      <td>0,467997</td>
+      <td>0,592978</td>
+      <td>0,35224</td>
+      <td>0,731375</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [bayesian]</td>
+      <td>0,470647</td>
+      <td>0,594612</td>
+      <td>0,354472</td>
+      <td>0,730142</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [grid]</td>
+      <td>0,472711</td>
+      <td>0,596835</td>
+      <td>0,35288</td>
+      <td>0,72922</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [random]</td>
+      <td>0,482787</td>
+      <td>0,595027</td>
+      <td>0,34583</td>
+      <td>0,723475</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [grid]</td>
+      <td>0,519573</td>
+      <td>0,628705</td>
+      <td>0,379455</td>
+      <td>0,698396</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [random]</td>
+      <td>0,526366</td>
+      <td>0,622503</td>
+      <td>0,362811</td>
+      <td>0,701668</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [bayesian]</td>
+      <td>0,528021</td>
+      <td>0,623489</td>
+      <td>0,363137</td>
+      <td>0,70032</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [grid]</td>
+      <td>0,529506</td>
+      <td>0,623113</td>
+      <td>0,364168</td>
+      <td>0,700556</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [genetic]</td>
+      <td>0,530252</td>
+      <td>0,623815</td>
+      <td>0,364509</td>
+      <td>0,699907</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [random]</td>
+      <td>0,530436</td>
+      <td>0,633013</td>
+      <td>0,381359</td>
+      <td>0,693341</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [bayesian]</td>
+      <td>0,530536</td>
+      <td>0,63329</td>
+      <td>0,38192</td>
+      <td>0,692958</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [genetic]</td>
+      <td>0,537306</td>
+      <td>0,637166</td>
+      <td>0,381066</td>
+      <td>0,690393</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Persistencia</td>
+      <td>0,795143</td>
+      <td>0,767783</td>
+      <td>0,434525</td>
+      <td>0,545999</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3>2025</h3>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>model</th>
+      <th>mse</th>
+      <th>rmse</th>
+      <th>mae</th>
+      <th>r2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [grid]</td>
+      <td>0,451651</td>
+      <td>0,547017</td>
+      <td>0,359488</td>
+      <td>0,746643</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0,458839</td>
+      <td>0,55191</td>
+      <td>0,365238</td>
+      <td>0,743009</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,464681</td>
+      <td>0,558168</td>
+      <td>0,375569</td>
+      <td>0,737997</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0,466882</td>
+      <td>0,556978</td>
+      <td>0,368159</td>
+      <td>0,736411</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [bayesian]</td>
+      <td>0,476969</td>
+      <td>0,560174</td>
+      <td>0,364462</td>
+      <td>0,731404</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [genetic]</td>
+      <td>0,477856</td>
+      <td>0,562727</td>
+      <td>0,371558</td>
+      <td>0,732901</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [bayesian]</td>
+      <td>0,479832</td>
+      <td>0,565097</td>
+      <td>0,373782</td>
+      <td>0,730622</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [random]</td>
+      <td>0,47997</td>
+      <td>0,564394</td>
+      <td>0,373716</td>
+      <td>0,731004</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [random]</td>
+      <td>0,481248</td>
+      <td>0,566846</td>
+      <td>0,376259</td>
+      <td>0,729997</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [bayesian]</td>
+      <td>0,482548</td>
+      <td>0,566782</td>
+      <td>0,374908</td>
+      <td>0,729011</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [genetic]</td>
+      <td>0,48395</td>
+      <td>0,563203</td>
+      <td>0,369304</td>
+      <td>0,727548</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [bayesian]</td>
+      <td>0,490854</td>
+      <td>0,570562</td>
+      <td>0,377936</td>
+      <td>0,723194</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [grid]</td>
+      <td>0,494043</td>
+      <td>0,570586</td>
+      <td>0,380103</td>
+      <td>0,723233</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [grid]</td>
+      <td>0,494993</td>
+      <td>0,573432</td>
+      <td>0,379643</td>
+      <td>0,718551</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [genetic]</td>
+      <td>0,499663</td>
+      <td>0,577537</td>
+      <td>0,385491</td>
+      <td>0,715055</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [random]</td>
+      <td>0,502721</td>
+      <td>0,57261</td>
+      <td>0,381302</td>
+      <td>0,718243</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [genetic]</td>
+      <td>0,506284</td>
+      <td>0,577544</td>
+      <td>0,384245</td>
+      <td>0,715361</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [random]</td>
+      <td>0,509114</td>
+      <td>0,578276</td>
+      <td>0,385443</td>
+      <td>0,714723</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [random]</td>
+      <td>0,509589</td>
+      <td>0,583665</td>
+      <td>0,391528</td>
+      <td>0,707476</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [grid]</td>
+      <td>0,511643</td>
+      <td>0,575444</td>
+      <td>0,380561</td>
+      <td>0,714042</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [grid]</td>
+      <td>0,513144</td>
+      <td>0,580273</td>
+      <td>0,384025</td>
+      <td>0,712474</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [genetic]</td>
+      <td>0,516668</td>
+      <td>0,591169</td>
+      <td>0,400636</td>
+      <td>0,708554</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [random]</td>
+      <td>0,516857</td>
+      <td>0,591746</td>
+      <td>0,401843</td>
+      <td>0,708329</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [grid]</td>
+      <td>0,519578</td>
+      <td>0,594527</td>
+      <td>0,403541</td>
+      <td>0,704992</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [bayesian]</td>
+      <td>0,520737</td>
+      <td>0,593118</td>
+      <td>0,403702</td>
+      <td>0,708072</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [bayesian]</td>
+      <td>0,555661</td>
+      <td>0,610281</td>
+      <td>0,411129</td>
+      <td>0,691468</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [random]</td>
+      <td>0,555733</td>
+      <td>0,610304</td>
+      <td>0,41088</td>
+      <td>0,691276</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [grid]</td>
+      <td>0,565408</td>
+      <td>0,61334</td>
+      <td>0,414441</td>
+      <td>0,687301</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [genetic]</td>
+      <td>0,565501</td>
+      <td>0,61348</td>
+      <td>0,414542</td>
+      <td>0,687254</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [genetic]</td>
+      <td>0,628339</td>
+      <td>0,652484</td>
+      <td>0,448196</td>
+      <td>0,648184</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [grid]</td>
+      <td>0,632238</td>
+      <td>0,657704</td>
+      <td>0,450775</td>
+      <td>0,643455</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [random]</td>
+      <td>0,639017</td>
+      <td>0,660651</td>
+      <td>0,451846</td>
+      <td>0,639092</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [bayesian]</td>
+      <td>0,641554</td>
+      <td>0,660793</td>
+      <td>0,452133</td>
+      <td>0,640662</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Persistencia</td>
+      <td>0,828196</td>
+      <td>0,7477</td>
+      <td>0,497194</td>
+      <td>0,537732</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>358 orígenes en 2025; 236 en 2026. Las 112 salidas por fecha son dependientes: la inferencia usa una pérdida media por origen. RMSE macro es media de RMSE por serie, no la raíz del MSE global.</p>
+<h2>Diagnóstico, interpretación y eficiencia</h2><ul><li><a href="plots/train_validation_test_all/report.html">Train, validación externa OOF y test de los32 procedimientos</a>: mismo ejemplo BTC/w21/h1; modelos finales congelados, replay de siete salidas test y verificación de objetivos/pérdidas OOF.</li><li><a href="evaluation/report.html">MCS, SPA, GW, DM-HLN, tamaños de efecto e intervalos estacionarios</a>.</li><li><a href="evaluation/residuals/report.html">White, BDS, normalidad, ACF y Ljung–Box: tablas y paneles</a> (<a href="evaluation/residuals/coverage.json">cobertura</a>). Las pruebas nominales con supuestos IID requieren cautela ante dependencia temporal.</li><li><a href="outer_comparison/summary.json">Friedman/Nemenyi y diagrama de diferencia crítica</a>: análisis auxiliar exploratorio con seis bloques cronológicos dependientes.</li><li><a href="explain_best/report.html">SHAP del procedimiento con menor MSE externo observado en 2024</a>: selección entre las 32 alternativas, sin elegirlo con 2026.</li><li><a href="explain_global/report.html">SHAP global adicional de HAR-XG: todos los activos, ventanas y siete horizontes de 2026</a>.</li><li><a href="explain/report.html">Dos explicaciones locales SHAP y comparación SHAP/LIME de XGBoost</a>.</li><li><a href="efficiency/report.html">Complejidad, tiempos, memoria y comparación estándar/seleccionado</a>.</li><li><a href="sensitivity/report.html">Semillas y experimento de Successive Halving</a>.</li></ul>
+<p><a href="sensitivity/optimizer_benchmark/report.html">Comparación controlada de los cuatro optimizadores</a>: 36 búsquedas independientes y secuenciales, con tres repeticiones. Los tiempos de la matriz principal se midieron bajo carga concurrente; la reanudación cambió de tres a seis trabajadores y quedó registrada sin modificar el protocolo congelado.</p>
+<h2>Curvas y conjuntos</h2>
+<figure><img src="plots/anytime_evaluations.png" alt="anytime_evaluations"></figure>
+<figure><img src="plots/anytime_seconds.png" alt="anytime_seconds"></figure>
+<figure><img src="plots/outer_fit_predict_cost.png" alt="outer_fit_predict_cost"></figure>
+<figure><img src="plots/train_validation_test.png" alt="train_validation_test"></figure>
+<h2>EDA y límites pendientes</h2><p>Las correcciones locales de información mutua, VIF, estacionalidad intradía y referencia HAR se conservan en <a href="../professor_feedback_20261018/informe.html">el informe de la primera revisión</a>. La dependencia residual puede persistir. Eliminar una columna HAR redundante cambia su regularización: aquí se evalúa como arquitectura nueva, no como mejora garantizada por el VIF.</p><p>El EDA original se hizo después del primer modelo; esa cronología se declara sin reescribirla. Los presupuestos reducidos y la exploración previa de ambos años limitan la conclusión. El siguiente contraste confirmatorio necesita un periodo no inspeccionado y el procedimiento congelado.</p>
+<h2>Reproducibilidad</h2>
+<p>71 pruebas registradas. Se verificaron 209 archivos protegidos originales y los 512 modelos finales. Todas las salidas se guardaron en el nuevo experimento local.</p>
+<p><a href="protocol.json">Protocolo de entrenamiento</a> · <a href="inference_plan.json">Plan de inferencia</a> · <a href="selected_inputs.csv">Modelos seleccionados</a> · <a href="master_trials.csv">Registro maestro de búsquedas</a> · <a href="outer_metrics.csv">Métricas externas</a> · <a href="nested_calendar.csv">Auditoría temporal</a> · <a href="review_summary.json">Resumen de revisión</a></p></html>

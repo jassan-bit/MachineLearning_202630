@@ -1,0 +1,200 @@
+{
+  "created_at_utc": "2026-10-18T20:27:02.549106+00:00",
+  "publication": "LOCAL ONLY",
+  "publication_authorized": false,
+  "no_primary_model_change": true,
+  "primary_selection_sha256": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+  "own_source_sha256": "e8a50e1efed172e47391cc584499a6dad6c13d80b043bcfde33103348e8ba00f",
+  "primary_sources_sha256": {
+    "src/run_final_regression.py": "c2ee4099cdd6d6776e5add60243dc3dcb5de02cb8d5d927bfc3646c35203e09e",
+    "src/final_regression_core.py": "f1590cb19a9075ad03decd02c4c8cd6e05ea0130e8f19fe8c76d3fb2f2516029",
+    "src/final_regression_search.py": "02f5ad5d3da725a50d2a9bd9b71157b518be99e61c30fa0d482428339edf31bb",
+    "src/optimize_minute_svr.py": "3fa639b4750312eafd12df3a34bc08730a4c770098141d71aa179bad0b70579d",
+    "src/improve_classical_forecast.py": "f3f8699c3c79e16b8fb3ced76c84941fc254b3412f4becc11f0ce8b1d9c62008",
+    "src/export_classical_holdout_baselines.py": "a9287eb03a078fca74e1eed00819efd952a0c8e733edf5e7ef28cb08134515b3"
+  },
+  "primary_artifacts_sha256": {
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\protocol.json": "43525a3d4d1f934d455972bc1c89f16a5200efbad485a9f6db1fa47d0da123f6",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\selection_freeze.json": "80626f43ece8925c4c9e5dd3c769f2273d4fecdea8bc7b505748b347acd3b771",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\selected_inputs.csv": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\status.json": "614e33328d412d63fcac37de6217def53cd0f38c8bfac5d78921d779d1a87c46",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\protected_before.json": "ce7d965b1581a674aa7cb360c7f2c8096444f6291ca9bb431791189310be957c",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\predictions_2026.csv.gz": "d56ee1c31f7723e4552dcf36bc3acd074a820bc7f1ff9853016c9ffb5412fa08"
+  },
+  "primary_optimizer_logs_sha256": {
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_RandomForest_s42\\search_0_random.json": "efec6d9f0233ea3c2f16573cccd7d4041de10c194f6edd679c8ea7a3e0410ca8",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_RandomForest_s42\\search_0_bayesian.json": "53300c139e89c9bf36c5aab414ebe7cecda727554fb8179b4ddd2c4dff7b380b",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_RandomForest_s42\\search_0_genetic.json": "0dc848753b14517bf39279bbe7babd5a902bb1d00cbf9db147c2cce248d15c47",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_XGBoost_s42\\search_0_random.json": "f7b8b98b8e9c58fd91d868c4a463af73c5d6da8435594fcc7a0d51b878fbf7eb",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_XGBoost_s42\\search_0_bayesian.json": "79c24080d1eda0d3389376fcf9be28f9182a3ef35ca1af9b23c453e946273568",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_XGBoost_s42\\search_0_genetic.json": "9108b038877724cdec2342ef3a288281dc4ad3474b45f2b8164f899429812da2",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_HAR-XG_s42\\search_0_random.json": "09372cd3839bdbfd4f3011b74cd833124a8156c3701924c474ce7dd845a1b246",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_HAR-XG_s42\\search_0_bayesian.json": "eb4dc240cdc78d7dc61f8677d2d1da71bc30165c35a0b26b32df20d2ffa48494",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\tasks\\BTCUSDT_w21_HAR-XG_s42\\search_0_genetic.json": "fa144ffbe1cd7046a5e8985a704d1a92e9b76f1d51ea1f30164673ff8bb3e6e3"
+  },
+  "matrix_sha256": {
+    "BTCUSDT_w7/X": "284cc8a65e9672d04fe77360dfa154de6ff8bb508346add4742998be83a715f6",
+    "BTCUSDT_w7/y": "fa2e05bebc88257eb0a1104d3fc73e69cb79550b6b9e64247b96e087da517254",
+    "BTCUSDT_w14/X": "c733db2dcd5791cc7ed3c04d799871790c8511fcfe2c87393a9aa04792bacbc0",
+    "BTCUSDT_w14/y": "3e8c2fe74029d7fd95115d156f67da806bd28ef88b527d3f095b0eda1fea0448",
+    "BTCUSDT_w21/X": "c207c2e56ac05d593b7256a3d92794ee9b1042716edcbad50268463b21a87011",
+    "BTCUSDT_w21/y": "42ea4ec784d31e84a06dece1572e70b1edc24068e8c0df9a6eecfd97a94fc21d",
+    "BTCUSDT_w28/X": "3213baac55f201073214e85daaeff2d4c6b6979572e6c16e9d1efa6f3163643d",
+    "BTCUSDT_w28/y": "278faf319fb345cf859c892cd80b516a76a6bac68d321baa1bf28b15793c6dfe",
+    "ETHUSDT_w7/X": "d6ecb9569dd43b7d48e782bba2a739e7d86256369fa604ef0aae161c7f0038da",
+    "ETHUSDT_w7/y": "ee43dd6997205ec023b1dfe3ab644eca89fd8604320df91e9f1f080b34a55bbd",
+    "ETHUSDT_w14/X": "c0c329ce985079d9c10a7608574da114b70eb66cef29b9f2d6c89f92195cec8d",
+    "ETHUSDT_w14/y": "bfd78cae04694130f09d59d2a43ee0ee71510da75c238df6305cbe0846c48af4",
+    "ETHUSDT_w21/X": "5d5e4578eab97e60e5eca12179ee5fc378a5a3147b8b66c0dbe3cb4419e8caed",
+    "ETHUSDT_w21/y": "4877e28165242ad3d880d69cf419749d934765d3d3b737990feded911deee6c0",
+    "ETHUSDT_w28/X": "cb0f8e0cebe6e6521f2f2614879af66f74464e906a90a02848bead3b6357cbad",
+    "ETHUSDT_w28/y": "235a23895fc2e17dc75d4d11507d5deefc1222bb0865be6242653fdaf5777cd1",
+    "BNBUSDT_w7/X": "68ef1809614f2367f577eeaa857f8c63e469bd40c599aaf7ec5f0a134bff5041",
+    "BNBUSDT_w7/y": "b3df6e9868c15a819c8e1e4281236a7dac0762ced8cfd41743a56323ca78a5db",
+    "BNBUSDT_w14/X": "0695390636c3bf2d6e52efae2ec9cca57bf696706f9ff5f5eba102dcda7ff473",
+    "BNBUSDT_w14/y": "0c8dc9364dce0afdc01ca5c651c65b29cd37c508f044bddbc8525c41d43afef8",
+    "BNBUSDT_w21/X": "9bc0725b60ae5d42dac3cce7d5a9a838b680898d857920e460074efda5c08f85",
+    "BNBUSDT_w21/y": "51ca8e83be90a4601e9a81fafbdcc97483737a033ec76892e3881b358db9b0a8",
+    "BNBUSDT_w28/X": "4a5bef98ea3b9c2eeb54ffc7bf6dbdac3e6d00100bf027eecbbcf017e14f3958",
+    "BNBUSDT_w28/y": "95e66be5b46fd98b053e6cceabd4bd93a8ca887766ed913c9d1f8802a722ba97",
+    "XRPUSDT_w7/X": "21413d61ddf3adac72ee012cb635717cfa2479821b76bff9723d6f8da9859c77",
+    "XRPUSDT_w7/y": "21fc5b362bb306a86f4db2cca60f637bad7d2361cea7b587bffca1554a987b0f",
+    "XRPUSDT_w14/X": "536d941909be6e3f0d2bdee9d92d1a2b59d35228e687a98185b34d4410f16bbb",
+    "XRPUSDT_w14/y": "bbfc586ea72f10f9a54c76c2750720343eccf1bf9b7135ca356896fd7f590a84",
+    "XRPUSDT_w21/X": "ff9938f606db239284361c206591820e1fa0e76aa9fdb91d03f5b6d5b1185cdc",
+    "XRPUSDT_w21/y": "59b35869fb4ac1e917c30b077c48e1383786486c0f7d917b2f3cd68748892435",
+    "XRPUSDT_w28/X": "0689cc4ee92e98d80ed399a0429d0d3cf7382fc41ff1e963d4e45e7597b8f444",
+    "XRPUSDT_w28/y": "212e234535b9673031f693ed2e76d27ed39f81b2b410496609352c9416b0d4dc"
+  },
+  "families": [
+    "RandomForest",
+    "XGBoost",
+    "HAR-XG"
+  ],
+  "methods": [
+    "grid",
+    "random",
+    "bayesian",
+    "genetic"
+  ],
+  "estimator_seeds": [
+    42,
+    7,
+    99
+  ],
+  "estimator_variation": "Fixed selected42 hyperparameters; fit7/99 only on660 development origins",
+  "estimator_new_fits": 384,
+  "test_periods": "2025/2026 already inspected; auxiliary retrospective diagnostics only",
+  "no_seed_selection": "Report every seed outcome; no min-over-test-seeds or candidate replacement",
+  "optimizer_seeds": [
+    42,
+    7,
+    99
+  ],
+  "optimizer_methods": [
+    "random",
+    "bayesian",
+    "genetic"
+  ],
+  "optimizer_tasks": "BTCUSDT/w21; RF, XGBoost, HAR-XG; estimator always42; same3inner development folds",
+  "optimizer_budget": 8,
+  "controlled_optimizer_benchmark": {
+    "new_searches": 36,
+    "repetitions": 3,
+    "methods": [
+      "grid",
+      "random",
+      "bayesian",
+      "genetic"
+    ],
+    "families": [
+      "RandomForest",
+      "XGBoost",
+      "HAR-XG"
+    ],
+    "search_seed": 42,
+    "estimator_seed": 42,
+    "workers": 1,
+    "n_inner": 3,
+    "budget": 8,
+    "cache": "fresh independent InnerObjective per run; no intermethod fit reuse",
+    "instruction": "Run after heavy tasks finish; exclude historical concurrent timing"
+  },
+  "halving": {
+    "resources": [
+      16,
+      32,
+      64
+    ],
+    "reduction": 2,
+    "candidate_counts": [
+      8,
+      4,
+      2
+    ],
+    "candidates": [
+      {
+        "candidate": 0,
+        "input_window": 14,
+        "learning_rate": 0.05,
+        "max_depth": 1,
+        "weight_power": 0
+      },
+      {
+        "candidate": 1,
+        "input_window": 28,
+        "learning_rate": 0.05,
+        "max_depth": 2,
+        "weight_power": 0
+      },
+      {
+        "candidate": 2,
+        "input_window": 28,
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "weight_power": 0
+      },
+      {
+        "candidate": 3,
+        "input_window": 7,
+        "learning_rate": 0.1,
+        "max_depth": 1,
+        "weight_power": 2
+      },
+      {
+        "candidate": 4,
+        "input_window": 28,
+        "learning_rate": 0.1,
+        "max_depth": 1,
+        "weight_power": 2
+      },
+      {
+        "candidate": 5,
+        "input_window": 7,
+        "learning_rate": 0.05,
+        "max_depth": 1,
+        "weight_power": 2
+      },
+      {
+        "candidate": 6,
+        "input_window": 14,
+        "learning_rate": 0.05,
+        "max_depth": 1,
+        "weight_power": 2
+      },
+      {
+        "candidate": 7,
+        "input_window": 7,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "weight_power": 0
+      }
+    ],
+    "sampler_seed": 42,
+    "comparison": "Independent timing against same8candidates at64trees; no held-out prediction"
+  },
+  "outer_folds_not_reselected": true,
+  "workers": 1,
+  "numerical_threads": 1
+}

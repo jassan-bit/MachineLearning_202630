@@ -1,0 +1,52 @@
+{
+  "created_at_utc": "2026-10-18T22:07:12.264111+00:00",
+  "year": 2025,
+  "windows": [
+    7,
+    14,
+    21,
+    28
+  ],
+  "original_model_A": "HAR-Ridge + XGBoost",
+  "families": [
+    "kNN",
+    "Ridge",
+    "Lasso",
+    "DecisionTree",
+    "RandomForest",
+    "XGBoost",
+    "SVR"
+  ],
+  "optimizers": [
+    "grid",
+    "random",
+    "bayesian",
+    "genetic"
+  ],
+  "publication": "LOCAL ONLY",
+  "comparisons": 112,
+  "retrospective_user_requested_window_search": true,
+  "selection_rule_before_computation": "Most original wins under Holm112; then fewest benchmark wins Holm112; then most original wins Holm28; then smaller w. R2 never breaks ties.",
+  "majority": "More than14of28 across optimizers; more than3of7 within an optimizer",
+  "adjustment": "Holm7 per optimizer/window, Holm28 per window, Holm112 over4windows x28rivals",
+  "dm": "Bilateral HLN7, Bartlett HACmax(w+7-2, floor(4*(358/100)^(2/9)))=w+5, t357",
+  "loss": "Mean28squared errors per daily origin; original minus benchmark; dates/targets identical within w",
+  "primary_plan_unchanged": true,
+  "no_retraining": true,
+  "no_new_forecasts": true,
+  "prior_exploration_not_erased": true,
+  "untouched_confirmatory_test": false,
+  "input_source_sha256": {
+    "results\\final_regression_20261018\\predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "results\\final_regression_20261018\\evaluation\\macro_by_window.csv": "0c439147c64bd464d9b37758fa63ca155faff73a7ee6699bcdb6e44b9db8855b",
+    "results\\final_regression_20261018\\selected_inputs.csv": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+    "results\\final_regression_20261018\\inference_plan.json": "91749cb6f26b468e43b8880ec2398b200a6a775a81843490fa9e7bab40ca5090",
+    "results\\final_regression_20261018\\selection_freeze.json": "80626f43ece8925c4c9e5dd3c769f2273d4fecdea8bc7b505748b347acd3b771",
+    "results\\final_regression_20261018\\protected_before.json": "ce7d965b1581a674aa7cb360c7f2c8096444f6291ca9bb431791189310be957c",
+    "results\\final_regression_20261018\\dm_original_vs_optimized_w21_2025\\dm_all_28.csv": "005b9e24fd6ef0ceb59dd4b48b299b0ac2b75438c9d501bc9066435ffe96dd9e",
+    "src\\report_dm_windows_original.py": "c904c7b4fb5e304b1af4204f060a6c318ab3a92005ac59e55e91bd88f5716137",
+    "src\\report_dm_optimizers_w21.py": "82ec4a6ce923c6ffe55d80d861adc315825327aa7770d8da55f03bf4de8537af",
+    "volatility_dashboard\\diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585"
+  },
+  "github_or_render_updated": false
+}

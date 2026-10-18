@@ -12,6 +12,14 @@ def layout():
     panel = dataset()
     return html.Div([
         html.H2('EDA orientado a volatilidad'),html.P('La vista inicia en development. Explorar test es un análisis retrospectivo; las gráficas no modifican modelos ni características.'),
+        html.Details([html.Summary('EDA ampliado: información mutua, VIF y estacionalidad intradía'),
+            html.P('Complemento calculado exclusivamente con datos de desarrollo de 2023–2024. La información mutua describe asociación marginal; el VIF identifica redundancia lineal, sin demostrar qué variables mejoran el pronóstico. El EDA histórico se realizó después de la primera evaluación: recalcularlo no restaura un periodo no inspeccionado.'),
+            html.Img(src='/final-review/results/professor_feedback_20261018/diagnostics/intraday_development.png', alt='Perfil intradía de los cuatro activos en desarrollo 2023–2024', style={'maxWidth':'100%','height':'auto'}),
+            html.P('Esta figura muestra el periodo fijo 2023–2024 y no cambia con los filtros inferiores. En BTC, el pico se encuentra a las 14 UTC y el mínimo a las 4 UTC; razón pico/mínimo 3,67, con 729 de 731 días normalizables.'),
+            html.P([html.A('Informe e interpretación', href='/final-review/results/professor_feedback_20261018/informe.html'), ' · ',
+                html.A('Información mutua (CSV)', href='/final-review/results/professor_feedback_20261018/diagnostics/mutual_information.csv'), ' · ',
+                html.A('VIF (CSV)', href='/final-review/results/professor_feedback_20261018/diagnostics/variance_inflation.csv'), ' · ',
+                html.A('Perfil intradía (CSV)', href='/final-review/results/professor_feedback_20261018/diagnostics/intraday_summary.csv')])], className='panel'),
         html.Div([
             html.Div([html.Label('Activo'),dcc.Dropdown(list(panel.columns),'BTCUSDT',id='eda-symbol',clearable=False)]),
             html.Div([html.Label('Ventana de volatilidad'),dcc.Dropdown([7,14,21,28],7,id='eda-window',clearable=False)]),

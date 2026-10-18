@@ -1,0 +1,128 @@
+{
+  "status": "complete",
+  "elapsed_seconds": 822.2753421000089,
+  "publication": "LOCAL ONLY",
+  "publication_authorized": false,
+  "github_or_render_updated": false,
+  "estimator_new_fits": 384,
+  "estimator_metric_rows": 1152,
+  "optimizer_new_searches": 18,
+  "optimizer_seed_rows": 27,
+  "halving": {
+    "resources": [
+      16,
+      32,
+      64
+    ],
+    "reduction": 2,
+    "candidate_counts": [
+      8,
+      4,
+      2
+    ],
+    "fidelity": "number of boosting rounds / trees per direct horizon, refit at each stage",
+    "n_inner": 3,
+    "halving_best_candidate": 3,
+    "full_best_candidate": 3,
+    "halving_best_inner_mse": 0.07849691861119969,
+    "full_best_inner_mse": 0.07849691861119969,
+    "inner_mse_change_percent": 0.0,
+    "halving_seconds": 5.289876800001366,
+    "full_resource_seconds": 6.6311653000011574,
+    "speedup": 1.2535576064832823,
+    "halving_tree_rounds_x_folds": 1152,
+    "full_resource_tree_rounds_x_folds": 1536,
+    "tree_resource_reduction_percent": 25.0,
+    "note": "XGBoost has seven outputs; tree-round proxy omits common horizon factor7. Wall time includes refits.",
+    "no_test_selection": true,
+    "no_primary_model_change": true,
+    "limitation": "One predeclared BTC/w21 task and one seed; cannot generalize efficiency to every model"
+  },
+  "controlled_optimizer_searches": 36,
+  "controlled_optimizer_benchmark": {
+    "status": "complete",
+    "searches": 36,
+    "trials": 288,
+    "no_holdout_prediction": true,
+    "primary_model_unchanged": true,
+    "report": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\sensitivity\\optimizer_benchmark\\report.html",
+    "protocol": {
+      "new_timing_searches": 36,
+      "families": [
+        "RandomForest",
+        "XGBoost",
+        "HAR-XG"
+      ],
+      "methods": [
+        "grid",
+        "random",
+        "bayesian",
+        "genetic"
+      ],
+      "repetitions": 3,
+      "budget": 8,
+      "search_seed": 42,
+      "estimator_seed": 42,
+      "folds": 3,
+      "workers": 1,
+      "numerical_threads": 1,
+      "ordered_runs": "Rotate families and methods per repetition",
+      "cache": "Fresh private exact component cache per search; no intermethod fit reuse",
+      "timing": "perf_counter wall and process_time CPU; operator must run after heavy jobs finish",
+      "common_deadline": "Shortest complete wall duration per family; runtime-only descriptive deadline",
+      "anytime": "Best completed inner MSE by seconds and unique evaluations; absent before first result",
+      "interpretation": "Fixed-seed timing repetitions are not independent predictive samples",
+      "historical_concurrent_times_excluded": true,
+      "no_holdout_prediction": true,
+      "no_primary_model_change": true
+    }
+  },
+  "primary_seed": 42,
+  "auxiliary_seeds": [
+    7,
+    99
+  ],
+  "primary_models_unchanged": true,
+  "primary_selection_unchanged": true,
+  "matrices_unchanged": true,
+  "no_test_based_seed_or_hyperparameter_selection": true,
+  "primary_mcs_universe_unchanged": true,
+  "retrospective_only": true,
+  "report": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\sensitivity\\report.html",
+  "numeric_conclusions": {
+    "estimator_seed_variation": [
+      {
+        "year": 2025,
+        "auxiliary_model_seed_pairs": 24,
+        "mse_change_min_percent": -1.1769184324009418,
+        "mse_change_max_percent": 1.0490647051235813,
+        "mse_change_mean_percent": -0.061416078305350875,
+        "mse_change_std_percent": 0.4625405616478487,
+        "lower_than_primary42": 14,
+        "higher_than_primary42": 10,
+        "equal_to_primary42": 0
+      },
+      {
+        "year": 2026,
+        "auxiliary_model_seed_pairs": 24,
+        "mse_change_min_percent": -1.2287934211594465,
+        "mse_change_max_percent": 0.8554841689298653,
+        "mse_change_mean_percent": -0.2077346248776933,
+        "mse_change_std_percent": 0.47955932007511043,
+        "lower_than_primary42": 13,
+        "higher_than_primary42": 11,
+        "equal_to_primary42": 0
+      }
+    ],
+    "optimizer_cases": 9,
+    "optimizer_cases_with_changed_params": 9,
+    "halving_inner_mse_change_percent": 0.0,
+    "halving_tree_resource_reduction_percent": 25.0,
+    "no_seed_selected_from_test": true
+  },
+  "files": {
+    "model_seed_metrics": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\sensitivity\\model_seed_metrics.csv",
+    "optimizer_metrics": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\sensitivity\\optimizer_seed_metrics.csv",
+    "halving_summary": "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\sensitivity\\successive_halving_summary.json"
+  }
+}

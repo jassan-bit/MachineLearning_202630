@@ -1,0 +1,104 @@
+{
+  "status": "complete",
+  "diagnostic_only": true,
+  "model_or_feature_selection_performed": false,
+  "test_values_read": false,
+  "held_out_test_restored": false,
+  "github_or_render_updates_authorized": false,
+  "development_start": "2023-01-01 00:00:00+00:00",
+  "development_end_exclusive": "2025-01-01 00:00:00+00:00",
+  "training_target_end_exclusive": "2024-01-01 00:00:00+00:00",
+  "feature_dimensions": {
+    "HAR44": 44,
+    "daily6": 6
+  },
+  "targets": "Seven absolute daily volatility labels and the actual fitted relative corrections y/base - 1",
+  "origin_rule": "Shared finite 36-calendar-day blocks; 28 days of history through origin and all seven labels before the cutoff",
+  "counts": {
+    "mutual_information": 22400,
+    "variance_inflation": 1600,
+    "design_audit": 64,
+    "diagnostic_calendar": 954,
+    "intraday_minute_profile": 17280,
+    "intraday_hour_profile": 288,
+    "intraday_summary": 12
+  },
+  "input_prefixes": [
+    {
+      "symbol": "BTCUSDT",
+      "path": "data\\processed\\minute_2023_2025\\BTCUSDT.npy",
+      "accessed_values": 1052640,
+      "accessed_start_utc": "2023-01-01 00:00:00+00:00",
+      "accessed_end_exclusive_utc": "2025-01-01 00:00:00+00:00",
+      "development_float64_bytes_sha256": "cfde2c4b9e48e28dfe59a82cfaa1293e0499292013abbce9eb2432167e9565d2",
+      "held_out_values_accessed": false
+    },
+    {
+      "symbol": "ETHUSDT",
+      "path": "data\\processed\\minute_2023_2025\\ETHUSDT.npy",
+      "accessed_values": 1052640,
+      "accessed_start_utc": "2023-01-01 00:00:00+00:00",
+      "accessed_end_exclusive_utc": "2025-01-01 00:00:00+00:00",
+      "development_float64_bytes_sha256": "b2e4291203b123bf4590f1850b5d3e91470946198fb9b8bddafea9493f7b0fd8",
+      "held_out_values_accessed": false
+    },
+    {
+      "symbol": "BNBUSDT",
+      "path": "data\\processed\\minute_2023_2025\\BNBUSDT.npy",
+      "accessed_values": 1052640,
+      "accessed_start_utc": "2023-01-01 00:00:00+00:00",
+      "accessed_end_exclusive_utc": "2025-01-01 00:00:00+00:00",
+      "development_float64_bytes_sha256": "3e5229df9b5b26e446607b53233dc8cf678496842d2e4158f46248b9b827af6d",
+      "held_out_values_accessed": false
+    },
+    {
+      "symbol": "XRPUSDT",
+      "path": "data\\processed\\minute_2023_2025\\XRPUSDT.npy",
+      "accessed_values": 1052640,
+      "accessed_start_utc": "2023-01-01 00:00:00+00:00",
+      "accessed_end_exclusive_utc": "2025-01-01 00:00:00+00:00",
+      "development_float64_bytes_sha256": "72af72d130e8fb505bf05c8208793ae14f7724b35aa21dae4440a70a8ee7356b",
+      "held_out_values_accessed": false
+    }
+  ],
+  "source_sha256": {
+    "src\\professor_feedback_diagnostics.py": "7ebc8155d5c85275ce84a861f66a1f60e1142bb9e65dcf700ab92bba74572281",
+    "src\\improve_classical_forecast.py": "f3f8699c3c79e16b8fb3ced76c84941fc254b3412f4becc11f0ce8b1d9c62008",
+    "src\\optimize_minute_svr.py": "3fa639b4750312eafd12df3a34bc08730a4c770098141d71aa179bad0b70579d",
+    "src\\minute_experiment.py": "1e5a827637229d89237cbbefc393fa767f6b3874191658e828ebefec3f66773c",
+    "src\\volatility_experiment.py": "e58ffa13f0294cfcf01da07d785235ca3ccf1af914609ad605f9720d1abdbf74"
+  },
+  "output_sha256": {
+    "design_audit.csv": "98906c4b8051af3462c1d94cd21abf3f666e9f6b3f2bbda116e88e2062fe23b2",
+    "diagnostic_calendar.csv": "546f1964f5a4bc5017da04b941f5703a7176ec80c3d597178540dd0345758267",
+    "intraday_development.png": "730c4e8e98c5cbdebe949016d97b77ca8a592ce6a442de16d2391f3f75d53dc6",
+    "intraday_hour_profile.csv": "6d6d154187df2fd9e9876c550ce25fd4706bb40c925ab0950c45b91c4c02b124",
+    "intraday_minute_profile.csv": "aa882088e9475592b958f31a60a2e8b1c44255c8e01f18aae86edec077827496",
+    "intraday_summary.csv": "754b7755452cc17cda8207497bfbeeb46c33d99702c8e21bc917b475b7780f3f",
+    "mutual_information.csv": "c3d45a65ca87b2bdf7f202665b905b1fd7fffc40a91b8ff0ca4ff03d752aaf53",
+    "variance_inflation.csv": "9c7781420d0aa1611fedae8624309f10ca3806fb0ea726901c21d38df63041a1"
+  },
+  "methods": {
+    "mi": "sklearn continuous nearest-neighbor mutual_info_regression; k=5; seed=42; nats; sample-local standardization; negative estimates clipped to zero by the estimator",
+    "vif": "Auxiliary centered OLS for every nonconstant column against all other nonconstant columns; constants undefined; SSE/SST <= 1e-12 reported as linear dependency",
+    "intraday": "Raw valid minute-return profiles and complete-day normalized squared returns; UTC terminal candle opening slots; no gap crossing or interpolation",
+    "uncertainty": "Hourly individual percentile intervals from 499 circular bootstrap replicates of seven original calendar days; seed=42; missing calendar positions preserved"
+  },
+  "limitations": [
+    "This diagnostic was designed after the previous model and inspected 2025 results; development-only recomputation cannot make historical EDA prospective.",
+    "Marginal MI is a descriptive estimate, not conditional importance, a p-value, or proof of incremental prediction. Serial dependence and overlapping labels affect effective information.",
+    "Positive MI can reflect the current volatility normalization, shared returns, persistence, or estimator bias; absolute and fitted relative targets are shown separately.",
+    "VIF describes unpenalized linear redundancy. A threshold of 10 is an audit flag, not an instruction to remove predictors or a failure of Ridge.",
+    "Intraday intervals are individual and descriptive, without simultaneous coverage or a formal test of stable seasonality; days excluded for gaps can change the represented sample.",
+    "2023 and 2024 profiles are within development and do not establish stability in future years.",
+    "No trading performance or model improvement is demonstrated by these diagnostics alone."
+  ],
+  "versions": {
+    "python": "3.10.21",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "sklearn": "1.7.2"
+  },
+  "seconds": 310.5
+}

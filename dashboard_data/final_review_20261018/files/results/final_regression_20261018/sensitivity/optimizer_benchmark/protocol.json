@@ -1,0 +1,30 @@
+{
+  "new_timing_searches": 36,
+  "families": [
+    "RandomForest",
+    "XGBoost",
+    "HAR-XG"
+  ],
+  "methods": [
+    "grid",
+    "random",
+    "bayesian",
+    "genetic"
+  ],
+  "repetitions": 3,
+  "budget": 8,
+  "search_seed": 42,
+  "estimator_seed": 42,
+  "folds": 3,
+  "workers": 1,
+  "numerical_threads": 1,
+  "ordered_runs": "Rotate families and methods per repetition",
+  "cache": "Fresh private exact component cache per search; no intermethod fit reuse",
+  "timing": "perf_counter wall and process_time CPU; operator must run after heavy jobs finish",
+  "common_deadline": "Shortest complete wall duration per family; runtime-only descriptive deadline",
+  "anytime": "Best completed inner MSE by seconds and unique evaluations; absent before first result",
+  "interpretation": "Fixed-seed timing repetitions are not independent predictive samples",
+  "historical_concurrent_times_excluded": true,
+  "no_holdout_prediction": true,
+  "no_primary_model_change": true
+}

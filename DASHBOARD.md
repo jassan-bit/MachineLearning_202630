@@ -1,4 +1,72 @@
-> **Entregable vigente:** las métricas optimizadas están en http://localhost:8051, servidas desde `results/optimized_minute_2023_2025`. El dashboard/API descritos a continuación corresponden al modelo original y permanecen como referencia histórica.
+## Revisión publicada del 18 de octubre de 2026
+
+La aplicación de Render (`volatility_dashboard.app:server`) incorpora una cuarta
+pestaña, **Optimización y revisión final**, accesible en
+https://machinelearning-202630.onrender.com/?tab=revision-final.
+Conserva el HAR-Ridge + XGBoost original como referencia: ninguna variante nueva
+cumplió la regla estadística principal para sustituirlo. Los resultados nuevos son
+retrospectivos; 2025 y enero–agosto de 2026 ya habían sido explorados.
+
+La revisión compara siete familias de regresión con Grid Search, Random Search,
+Optuna TPE y DEAP (28 procedimientos), presenta validación temporal anidada,
+MI/VIF/estacionalidad intradía, residuos, SHAP/LIME y eficiencia computacional.
+La vista de 2026 no reutiliza pruebas DM de 2025. Los valores p Holm7, Holm28 y
+Holm112 conservan las familias declaradas aunque cambien los filtros.
+La ventana retrospectiva más favorable es w=7: 21/28 contrastes favorables con
+Holm7 por optimizador, 14/28 con Holm28 y 12/28 con Holm112; no hay mayoría
+global al ajustar la búsqueda de las cuatro ventanas.
+
+Render lee exclusivamente el paquete precomputado
+`dashboard_data/final_review_20261018/`; no entrena ni importa Optuna, DEAP,
+SHAP o LIME para servir esta revisión. `/final-review/` abre la entrega HTML
+con sus informes, figuras, tablas, notebook y PDF. Las notas históricas de
+“solo local” de los informes conservados se contextualizan mediante una banda
+en las copias públicas. Los originales del estudio permanecen intactos.
+`/review-release.json` identifica el paquete y el commit desplegado.
+
+Para reconstruir el paquete desde el workspace completo:
+
+```powershell
+.\.venv-repro\Scripts\python.exe src/package_final_review_web.py
+.\.venv-repro\Scripts\python.exe -m unittest discover -s tests -p "test_final_review*.py"
+.\.venv-repro\Scripts\python.exe -m unittest discover -s tests -p "test_package_final_review_web.py"
+```
+
+`bundle_manifest.json` registra hashes de fuentes y copias públicas y comprueba
+los enlaces locales. Publicar solo el paquete, los módulos de interfaz y sus
+pruebas; los datos de entrenamiento y modelos se conservan sin cambios. El
+servicio sigue usando `render.yaml` y `requirements-render.txt`.
+
+La documentación siguiente describe las entregas y servicios anteriores.
+
+## Jupyter Book compilado para entregar al profesor
+
+La entrega reúne la portada y los cinco capítulos del sitio, la auditoría del
+4 de octubre de 2026, la evaluación adicional de 2026 y el código fuente completo.
+
+- [ZIP de entrega](delivery/JBook_Completo_202630.zip): libro MyST compilado,
+  notebook, fuentes, datos procesados, modelos y los 144 ZIP RAW con checksums.
+- [Notebook independiente y ejecutado](delivery/jbook_portable/JBook_Completo_202630.ipynb):
+  contiene textos, figuras, salidas, fuentes, datos procesados y modelos incorporados.
+- [Lectura HTML sin conexión](delivery/jbook_portable/LEER_JBOOK.html): abrir con
+  doble clic, sin Python ni servidor.
+
+Para ejecutar el notebook en otro computador, usar Python 3.10 e instalar una
+vez `python -m pip install -r requirements-jbook.txt`. Abrir el `.ipynb` en
+Jupyter o VS Code y elegir **Ejecutar todo**. La ejecución predeterminada
+verifica los archivos y recalcula predicciones, métricas e intervalos desde los
+modelos guardados, en una carpeta temporal y sin red. Las opciones de recálculo
+del EDA y reentrenamiento quedan disponibles al final del notebook.
+
+Para consultar la navegación original de MyST, descomprimir el ZIP y ejecutar
+`abrir_libro.bat` en Windows o `python abrir_libro.py` en cualquier sistema.
+Las instrucciones están en `LEEME.txt`; las comprobaciones, en `VERIFICACION.json`.
+La instalación inicial de Python/paquetes puede requerir internet. La auditoría
+RAW completa utiliza la carpeta `proyecto` del ZIP; esos archivos originales
+no se duplican dentro del notebook.
+
+Para regenerar esta entrega desde el proyecto completo:
+`python src/build_portable_jbook.py`.
 
 ## Alcance del sitio publicado
 

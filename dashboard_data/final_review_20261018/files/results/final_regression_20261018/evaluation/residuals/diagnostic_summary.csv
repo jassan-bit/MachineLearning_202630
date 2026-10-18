@@ -1,0 +1,5 @@
+diagnostic,attempted_series,finite_p_values,nominal_rejections_5pct,holm_rejections_5pct
+White,7616,7616,3311,805
+BDS (IID),7616,7616,7059,6711
+Jarque–Bera,7616,7616,7615,7615
+Ljung–Box,7616,7616,7061,6805

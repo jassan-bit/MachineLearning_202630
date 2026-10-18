@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "reviewed_at_utc": "2026-10-18T20:51:11.113821+00:00",
+  "protected_original_files_checked": 209,
+  "frozen_models_checked": 512,
+  "primary_sources_checked": 6,
+  "generated_artifacts_checked": 1682,
+  "standalone_links_checked": 47,
+  "broken_standalone_links": [],
+  "compiled_book_pages": 11,
+  "compiled_pdf_pages": 10,
+  "presentation_duration_seconds": 600,
+  "main_tests_passed": 71,
+  "builder_tests_rerun_after_editorial_changes": 8,
+  "visual_review": [
+    "PDF contact sheet and final slides06/09 inspected; labels and tables legible",
+    "Global/local SHAP figures and actual train/OOF/test chart inspected"
+  ],
+  "manifest_sha256": "81569f87ba17994a61118150b52c6299e9db6dde328f4b7490c9998034a36a90",
+  "github_or_render_updated": false,
+  "strong_retrospective_rule_passed": false
+}

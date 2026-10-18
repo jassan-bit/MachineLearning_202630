@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "checked_predictions": 40096,
+  "models": 16,
+  "serialization_max_absolute_error": 1.7763568394002505e-15,
+  "temporal_folds": 6,
+  "xgboost_reference_reproduced": true,
+  "common_targets_verified": true
+}

@@ -1,0 +1,31 @@
+{
+  "estimator_seed_variation": [
+    {
+      "year": 2025,
+      "auxiliary_model_seed_pairs": 24,
+      "mse_change_min_percent": -1.1769184324009418,
+      "mse_change_max_percent": 1.0490647051235813,
+      "mse_change_mean_percent": -0.061416078305350875,
+      "mse_change_std_percent": 0.4625405616478487,
+      "lower_than_primary42": 14,
+      "higher_than_primary42": 10,
+      "equal_to_primary42": 0
+    },
+    {
+      "year": 2026,
+      "auxiliary_model_seed_pairs": 24,
+      "mse_change_min_percent": -1.2287934211594465,
+      "mse_change_max_percent": 0.8554841689298653,
+      "mse_change_mean_percent": -0.2077346248776933,
+      "mse_change_std_percent": 0.47955932007511043,
+      "lower_than_primary42": 13,
+      "higher_than_primary42": 11,
+      "equal_to_primary42": 0
+    }
+  ],
+  "optimizer_cases": 9,
+  "optimizer_cases_with_changed_params": 9,
+  "halving_inner_mse_change_percent": 0.0,
+  "halving_tree_resource_reduction_percent": 25.0,
+  "no_seed_selected_from_test": true
+}

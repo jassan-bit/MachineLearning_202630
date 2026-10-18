@@ -1,0 +1,53 @@
+{
+  "status": "complete",
+  "procedures": 32,
+  "panels": 32,
+  "symbol": "BTCUSDT",
+  "volatility_window": 21,
+  "horizon": 1,
+  "all_final_models_replayed": true,
+  "all_oof_targets_and_losses_verified": true,
+  "test_exports_read_once_each": true,
+  "no_training": true,
+  "github_or_render_updated": false,
+  "source_sha256": {
+    "predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "predictions_2026.csv.gz": "d56ee1c31f7723e4552dcf36bc3acd074a820bc7f1ff9853016c9ffb5412fa08",
+    "tasks/BTCUSDT_w21_kNN_s42/outer_predictions.csv.gz": "d1b4067cfb4a833dc971ea6b785ec0f8eac03cd6dd679c65b5e5404d5b1aa700",
+    "tasks/BTCUSDT_w21_Ridge_s42/outer_predictions.csv.gz": "b3f53c26017684efc6a7c019be36b6592a0c213d6b9ef5cdcf3a539647cf24fc",
+    "tasks/BTCUSDT_w21_Lasso_s42/outer_predictions.csv.gz": "98f8684a588d877a5fcbba8b9cfbe9a22a5e7f472ea6e15174d5e409c5f8d69e",
+    "tasks/BTCUSDT_w21_DecisionTree_s42/outer_predictions.csv.gz": "03e1a6eb9074df83493c44b439fac3a8fa9f5521baf23647462d0c45702eb370",
+    "tasks/BTCUSDT_w21_RandomForest_s42/outer_predictions.csv.gz": "cda3dbed81b17be098821645c8e4f365ec7af2b7427287da9fedb7cc96e6e450",
+    "tasks/BTCUSDT_w21_XGBoost_s42/outer_predictions.csv.gz": "7a7e4e55e045a69989afdf8b767b5ae8187963fa5c28fff643348a54171f9b7a",
+    "tasks/BTCUSDT_w21_SVR_s42/outer_predictions.csv.gz": "afb57c610c282494eaaa2d49bdf4960c1a8b49343ced9bc83eafcf2b9286f12a",
+    "tasks/BTCUSDT_w21_HAR-XG_s42/outer_predictions.csv.gz": "56817d147f342432289a821f7ae1133eb393da082883d7da476bed76d6142b37"
+  },
+  "selected_legacy": {
+    "model": "HAR-XG [bayesian]",
+    "family": "HAR-XG",
+    "method": "bayesian",
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "horizon": 1,
+    "train_rows": 660,
+    "outer_validation_rows": 359,
+    "test_rows_2025": 358,
+    "test_rows_2026": 236,
+    "csv": "HAR-XG_bayesian.csv",
+    "png": "HAR-XG_bayesian.png",
+    "csv_sha256": "7c4e5656ea83b3aaafcd922809146aeec2c9eaaab9faa1b39f796be039df9647",
+    "png_sha256": "9e3aaba65f5f12eed829ea98d27cf9c403bdf883a01bee73ffa442fb59d8d9b2",
+    "final_model_sha256": "86434e397bddf20d9674e7effbecddf60e3f4afaf0a5f5996d7c82569489ecd6",
+    "frozen_test_replayed": true,
+    "oof_targets_and_losses_verified": true
+  },
+  "index_csv": "index.csv",
+  "combined_predictions_csv": "predictions.csv",
+  "report": "report.html",
+  "limitations": [
+    "BTC/w21/h1 is the same representative example for every procedure; not every configuration is plotted.",
+    "Final-fit training curves are in-sample and overlap2024 OOF dates with different estimation roles.",
+    "OOF fold models were not serialized: saved forecasts reproduce targets and losses, without claiming model replay.",
+    "Both test years have been inspected; no plot establishes prospective generalization."
+  ]
+}

@@ -1,0 +1,323 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Eficiencia computacional</title><style>body{margin:30px;font:15px/1.5 system-ui;color:#243447}table{border-collapse:collapse;font-size:12px}td,th{padding:7px;border:1px solid #ccc}img{max-width:100%}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="f60bcb5b2fa8d311fffd3662ecee41aafe7b1a8d2b3a0bf838e544ef2609ad67"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>DecisionTree: generic_solver_relative_target</h1><p>Datos de desarrollo únicamente. El conjunto diagnóstico final se excluye del ajuste. Las mediciones incluyen instrumentación de memoria y no equivalen a latencia de producción sin instrumentación.</p><img src="fit_scaling.png" alt="Escalamiento de tiempos con n y p"><h2>Mediciones repetidas</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>variant</th>
+      <th>train_rows</th>
+      <th>features</th>
+      <th>fit_wall_seconds_mean</th>
+      <th>fit_wall_seconds_std</th>
+      <th>predict_wall_seconds_mean</th>
+      <th>predict_wall_seconds_std</th>
+      <th>predict_seconds_per_row_mean</th>
+      <th>predict_seconds_per_row_std</th>
+      <th>fit_python_traced_peak_bytes_mean</th>
+      <th>fit_python_traced_peak_bytes_std</th>
+      <th>fit_sampled_rss_peak_bytes_mean</th>
+      <th>fit_sampled_rss_peak_bytes_std</th>
+      <th>fit_sampled_rss_increment_bytes_mean</th>
+      <th>fit_sampled_rss_increment_bytes_std</th>
+      <th>predict_python_traced_peak_bytes_mean</th>
+      <th>predict_python_traced_peak_bytes_std</th>
+      <th>predict_sampled_rss_peak_bytes_mean</th>
+      <th>predict_sampled_rss_peak_bytes_std</th>
+      <th>predict_sampled_rss_increment_bytes_mean</th>
+      <th>predict_sampled_rss_increment_bytes_std</th>
+      <th>diagnostic_rmse_mean</th>
+      <th>diagnostic_rmse_std</th>
+      <th>diagnostic_mae_mean</th>
+      <th>diagnostic_mae_std</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>200</td>
+      <td>50</td>
+      <td>0.011290</td>
+      <td>0.000633</td>
+      <td>0.000592</td>
+      <td>0.000083</td>
+      <td>0.000019</td>
+      <td>0.000003</td>
+      <td>84616.666667</td>
+      <td>170.895680</td>
+      <td>2.377387e+08</td>
+      <td>2364.826703</td>
+      <td>19114.666667</td>
+      <td>2364.826703</td>
+      <td>15704.000000</td>
+      <td>31.176915</td>
+      <td>2.377387e+08</td>
+      <td>2364.826703</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.136153</td>
+      <td>0.0</td>
+      <td>0.091263</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>200</td>
+      <td>100</td>
+      <td>0.015382</td>
+      <td>0.002091</td>
+      <td>0.000759</td>
+      <td>0.000109</td>
+      <td>0.000024</td>
+      <td>0.000003</td>
+      <td>124372.666667</td>
+      <td>251.724717</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>20480.000000</td>
+      <td>0.000000</td>
+      <td>28775.333333</td>
+      <td>234.924101</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.138190</td>
+      <td>0.0</td>
+      <td>0.094275</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>200</td>
+      <td>175</td>
+      <td>0.021714</td>
+      <td>0.002555</td>
+      <td>0.000686</td>
+      <td>0.000096</td>
+      <td>0.000021</td>
+      <td>0.000003</td>
+      <td>184500.000000</td>
+      <td>31.176915</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>20480.000000</td>
+      <td>0.000000</td>
+      <td>47722.000000</td>
+      <td>0.000000</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.122129</td>
+      <td>0.0</td>
+      <td>0.086594</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>400</td>
+      <td>50</td>
+      <td>0.015063</td>
+      <td>0.000544</td>
+      <td>0.000768</td>
+      <td>0.000179</td>
+      <td>0.000024</td>
+      <td>0.000006</td>
+      <td>124677.666667</td>
+      <td>324.441572</td>
+      <td>2.377387e+08</td>
+      <td>2364.826703</td>
+      <td>19114.666667</td>
+      <td>2364.826703</td>
+      <td>15722.000000</td>
+      <td>0.000000</td>
+      <td>2.377387e+08</td>
+      <td>2364.826703</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.144023</td>
+      <td>0.0</td>
+      <td>0.097893</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>400</td>
+      <td>100</td>
+      <td>0.030772</td>
+      <td>0.013561</td>
+      <td>0.000812</td>
+      <td>0.000328</td>
+      <td>0.000025</td>
+      <td>0.000010</td>
+      <td>204598.666667</td>
+      <td>139.718765</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>20480.000000</td>
+      <td>0.000000</td>
+      <td>28522.000000</td>
+      <td>0.000000</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.144023</td>
+      <td>0.0</td>
+      <td>0.097893</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>generic_solver_relative_target</td>
+      <td>400</td>
+      <td>175</td>
+      <td>0.032557</td>
+      <td>0.001071</td>
+      <td>0.000540</td>
+      <td>0.000044</td>
+      <td>0.000017</td>
+      <td>0.000001</td>
+      <td>324518.000000</td>
+      <td>0.000000</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>20480.000000</td>
+      <td>0.000000</td>
+      <td>47820.666667</td>
+      <td>170.895680</td>
+      <td>2.377400e+08</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.114229</td>
+      <td>0.0</td>
+      <td>0.089330</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table><h2>Exponentes empíricos</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>varying</th>
+      <th>fixed</th>
+      <th>fixed_value</th>
+      <th>fit_log_log_slope</th>
+      <th>distinct_sizes</th>
+      <th>interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>train_rows</td>
+      <td>features</td>
+      <td>50</td>
+      <td>0.415970</td>
+      <td>2</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+    <tr>
+      <td>train_rows</td>
+      <td>features</td>
+      <td>100</td>
+      <td>1.000367</td>
+      <td>2</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+    <tr>
+      <td>train_rows</td>
+      <td>features</td>
+      <td>175</td>
+      <td>0.584339</td>
+      <td>2</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+    <tr>
+      <td>features</td>
+      <td>train_rows</td>
+      <td>200</td>
+      <td>0.519134</td>
+      <td>3</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+    <tr>
+      <td>features</td>
+      <td>train_rows</td>
+      <td>400</td>
+      <td>0.631533</td>
+      <td>3</td>
+      <td>descriptive small-grid exponent; overhead and solver iterations may dominate</td>
+    </tr>
+  </tbody>
+</table><p>Un exponente medido con pocos tamaños no demuestra una complejidad asintótica. Los tiempos incluyen escalado, asignaciones, llamadas de biblioteca e iteraciones dependientes de datos; comparar con la expresión del solver y los parámetros realmente usados.</p><h2>Complejidad teórica condicional</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>training</th>
+      <th>inference</th>
+      <th>memory</th>
+      <th>condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>O(n p) copy/storage for brute-force search</td>
+      <td>O(m n p + m n log k) conservative brute-force distance/neighbor selection</td>
+      <td>O(n p + n q)</td>
+      <td>Euclidean brute-force; argpartition can reduce neighbor selection cost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>O(n p² + p³ + n p q) using dense normal equations/Cholesky, n &gt;= p</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p² + p q)</td>
+      <td>Solver-dependent; iterative lsqr instead costs O(I n p q), SVD has a different factorization cost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>O(I n p q) coordinate-descent sweeps</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p q)</td>
+      <td>I is actual sweeps to convergence; conditioning, alpha and tolerance affect I</td>
+    </tr>
+    <tr>
+      <td>DecisionTree</td>
+      <td>O(p n log n) balanced-tree heuristic; O(p n²) degenerate worst case</td>
+      <td>O(m d q)</td>
+      <td>O(n q) nodes plus training workspace</td>
+      <td>Split implementation and max_features modify p; q output work is implementation-dependent</td>
+    </tr>
+    <tr>
+      <td>RandomForest</td>
+      <td>O(T p n log n) balanced trees, plus multioutput split work</td>
+      <td>O(m T d q)</td>
+      <td>O(T n q)</td>
+      <td>T trees; bounded depth/sampled rows and p_split &lt;= p change constants; parallel wall time is hardware-dependent</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>O(q T [n p d + 2^d p B]) rough histogram-growth bound</td>
+      <td>O(m q T d)</td>
+      <td>O(n p + p B 2^d + q T 2^d)</td>
+      <td>One regressor per output, histogram bins B; conservative row scans per depth. Cached quantization, histogram subtraction, sampling and early stopping change actual cost</td>
+    </tr>
+    <tr>
+      <td>LinearSVR</td>
+      <td>O(q I n p) linear primal/dual iteration heuristic</td>
+      <td>O(m p q)</td>
+      <td>O(n p + p q)</td>
+      <td>Liblinear iteration counts are data-dependent; this bound is not for kernel SVR</td>
+    </tr>
+    <tr>
+      <td>HAR-Ridge+XGBoost</td>
+      <td>O(n p_H² + p_H³ + n p_H q) + XGBoost training cost on p_X</td>
+      <td>O(m p_H q + m q T d)</td>
+      <td>Ridge workspace + XGBoost workspace/model</td>
+      <td>p_H HAR inputs and p_X tree inputs; weighted prediction adds O(m q); serial component fits are summed</td>
+    </tr>
+  </tbody>
+</table><p>n: training observations; p: input columns; q: outputs (seven here); m: inference rows; T: trees; d: tree depth; I: solver iterations; k: neighbors; B: histogram bins</p><p>Las mediciones usan datos de desarrollo; no seleccionan modelos ni parámetros con el holdout.</p><p>El RMSE de este benchmark no sustituye las métricas externas de validación anidada.</p><p>RSS corresponde al proceso actual, incluye bibliotecas y memoria retenida; el incremento respecto al inicio no es el tamaño del modelo.</p><p>El pico RSS es muestreado y puede perder asignaciones breves; procesos trabajadores no se incluyen. Preferir n_jobs=1 en estas comparaciones.</p><p>tracemalloc cuenta asignaciones trazadas y omite parte de la memoria nativa. Su instrumentación añade costo y se aplica igual a cada variante.</p><p>Los prefijos de columnas solo examinan escalamiento computacional y no son una búsqueda validada de características.</p><p>Referencias: <a href="https://scikit-learn.org/stable/computing/computational_performance.html">scikit-learn computational performance</a> | <a href="https://scikit-learn.org/stable/modules/neighbors.html">scikit-learn nearest-neighbor algorithms</a> | <a href="https://xgboost.readthedocs.io/en/stable/treemethod.html">XGBoost tree methods</a></p></html>

@@ -1,0 +1,653 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ventanas: HAR original frente a 28 benchmarks</title><style>body{font:16px/1.5 system-ui;color:#17324d;max-width:1300px;margin:35px auto;padding:0 20px}table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ccd7df;text-align:left}th{background:#edf4f7}.scroll{overflow-x:auto}.notice{background:#fbf4e5;border-left:5px solid #bd811f;padding:15px}a{color:#087f8c}section{margin:28px 0}</style>
+<aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="7a4a642078b7e54621ca858b3abf2d3054a18600c270034a62e06a2be916d2fa"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Ventanas w=7, 14, 21 y 28: HAR-Ridge + XGBoost original</h1>
+<p><b>2025; cuatro activos; siete horizontes; 358 fechas comunes del 1 de enero al 24 de diciembre.</b> Modelo A siempre es HAR-Ridge + XGBoost original, sin modificar. Los 28 rivales son siete familias × cuatro optimizadores. Se excluyen las variantes HAR nuevas y persistencia.</p>
+<div class="notice"><b>Selección retrospectiva solicitada después de observar resultados.</b> Se muestran las cuatro ventanas y las tres familias de ajuste. Holm112 cubre los 112 contrastes de esta búsqueda; no elimina el sesgo de toda la exploración histórica ni confirma rendimiento futuro. No se modificó el modelo, la producción ni el plan primario.</div>
+<p>DM negativo favorece al original. La pérdida es MSE medio de 28 salidas por origen. DM bilateral con HLN(7), Bartlett HAC(w+5): 12, 19, 26 y 33 rezagos; referencia t con 357 grados de libertad. Las fechas y objetivos se aparean dentro de cada ventana; distintas ventanas definen objetivos diferentes.</p>
+<h2>Comparación completa de ventanas</h2><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Ventana w</th>
+      <th>R² original (descriptivo)</th>
+      <th>Victorias: Holm7 por grupo</th>
+      <th>Victorias: Holm28 por ventana</th>
+      <th>Victorias: Holm112 completo</th>
+      <th>Derrotas: Holm112</th>
+      <th>Mayoría con Holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>7</td>
+      <td>0,4711</td>
+      <td>21/28</td>
+      <td>14/28</td>
+      <td>12/28</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0,7610</td>
+      <td>9/28</td>
+      <td>6/28</td>
+      <td>5/28</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>0,8445</td>
+      <td>12/28</td>
+      <td>4/28</td>
+      <td>1/28</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>0,8755</td>
+      <td>3/28</td>
+      <td>2/28</td>
+      <td>2/28</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table></div>
+<p><b>La ventana w=7 reúne el mayor número de victorias significativas sobre los 28 rivales con Holm112. No alcanza una mayoría estricta (&gt;14 de 28) con ese ajuste; se conserva como la vista más favorable, sin afirmar mayoría.</b></p>
+<p>Regla de presentación fijada antes de este cálculo: maximizar victorias Holm112; desempatar por menos derrotas Holm112, más victorias Holm28 y menor w. R² se muestra sólo descriptivamente y no decide la selección.</p>
+<p>Holm7 ajusta siete rivales dentro de un optimizador y una ventana; el total de sus cuatro grupos no es un ajuste conjunto de 28. Holm28 ajusta las 28 comparaciones de una ventana. Holm112 ajusta las 4 × 28 comparaciones completas. Mayoría total significa al menos 15/28; mayoría dentro de un optimizador, al menos 4/7.</p>
+<h2>Detalle de las cuatro ventanas por optimizador</h2><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>volatility_window</th>
+      <th>optimizer</th>
+      <th>original_wins_holm7</th>
+      <th>benchmark_wins_holm7</th>
+      <th>no_rejection_holm7</th>
+      <th>majority_holm7</th>
+      <th>original_wins_holm28</th>
+      <th>benchmark_wins_holm28</th>
+      <th>no_rejection_holm28</th>
+      <th>majority_holm28</th>
+      <th>original_wins_holm112</th>
+      <th>benchmark_wins_holm112</th>
+      <th>no_rejection_holm112</th>
+      <th>majority_holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>7</td>
+      <td>grid</td>
+      <td>7</td>
+      <td>0</td>
+      <td>0</td>
+      <td>True</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>random</td>
+      <td>6</td>
+      <td>0</td>
+      <td>1</td>
+      <td>True</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>bayesian</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>genetic</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>2</td>
+      <td>0</td>
+      <td>5</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>grid</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>random</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>bayesian</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>genetic</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>2</td>
+      <td>0</td>
+      <td>5</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>grid</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>random</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>bayesian</td>
+      <td>2</td>
+      <td>0</td>
+      <td>5</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>genetic</td>
+      <td>4</td>
+      <td>0</td>
+      <td>3</td>
+      <td>True</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>grid</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>random</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>bayesian</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>1</td>
+      <td>0</td>
+      <td>6</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>genetic</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table></div>
+<h2>Cuatro tablas para la vista seleccionada: w=7</h2>
+<section><h3>Grid Search</h3><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>p Holm112</th>
+      <th>Decisión Holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,933</td>
+      <td>0,0001</td>
+      <td>0,0005</td>
+      <td>0,0021</td>
+      <td>0,0102</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-2,709</td>
+      <td>0,0071</td>
+      <td>0,0253</td>
+      <td>0,0919</td>
+      <td>0,5373</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-2,440</td>
+      <td>0,0152</td>
+      <td>0,0303</td>
+      <td>0,1515</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-6,182</td>
+      <td>1,73e-09</td>
+      <td>1,21e-08</td>
+      <td>4,79e-08</td>
+      <td>1,92e-07</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-4,344</td>
+      <td>1,82e-05</td>
+      <td>0,0001</td>
+      <td>0,0004</td>
+      <td>0,0019</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-2,746</td>
+      <td>0,0063</td>
+      <td>0,0253</td>
+      <td>0,0887</td>
+      <td>0,4878</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-2,014</td>
+      <td>0,0448</td>
+      <td>0,0448</td>
+      <td>0,3134</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div></section>
+<section><h3>Random Search</h3><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>p Holm112</th>
+      <th>Decisión Holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,831</td>
+      <td>0,0002</td>
+      <td>0,0006</td>
+      <td>0,0026</td>
+      <td>0,0145</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-2,437</td>
+      <td>0,0153</td>
+      <td>0,0359</td>
+      <td>0,1515</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-2,526</td>
+      <td>0,0120</td>
+      <td>0,0359</td>
+      <td>0,1317</td>
+      <td>0,8139</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-6,184</td>
+      <td>1,71e-09</td>
+      <td>1,20e-08</td>
+      <td>4,79e-08</td>
+      <td>1,92e-07</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-3,896</td>
+      <td>0,0001</td>
+      <td>0,0006</td>
+      <td>0,0021</td>
+      <td>0,0113</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-4,423</td>
+      <td>1,30e-05</td>
+      <td>7,78e-05</td>
+      <td>0,0003</td>
+      <td>0,0013</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-1,097</td>
+      <td>0,2733</td>
+      <td>0,2733</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div></section>
+<section><h3>Bayesiana (Optuna TPE)</h3><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>p Holm112</th>
+      <th>Decisión Holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,917</td>
+      <td>0,0001</td>
+      <td>0,0005</td>
+      <td>0,0021</td>
+      <td>0,0106</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-1,271</td>
+      <td>0,2047</td>
+      <td>0,6140</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-1,197</td>
+      <td>0,2320</td>
+      <td>0,6140</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-5,995</td>
+      <td>4,98e-09</td>
+      <td>3,48e-08</td>
+      <td>1,29e-07</td>
+      <td>5,47e-07</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-4,593</td>
+      <td>6,06e-06</td>
+      <td>3,63e-05</td>
+      <td>0,0001</td>
+      <td>0,0006</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-2,563</td>
+      <td>0,0108</td>
+      <td>0,0431</td>
+      <td>0,1294</td>
+      <td>0,7441</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-1,115</td>
+      <td>0,2654</td>
+      <td>0,6140</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div></section>
+<section><h3>Genética (DEAP)</h3><div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo B</th>
+      <th>DM-HLN</th>
+      <th>p bruto</th>
+      <th>p Holm7</th>
+      <th>p Holm28</th>
+      <th>p Holm112</th>
+      <th>Decisión Holm112</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>KNN</td>
+      <td>-3,933</td>
+      <td>0,0001</td>
+      <td>0,0006</td>
+      <td>0,0021</td>
+      <td>0,0102</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-2,399</td>
+      <td>0,0170</td>
+      <td>0,0509</td>
+      <td>0,1515</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>-1,533</td>
+      <td>0,1260</td>
+      <td>0,2521</td>
+      <td>0,7563</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>Decision Tree</td>
+      <td>-5,911</td>
+      <td>7,96e-09</td>
+      <td>5,57e-08</td>
+      <td>1,99e-07</td>
+      <td>8,67e-07</td>
+      <td>Rechaza H₀: favorece al original</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-3,485</td>
+      <td>0,0006</td>
+      <td>0,0028</td>
+      <td>0,0089</td>
+      <td>0,0509</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>-3,362</td>
+      <td>0,0009</td>
+      <td>0,0034</td>
+      <td>0,0129</td>
+      <td>0,0755</td>
+      <td>No rechaza H₀</td>
+    </tr>
+    <tr>
+      <td>SVR lineal</td>
+      <td>-1,097</td>
+      <td>0,2733</td>
+      <td>0,2733</td>
+      <td>1,0000</td>
+      <td>1,0000</td>
+      <td>No rechaza H₀</td>
+    </tr>
+  </tbody>
+</table></div></section>
+<p>No rechazar igualdad de pérdida no demuestra equivalencia. Los niveles de R² o MSE de objetivos con ventanas diferentes no prueban que un algoritmo haya mejorado.</p>
+<p><a href="dm_all_112.csv">112 contrastes completos</a> · <a href="window_summary.csv">Resumen de cuatro ventanas</a> · <a href="window_optimizer_summary.csv">Resumen por optimizador</a> · <a href="selected_window_28.csv">28 contrastes de la ventana seleccionada</a> · <a href="selected_window_tables.tex">Cuatro tablas LaTeX de la ventana seleccionada</a> · <a href="daily_losses.csv">Pérdidas diarias</a> · <a href="protocol.json">Protocolo</a> · <a href="summary.json">Verificaciones</a></p>
+<p>Ocho evaluaciones únicas por búsqueda: Grid limitado, no exhaustivo; Bayesiana = Optuna TPE; Genética = DEAP; SVR lineal. Hiperparámetros ya congelados, sin reentrenar. Esta revisión se publica el 18/10/2026; las fuentes corresponden al estudio local previo.</p></html>

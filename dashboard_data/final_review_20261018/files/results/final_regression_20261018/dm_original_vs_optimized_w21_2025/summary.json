@@ -1,0 +1,65 @@
+{
+  "status": "complete",
+  "comparisons": 28,
+  "tables": 4,
+  "benchmarks_per_table": 7,
+  "underlying_asset_specific_fits": 112,
+  "complete_daily_origins": 358,
+  "losses_per_origin": 28,
+  "forecasts_per_procedure": 10024,
+  "reference_mse": 0.1844395290325715,
+  "input_and_protected_files_unchanged": true,
+  "protected_original_files": 209,
+  "independent_holm_verification": true,
+  "counts": [
+    {
+      "method": "grid",
+      "original_wins_holm7": 3,
+      "benchmark_wins_holm7": 0,
+      "no_rejection_holm7": 4,
+      "original_wins_holm28": 1,
+      "benchmark_wins_holm28": 0
+    },
+    {
+      "method": "random",
+      "original_wins_holm7": 3,
+      "benchmark_wins_holm7": 0,
+      "no_rejection_holm7": 4,
+      "original_wins_holm28": 1,
+      "benchmark_wins_holm28": 0
+    },
+    {
+      "method": "bayesian",
+      "original_wins_holm7": 2,
+      "benchmark_wins_holm7": 0,
+      "no_rejection_holm7": 5,
+      "original_wins_holm28": 1,
+      "benchmark_wins_holm28": 0
+    },
+    {
+      "method": "genetic",
+      "original_wins_holm7": 4,
+      "benchmark_wins_holm7": 0,
+      "no_rejection_holm7": 3,
+      "original_wins_holm28": 1,
+      "benchmark_wins_holm28": 0
+    }
+  ],
+  "no_training": true,
+  "retrospective_exploratory": true,
+  "primary_plan_unchanged": true,
+  "github_or_render_updated": false,
+  "artifact_sha256": {
+    "daily_mse_29_procedures.csv": "b500278a841f103c20284748751e6224c34233d779716d0245f6f0cb05d508f3",
+    "dm_all_28.csv": "005b9e24fd6ef0ceb59dd4b48b299b0ac2b75438c9d501bc9066435ffe96dd9e",
+    "dm_bayesian.csv": "9621e262491c1c07596db2d18e92a97a31dc78c75d2e5f0075c30dcb7cda8884",
+    "dm_genetic.csv": "82aded14ed20b70cac92fc8185756889259365618295df3c895bdbaad1b84996",
+    "dm_grid.csv": "6089619fe07360f54ddad4e890d8926c08d85b9fdcae12405dc55cc1bbb0d646",
+    "dm_random.csv": "19ee32bb453ee3971688d6b5629823f84c05fbb5c21b8c78ae30d04c8974720f",
+    "hyperparameters_112_fits.csv": "2b5d4ca79eab575abd32be250ab66f114702555bfdc8372b6e35a85ace422561",
+    "metrics_w21.csv": "94aa63552751ca74068b74de3cea1331a19d0b408b024627ffcf3cb5ba88d1a7",
+    "protocol.json": "150685770f7012e96fceb25491b2f2d14db458f59820ad35f275c06319f16437",
+    "report.html": "4afae6e55b1609c627d055a0dfd0555878f30e78631ee899465517c3e4a62c96",
+    "tables_w21.tex": "973889c1e26fb614588a8d296f05d2ae26cc2facb43d43644d23cf02d9a3ccc3"
+  }
+}

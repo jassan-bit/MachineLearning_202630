@@ -1,0 +1,23 @@
+procedure,stage,resource_trees,candidate,inner_mse,seconds,params,n_inner,selection_data
+successive_halving,1,16,0,0.10823078829003589,0.17832769999222364,"{""input_window"": 14, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 16, ""weight_power"": 0}",3,development inner folds only
+successive_halving,1,16,1,0.10433018563159667,0.40723710000747815,"{""input_window"": 28, ""learning_rate"": 0.05, ""max_depth"": 2, ""n_estimators"": 16, ""weight_power"": 0}",3,development inner folds only
+successive_halving,1,16,2,0.10202690794644673,0.6570987000013702,"{""input_window"": 28, ""learning_rate"": 0.05, ""max_depth"": 3, ""n_estimators"": 16, ""weight_power"": 0}",3,development inner folds only
+successive_halving,1,16,3,0.09394472975238177,0.1051997000031406,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 16, ""weight_power"": 2}",3,development inner folds only
+successive_halving,1,16,4,0.09909963392458217,0.2429623000061838,"{""input_window"": 28, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 16, ""weight_power"": 2}",3,development inner folds only
+successive_halving,1,16,5,0.10690110151577084,0.09957500000018626,"{""input_window"": 7, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 16, ""weight_power"": 2}",3,development inner folds only
+successive_halving,1,16,6,0.1069195573122592,0.15232529999047983,"{""input_window"": 14, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 16, ""weight_power"": 2}",3,development inner folds only
+successive_halving,1,16,7,0.08787714065641346,0.22593880000931676,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 3, ""n_estimators"": 16, ""weight_power"": 0}",3,development inner folds only
+successive_halving,2,32,2,0.0919137511476683,1.2079252999974415,"{""input_window"": 28, ""learning_rate"": 0.05, ""max_depth"": 3, ""n_estimators"": 32, ""weight_power"": 0}",3,development inner folds only
+successive_halving,2,32,3,0.0835287714411602,0.1723509000003105,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 32, ""weight_power"": 2}",3,development inner folds only
+successive_halving,2,32,4,0.09402490508466689,0.3850811000011163,"{""input_window"": 28, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 32, ""weight_power"": 2}",3,development inner folds only
+successive_halving,2,32,7,0.0837536569451307,0.4353712000011001,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 3, ""n_estimators"": 32, ""weight_power"": 0}",3,development inner folds only
+successive_halving,3,64,3,0.07849691861119969,0.29255410000041593,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 2}",3,development inner folds only
+successive_halving,3,64,7,0.08614815645826274,0.7273948999936692,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 3, ""n_estimators"": 64, ""weight_power"": 0}",3,development inner folds only
+full_resource,1,64,0,0.08989523931440402,0.43948380000074394,"{""input_window"": 14, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 0}",3,development inner folds only
+full_resource,1,64,1,0.09009981929334426,1.339144400000805,"{""input_window"": 28, ""learning_rate"": 0.05, ""max_depth"": 2, ""n_estimators"": 64, ""weight_power"": 0}",3,development inner folds only
+full_resource,1,64,2,0.09016286046482636,2.328084900000249,"{""input_window"": 28, ""learning_rate"": 0.05, ""max_depth"": 3, ""n_estimators"": 64, ""weight_power"": 0}",3,development inner folds only
+full_resource,1,64,3,0.07849691861119969,0.28825959999812767,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 2}",3,development inner folds only
+full_resource,1,64,4,0.09085421516204689,0.7345660999999382,"{""input_window"": 28, ""learning_rate"": 0.1, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 2}",3,development inner folds only
+full_resource,1,64,5,0.08311198850974301,0.31891290000930894,"{""input_window"": 7, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 2}",3,development inner folds only
+full_resource,1,64,6,0.08391003892132284,0.4332834999950137,"{""input_window"": 14, ""learning_rate"": 0.05, ""max_depth"": 1, ""n_estimators"": 64, ""weight_power"": 2}",3,development inner folds only
+full_resource,1,64,7,0.08614815645826274,0.7492144999996526,"{""input_window"": 7, ""learning_rate"": 0.1, ""max_depth"": 3, ""n_estimators"": 64, ""weight_power"": 0}",3,development inner folds only

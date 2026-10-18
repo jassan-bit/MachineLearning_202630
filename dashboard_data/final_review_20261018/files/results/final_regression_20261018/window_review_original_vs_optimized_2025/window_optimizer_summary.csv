@@ -1,0 +1,17 @@
+volatility_window,optimizer,original_wins_holm7,benchmark_wins_holm7,no_rejection_holm7,majority_holm7,original_wins_holm28,benchmark_wins_holm28,no_rejection_holm28,majority_holm28,original_wins_holm112,benchmark_wins_holm112,no_rejection_holm112,majority_holm112
+7,grid,7,0,0,True,3,0,4,False,3,0,4,False
+7,random,6,0,1,True,4,0,3,True,4,0,3,True
+7,bayesian,4,0,3,True,3,0,4,False,3,0,4,False
+7,genetic,4,0,3,True,4,0,3,True,2,0,5,False
+14,grid,3,0,4,False,1,0,6,False,1,0,6,False
+14,random,1,0,6,False,1,0,6,False,1,0,6,False
+14,bayesian,1,0,6,False,1,0,6,False,1,0,6,False
+14,genetic,4,0,3,True,3,0,4,False,2,0,5,False
+21,grid,3,0,4,False,1,0,6,False,0,0,7,False
+21,random,3,0,4,False,1,0,6,False,0,0,7,False
+21,bayesian,2,0,5,False,1,0,6,False,1,0,6,False
+21,genetic,4,0,3,True,1,0,6,False,0,0,7,False
+28,grid,1,0,6,False,0,0,7,False,0,0,7,False
+28,random,1,0,6,False,1,0,6,False,1,0,6,False
+28,bayesian,1,0,6,False,1,0,6,False,1,0,6,False
+28,genetic,0,0,7,False,0,0,7,False,0,0,7,False

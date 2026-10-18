@@ -1,0 +1,14 @@
+{
+  "release_id": "final-regression-20261018-dcb2186ce42f",
+  "prepared_at_utc": "2026-10-18T22:36:08.505445+00:00",
+  "bundle_manifest_sha256": "dcb2186ce42fc488536cf68aa0c72f294f259aa11f361329516d52d90ebd0426",
+  "public_files": 328,
+  "reference_model": "HAR-Ridge + XGBoost (original)",
+  "reference_model_replaced": false,
+  "strong_retrospective_rule_passed": false,
+  "evaluation_scope": "Retrospective 2025 and January-August 2026",
+  "selected_comparison_window_2025": 7,
+  "selected_window_holm112_wins": 12,
+  "selected_window_comparisons": 28,
+  "global_majority_after_window_search": false
+}

@@ -1,0 +1,2697 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diagnóstico de residuos: tablas y paneles</title><style>body{font:16px/1.5 system-ui;color:#17324d;max-width:1250px;margin:2em auto;padding:0 1em}.scroll{overflow:auto}table{border-collapse:collapse;font-size:12px;margin:1em 0}td,th{padding:6px;border:1px solid #ddd}img{max-width:100%;height:auto}a{color:#087f8c}section{padding-top:1em;border-top:1px solid #ddd}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="ae2768bceb3fbde5863a185d92138ea4eea54edd95d538854f281bb4260e62c6"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Residuos: cobertura, pruebas y gráficos</h1><p>7616 series modelo/año/activo/ventana/horizonte. White, BDS y normalidad cubren todo el panel. ACF y Ljung–Box cubren todas las series. Se dibujan 68 paneles de BTCUSDT, w=21, h=1, configuración fijada antes de analizar errores.</p><p>Diagnóstico auxiliar retrospectivo. Los valores p nominales de White y Jarque–Bera pueden estar mal calibrados con dependencia serial. Holm ajusta multiplicidad; no corrige un test individual mal calibrado. No rechazar una hipótesis no demuestra independencia, homocedasticidad o equivalencia. Las ventanas objetivo se superponen.</p><h2>Resumen de todas las series evaluadas</h2>
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>diagnostic</th>
+      <th>attempted_series</th>
+      <th>finite_p_values</th>
+      <th>nominal_rejections_5pct</th>
+      <th>holm_rejections_5pct</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>White</td>
+      <td>7616</td>
+      <td>7616</td>
+      <td>3311</td>
+      <td>805</td>
+    </tr>
+    <tr>
+      <td>BDS (IID)</td>
+      <td>7616</td>
+      <td>7616</td>
+      <td>7059</td>
+      <td>6711</td>
+    </tr>
+    <tr>
+      <td>Jarque–Bera</td>
+      <td>7616</td>
+      <td>7616</td>
+      <td>7615</td>
+      <td>7615</td>
+    </tr>
+    <tr>
+      <td>Ljung–Box</td>
+      <td>7616</td>
+      <td>7616</td>
+      <td>7061</td>
+      <td>6805</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Los recuentos de rechazo son descriptivos. Cada diagnóstico tiene su propia familia Holm sobre todos sus modelos, años y configuraciones. Los casos no evaluables permanecen en el tamaño de la familia y no se cuentan como supuestos satisfechos.</p><ul><li>White: varianza auxiliar con intercepto, pronóstico y su cuadrado; no todos los regresores originales.</li><li>BDS: hipótesis IID, dimensión dos, distancia 1,5 desviaciones estándar.</li><li>Jarque–Bera: normalidad nominal.</li><li>Ljung–Box: ausencia de autocorrelación hasta el rezago declarado por fila.</li></ul><p>Residual = observado − pronosticado, en puntos porcentuales de volatilidad.</p><p><a href="all_series_ljung_box.csv">Ljung–Box completo</a> · <a href="all_series_acf.csv">Coeficientes ACF completos</a> · <a href="all_series_white_bds_normality.csv">White/BDS/normalidad completos</a> · <a href="representative_white_bds_normality.csv">CSV representativo</a> · <a href="diagnostic_summary.csv">Resumen de recuentos</a> · <a href="coverage.json">Cobertura y supuestos</a></p><h2>Paneles por modelo y año</h2>
+<details><summary>Ir a un modelo/año</summary><ul><li><a href="#panel1">DecisionTree [bayesian] · 2025</a></li><li><a href="#panel2">DecisionTree [genetic] · 2025</a></li><li><a href="#panel3">DecisionTree [grid] · 2025</a></li><li><a href="#panel4">DecisionTree [random] · 2025</a></li><li><a href="#panel5">HAR-Ridge + XGBoost · 2025</a></li><li><a href="#panel6">HAR-XG [bayesian] · 2025</a></li><li><a href="#panel7">HAR-XG [genetic] · 2025</a></li><li><a href="#panel8">HAR-XG [grid] · 2025</a></li><li><a href="#panel9">HAR-XG [random] · 2025</a></li><li><a href="#panel10">Lasso [bayesian] · 2025</a></li><li><a href="#panel11">Lasso [genetic] · 2025</a></li><li><a href="#panel12">Lasso [grid] · 2025</a></li><li><a href="#panel13">Lasso [random] · 2025</a></li><li><a href="#panel14">Persistencia · 2025</a></li><li><a href="#panel15">RandomForest [bayesian] · 2025</a></li><li><a href="#panel16">RandomForest [genetic] · 2025</a></li><li><a href="#panel17">RandomForest [grid] · 2025</a></li><li><a href="#panel18">RandomForest [random] · 2025</a></li><li><a href="#panel19">Ridge [bayesian] · 2025</a></li><li><a href="#panel20">Ridge [genetic] · 2025</a></li><li><a href="#panel21">Ridge [grid] · 2025</a></li><li><a href="#panel22">Ridge [random] · 2025</a></li><li><a href="#panel23">SVR [bayesian] · 2025</a></li><li><a href="#panel24">SVR [genetic] · 2025</a></li><li><a href="#panel25">SVR [grid] · 2025</a></li><li><a href="#panel26">SVR [random] · 2025</a></li><li><a href="#panel27">XGBoost [bayesian] · 2025</a></li><li><a href="#panel28">XGBoost [genetic] · 2025</a></li><li><a href="#panel29">XGBoost [grid] · 2025</a></li><li><a href="#panel30">XGBoost [random] · 2025</a></li><li><a href="#panel31">kNN [bayesian] · 2025</a></li><li><a href="#panel32">kNN [genetic] · 2025</a></li><li><a href="#panel33">kNN [grid] · 2025</a></li><li><a href="#panel34">kNN [random] · 2025</a></li><li><a href="#panel35">DecisionTree [bayesian] · 2026</a></li><li><a href="#panel36">DecisionTree [genetic] · 2026</a></li><li><a href="#panel37">DecisionTree [grid] · 2026</a></li><li><a href="#panel38">DecisionTree [random] · 2026</a></li><li><a href="#panel39">HAR-Ridge + XGBoost · 2026</a></li><li><a href="#panel40">HAR-XG [bayesian] · 2026</a></li><li><a href="#panel41">HAR-XG [genetic] · 2026</a></li><li><a href="#panel42">HAR-XG [grid] · 2026</a></li><li><a href="#panel43">HAR-XG [random] · 2026</a></li><li><a href="#panel44">Lasso [bayesian] · 2026</a></li><li><a href="#panel45">Lasso [genetic] · 2026</a></li><li><a href="#panel46">Lasso [grid] · 2026</a></li><li><a href="#panel47">Lasso [random] · 2026</a></li><li><a href="#panel48">Persistencia · 2026</a></li><li><a href="#panel49">RandomForest [bayesian] · 2026</a></li><li><a href="#panel50">RandomForest [genetic] · 2026</a></li><li><a href="#panel51">RandomForest [grid] · 2026</a></li><li><a href="#panel52">RandomForest [random] · 2026</a></li><li><a href="#panel53">Ridge [bayesian] · 2026</a></li><li><a href="#panel54">Ridge [genetic] · 2026</a></li><li><a href="#panel55">Ridge [grid] · 2026</a></li><li><a href="#panel56">Ridge [random] · 2026</a></li><li><a href="#panel57">SVR [bayesian] · 2026</a></li><li><a href="#panel58">SVR [genetic] · 2026</a></li><li><a href="#panel59">SVR [grid] · 2026</a></li><li><a href="#panel60">SVR [random] · 2026</a></li><li><a href="#panel61">XGBoost [bayesian] · 2026</a></li><li><a href="#panel62">XGBoost [genetic] · 2026</a></li><li><a href="#panel63">XGBoost [grid] · 2026</a></li><li><a href="#panel64">XGBoost [random] · 2026</a></li><li><a href="#panel65">kNN [bayesian] · 2026</a></li><li><a href="#panel66">kNN [genetic] · 2026</a></li><li><a href="#panel67">kNN [grid] · 2026</a></li><li><a href="#panel68">kNN [random] · 2026</a></li></ul></details>
+<section id="panel1"><h3>DecisionTree [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_001.png" alt="Residual temporal, histograma y ACF de DecisionTree [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0104497</td>
+      <td>0,132043</td>
+      <td>0,057206</td>
+      <td>30</td>
+      <td>0,318093</td>
+      <td>1</td>
+      <td>0,673095</td>
+      <td>1</td>
+      <td>8,97816e-203</td>
+      <td>2,97985e-199</td>
+      <td>0,00029018</td>
+      <td>0,217635</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel2"><h3>DecisionTree [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_002.png" alt="Residual temporal, histograma y ACF de DecisionTree [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00227924</td>
+      <td>0,133903</td>
+      <td>0,0837055</td>
+      <td>30</td>
+      <td>0,281934</td>
+      <td>1</td>
+      <td>0,492735</td>
+      <td>1</td>
+      <td>4,74478e-201</td>
+      <td>1,5653e-197</td>
+      <td>5,87075e-08</td>
+      <td>6,07035e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel3"><h3>DecisionTree [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_003.png" alt="Residual temporal, histograma y ACF de DecisionTree [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00454181</td>
+      <td>0,133534</td>
+      <td>0,0295074</td>
+      <td>30</td>
+      <td>0,348486</td>
+      <td>1</td>
+      <td>0,894614</td>
+      <td>1</td>
+      <td>1,28107e-235</td>
+      <td>4,65028e-232</td>
+      <td>0,000194076</td>
+      <td>0,147109</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel4"><h3>DecisionTree [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_004.png" alt="Residual temporal, histograma y ACF de DecisionTree [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00227924</td>
+      <td>0,133903</td>
+      <td>0,0837055</td>
+      <td>30</td>
+      <td>0,281934</td>
+      <td>1</td>
+      <td>0,492735</td>
+      <td>1</td>
+      <td>4,74478e-201</td>
+      <td>1,5653e-197</td>
+      <td>5,87075e-08</td>
+      <td>6,07035e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel5"><h3>HAR-Ridge + XGBoost · 2025</h3>
+<img loading="lazy" src="residual_2025_005.png" alt="Residual temporal, histograma y ACF de HAR-Ridge + XGBoost · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0109517</td>
+      <td>0,101025</td>
+      <td>0,0369823</td>
+      <td>30</td>
+      <td>0,691779</td>
+      <td>1</td>
+      <td>0,316165</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,625193</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel6"><h3>HAR-XG [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_006.png" alt="Residual temporal, histograma y ACF de HAR-XG [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00432151</td>
+      <td>0,10296</td>
+      <td>0,076389</td>
+      <td>30</td>
+      <td>0,710717</td>
+      <td>1</td>
+      <td>0,976487</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,182318</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel7"><h3>HAR-XG [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_007.png" alt="Residual temporal, histograma y ACF de HAR-XG [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0117732</td>
+      <td>0,101608</td>
+      <td>0,0433123</td>
+      <td>30</td>
+      <td>0,725588</td>
+      <td>1</td>
+      <td>0,291386</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,549151</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel8"><h3>HAR-XG [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_008.png" alt="Residual temporal, histograma y ACF de HAR-XG [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0105996</td>
+      <td>0,100924</td>
+      <td>0,0417979</td>
+      <td>30</td>
+      <td>0,692165</td>
+      <td>1</td>
+      <td>0,508323</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,518744</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel9"><h3>HAR-XG [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_009.png" alt="Residual temporal, histograma y ACF de HAR-XG [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0117732</td>
+      <td>0,101608</td>
+      <td>0,0433123</td>
+      <td>30</td>
+      <td>0,725588</td>
+      <td>1</td>
+      <td>0,291386</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,549151</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel10"><h3>Lasso [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_010.png" alt="Residual temporal, histograma y ACF de Lasso [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>0,00189616</td>
+      <td>0,103105</td>
+      <td>0,158936</td>
+      <td>30</td>
+      <td>0,706882</td>
+      <td>1</td>
+      <td>0,871681</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8,29019e-05</td>
+      <td>0,0658241</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel11"><h3>Lasso [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_011.png" alt="Residual temporal, histograma y ACF de Lasso [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>0,00189616</td>
+      <td>0,103105</td>
+      <td>0,158936</td>
+      <td>30</td>
+      <td>0,706882</td>
+      <td>1</td>
+      <td>0,871681</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8,29019e-05</td>
+      <td>0,0658241</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel12"><h3>Lasso [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_012.png" alt="Residual temporal, histograma y ACF de Lasso [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00652058</td>
+      <td>0,0998356</td>
+      <td>0,058841</td>
+      <td>30</td>
+      <td>0,593265</td>
+      <td>1</td>
+      <td>0,690188</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,818782</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel13"><h3>Lasso [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_013.png" alt="Residual temporal, histograma y ACF de Lasso [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00652058</td>
+      <td>0,0998356</td>
+      <td>0,058841</td>
+      <td>30</td>
+      <td>0,593265</td>
+      <td>1</td>
+      <td>0,690188</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,818782</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel14"><h3>Persistencia · 2025</h3>
+<img loading="lazy" src="residual_2025_014.png" alt="Residual temporal, histograma y ACF de Persistencia · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00174967</td>
+      <td>0,139232</td>
+      <td>0,174998</td>
+      <td>30</td>
+      <td>0,211173</td>
+      <td>1</td>
+      <td>0,928375</td>
+      <td>1</td>
+      <td>1,77299e-221</td>
+      <td>6,22318e-218</td>
+      <td>1,54417e-17</td>
+      <td>2,7131e-14</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel15"><h3>RandomForest [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_015.png" alt="Residual temporal, histograma y ACF de RandomForest [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00246174</td>
+      <td>0,123254</td>
+      <td>0,0516069</td>
+      <td>30</td>
+      <td>0,367965</td>
+      <td>1</td>
+      <td>0,621798</td>
+      <td>1</td>
+      <td>4,19508e-250</td>
+      <td>1,57357e-246</td>
+      <td>2,44277e-08</td>
+      <td>2,59667e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel16"><h3>RandomForest [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_016.png" alt="Residual temporal, histograma y ACF de RandomForest [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00246174</td>
+      <td>0,123254</td>
+      <td>0,0516069</td>
+      <td>30</td>
+      <td>0,367965</td>
+      <td>1</td>
+      <td>0,621798</td>
+      <td>1</td>
+      <td>4,19508e-250</td>
+      <td>1,57357e-246</td>
+      <td>2,44277e-08</td>
+      <td>2,59667e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel17"><h3>RandomForest [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_017.png" alt="Residual temporal, histograma y ACF de RandomForest [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00246174</td>
+      <td>0,123254</td>
+      <td>0,0516069</td>
+      <td>30</td>
+      <td>0,367965</td>
+      <td>1</td>
+      <td>0,621798</td>
+      <td>1</td>
+      <td>4,19508e-250</td>
+      <td>1,57357e-246</td>
+      <td>2,44277e-08</td>
+      <td>2,59667e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel18"><h3>RandomForest [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_018.png" alt="Residual temporal, histograma y ACF de RandomForest [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00255917</td>
+      <td>0,122478</td>
+      <td>0,0171362</td>
+      <td>30</td>
+      <td>0,426061</td>
+      <td>1</td>
+      <td>0,966569</td>
+      <td>1</td>
+      <td>2,7589e-309</td>
+      <td>1,14163e-305</td>
+      <td>7,069e-06</td>
+      <td>0,00624192</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel19"><h3>Ridge [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_019.png" alt="Residual temporal, histograma y ACF de Ridge [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00632175</td>
+      <td>0,102125</td>
+      <td>0,032139</td>
+      <td>30</td>
+      <td>0,524203</td>
+      <td>1</td>
+      <td>0,646111</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,645089</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel20"><h3>Ridge [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_020.png" alt="Residual temporal, histograma y ACF de Ridge [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00632175</td>
+      <td>0,102125</td>
+      <td>0,032139</td>
+      <td>30</td>
+      <td>0,524203</td>
+      <td>1</td>
+      <td>0,646111</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,645089</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel21"><h3>Ridge [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_021.png" alt="Residual temporal, histograma y ACF de Ridge [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00632175</td>
+      <td>0,102125</td>
+      <td>0,032139</td>
+      <td>30</td>
+      <td>0,524203</td>
+      <td>1</td>
+      <td>0,646111</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,645089</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel22"><h3>Ridge [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_022.png" alt="Residual temporal, histograma y ACF de Ridge [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00632175</td>
+      <td>0,102125</td>
+      <td>0,032139</td>
+      <td>30</td>
+      <td>0,524203</td>
+      <td>1</td>
+      <td>0,646111</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,645089</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel23"><h3>SVR [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_023.png" alt="Residual temporal, histograma y ACF de SVR [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00997228</td>
+      <td>0,108028</td>
+      <td>0,0345904</td>
+      <td>30</td>
+      <td>0,480903</td>
+      <td>1</td>
+      <td>0,829719</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,69987e-05</td>
+      <td>0,0144829</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel24"><h3>SVR [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_024.png" alt="Residual temporal, histograma y ACF de SVR [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00997228</td>
+      <td>0,108028</td>
+      <td>0,0345904</td>
+      <td>30</td>
+      <td>0,480903</td>
+      <td>1</td>
+      <td>0,829719</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,69987e-05</td>
+      <td>0,0144829</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel25"><h3>SVR [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_025.png" alt="Residual temporal, histograma y ACF de SVR [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00997228</td>
+      <td>0,108028</td>
+      <td>0,0345904</td>
+      <td>30</td>
+      <td>0,480903</td>
+      <td>1</td>
+      <td>0,829719</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,69987e-05</td>
+      <td>0,0144829</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel26"><h3>SVR [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_026.png" alt="Residual temporal, histograma y ACF de SVR [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0155904</td>
+      <td>0,103743</td>
+      <td>0,014934</td>
+      <td>30</td>
+      <td>0,417584</td>
+      <td>1</td>
+      <td>0,321702</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,482896</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel27"><h3>XGBoost [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_027.png" alt="Residual temporal, histograma y ACF de XGBoost [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00642947</td>
+      <td>0,10266</td>
+      <td>0,0667245</td>
+      <td>30</td>
+      <td>0,645325</td>
+      <td>1</td>
+      <td>0,725806</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,643806</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel28"><h3>XGBoost [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_028.png" alt="Residual temporal, histograma y ACF de XGBoost [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00430926</td>
+      <td>0,103376</td>
+      <td>0,0434866</td>
+      <td>30</td>
+      <td>0,755185</td>
+      <td>1</td>
+      <td>0,925768</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,594379</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel29"><h3>XGBoost [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_029.png" alt="Residual temporal, histograma y ACF de XGBoost [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00323935</td>
+      <td>0,102687</td>
+      <td>0,0810907</td>
+      <td>30</td>
+      <td>0,726773</td>
+      <td>1</td>
+      <td>0,954232</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,210541</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel30"><h3>XGBoost [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_030.png" alt="Residual temporal, histograma y ACF de XGBoost [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,0106199</td>
+      <td>0,108809</td>
+      <td>0,0373484</td>
+      <td>30</td>
+      <td>0,702104</td>
+      <td>1</td>
+      <td>0,501811</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,183464</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel31"><h3>kNN [bayesian] · 2025</h3>
+<img loading="lazy" src="residual_2025_031.png" alt="Residual temporal, histograma y ACF de kNN [bayesian] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00736157</td>
+      <td>0,120434</td>
+      <td>0,119753</td>
+      <td>30</td>
+      <td>0,51496</td>
+      <td>1</td>
+      <td>0,521888</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4,32776e-11</td>
+      <td>5,62176e-08</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel32"><h3>kNN [genetic] · 2025</h3>
+<img loading="lazy" src="residual_2025_032.png" alt="Residual temporal, histograma y ACF de kNN [genetic] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00736157</td>
+      <td>0,120434</td>
+      <td>0,119753</td>
+      <td>30</td>
+      <td>0,51496</td>
+      <td>1</td>
+      <td>0,521888</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4,32776e-11</td>
+      <td>5,62176e-08</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel33"><h3>kNN [grid] · 2025</h3>
+<img loading="lazy" src="residual_2025_033.png" alt="Residual temporal, histograma y ACF de kNN [grid] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00736157</td>
+      <td>0,120434</td>
+      <td>0,119753</td>
+      <td>30</td>
+      <td>0,51496</td>
+      <td>1</td>
+      <td>0,521888</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4,32776e-11</td>
+      <td>5,62176e-08</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel34"><h3>kNN [random] · 2025</h3>
+<img loading="lazy" src="residual_2025_034.png" alt="Residual temporal, histograma y ACF de kNN [random] · 2025">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>358</td>
+      <td>-0,00736157</td>
+      <td>0,120434</td>
+      <td>0,119753</td>
+      <td>30</td>
+      <td>0,51496</td>
+      <td>1</td>
+      <td>0,521888</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4,32776e-11</td>
+      <td>5,62176e-08</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel35"><h3>DecisionTree [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_035.png" alt="Residual temporal, histograma y ACF de DecisionTree [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00869759</td>
+      <td>0,173216</td>
+      <td>0,103838</td>
+      <td>30</td>
+      <td>0,179492</td>
+      <td>1</td>
+      <td>9,85129e-06</td>
+      <td>0,00936858</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,000349264</td>
+      <td>0,260551</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel36"><h3>DecisionTree [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_036.png" alt="Residual temporal, histograma y ACF de DecisionTree [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00558242</td>
+      <td>0,180133</td>
+      <td>0,226379</td>
+      <td>30</td>
+      <td>0,0828658</td>
+      <td>1</td>
+      <td>5,32448e-08</td>
+      <td>5,45759e-05</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2,30324e-08</td>
+      <td>2,46447e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel37"><h3>DecisionTree [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_037.png" alt="Residual temporal, histograma y ACF de DecisionTree [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00121253</td>
+      <td>0,172766</td>
+      <td>0,122808</td>
+      <td>30</td>
+      <td>0,12904</td>
+      <td>1</td>
+      <td>2,39723e-05</td>
+      <td>0,0223182</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6,77982e-05</td>
+      <td>0,0549166</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel38"><h3>DecisionTree [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_038.png" alt="Residual temporal, histograma y ACF de DecisionTree [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00558242</td>
+      <td>0,180133</td>
+      <td>0,226379</td>
+      <td>30</td>
+      <td>0,0828658</td>
+      <td>1</td>
+      <td>5,32448e-08</td>
+      <td>5,45759e-05</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2,30324e-08</td>
+      <td>2,46447e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel39"><h3>HAR-Ridge + XGBoost · 2026</h3>
+<img loading="lazy" src="residual_2026_039.png" alt="Residual temporal, histograma y ACF de HAR-Ridge + XGBoost · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00772734</td>
+      <td>0,136114</td>
+      <td>0,187105</td>
+      <td>30</td>
+      <td>0,548098</td>
+      <td>1</td>
+      <td>0,000106454</td>
+      <td>0,0949567</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,237662</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel40"><h3>HAR-XG [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_040.png" alt="Residual temporal, histograma y ACF de HAR-XG [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00225856</td>
+      <td>0,140649</td>
+      <td>0,24159</td>
+      <td>30</td>
+      <td>0,515574</td>
+      <td>1</td>
+      <td>2,01857e-06</td>
+      <td>0,00201655</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,0445783</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel41"><h3>HAR-XG [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_041.png" alt="Residual temporal, histograma y ACF de HAR-XG [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00843267</td>
+      <td>0,134927</td>
+      <td>0,184081</td>
+      <td>30</td>
+      <td>0,550675</td>
+      <td>1</td>
+      <td>0,00600052</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,36265</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel42"><h3>HAR-XG [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_042.png" alt="Residual temporal, histograma y ACF de HAR-XG [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00627685</td>
+      <td>0,137164</td>
+      <td>0,203178</td>
+      <td>30</td>
+      <td>0,554576</td>
+      <td>1</td>
+      <td>0,000217306</td>
+      <td>0,189056</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,18276</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel43"><h3>HAR-XG [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_043.png" alt="Residual temporal, histograma y ACF de HAR-XG [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00843267</td>
+      <td>0,134927</td>
+      <td>0,184081</td>
+      <td>30</td>
+      <td>0,550675</td>
+      <td>1</td>
+      <td>0,00600052</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,36265</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel44"><h3>Lasso [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_044.png" alt="Residual temporal, histograma y ACF de Lasso [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00836024</td>
+      <td>0,146035</td>
+      <td>0,291807</td>
+      <td>30</td>
+      <td>0,49034</td>
+      <td>1</td>
+      <td>0,00117388</td>
+      <td>0,934406</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,0197515</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel45"><h3>Lasso [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_045.png" alt="Residual temporal, histograma y ACF de Lasso [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00836024</td>
+      <td>0,146035</td>
+      <td>0,291807</td>
+      <td>30</td>
+      <td>0,49034</td>
+      <td>1</td>
+      <td>0,00117388</td>
+      <td>0,934406</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,0197515</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel46"><h3>Lasso [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_046.png" alt="Residual temporal, histograma y ACF de Lasso [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00123406</td>
+      <td>0,134598</td>
+      <td>0,191892</td>
+      <td>30</td>
+      <td>0,693036</td>
+      <td>1</td>
+      <td>0,00866333</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,586701</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel47"><h3>Lasso [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_047.png" alt="Residual temporal, histograma y ACF de Lasso [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00123406</td>
+      <td>0,134598</td>
+      <td>0,191892</td>
+      <td>30</td>
+      <td>0,693036</td>
+      <td>1</td>
+      <td>0,00866333</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,586701</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel48"><h3>Persistencia · 2026</h3>
+<img loading="lazy" src="residual_2026_048.png" alt="Residual temporal, histograma y ACF de Persistencia · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,00446634</td>
+      <td>0,194437</td>
+      <td>0,321644</td>
+      <td>30</td>
+      <td>0,0415053</td>
+      <td>1</td>
+      <td>0,00845258</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,71777e-08</td>
+      <td>1,84832e-05</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel49"><h3>RandomForest [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_049.png" alt="Residual temporal, histograma y ACF de RandomForest [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00238716</td>
+      <td>0,172625</td>
+      <td>0,211492</td>
+      <td>30</td>
+      <td>0,0903725</td>
+      <td>1</td>
+      <td>2,23772e-09</td>
+      <td>2,36751e-06</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2,30444e-07</td>
+      <td>0,00022814</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel50"><h3>RandomForest [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_050.png" alt="Residual temporal, histograma y ACF de RandomForest [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00238716</td>
+      <td>0,172625</td>
+      <td>0,211492</td>
+      <td>30</td>
+      <td>0,0903725</td>
+      <td>1</td>
+      <td>2,23772e-09</td>
+      <td>2,36751e-06</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2,30444e-07</td>
+      <td>0,00022814</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel51"><h3>RandomForest [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_051.png" alt="Residual temporal, histograma y ACF de RandomForest [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00238716</td>
+      <td>0,172625</td>
+      <td>0,211492</td>
+      <td>30</td>
+      <td>0,0903725</td>
+      <td>1</td>
+      <td>2,23772e-09</td>
+      <td>2,36751e-06</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2,30444e-07</td>
+      <td>0,00022814</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel52"><h3>RandomForest [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_052.png" alt="Residual temporal, histograma y ACF de RandomForest [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,0019373</td>
+      <td>0,162583</td>
+      <td>0,156543</td>
+      <td>30</td>
+      <td>0,193593</td>
+      <td>1</td>
+      <td>1,52911e-05</td>
+      <td>0,0143583</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,47351e-05</td>
+      <td>0,0127459</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel53"><h3>Ridge [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_053.png" alt="Residual temporal, histograma y ACF de Ridge [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00162045</td>
+      <td>0,134599</td>
+      <td>0,150745</td>
+      <td>30</td>
+      <td>0,693622</td>
+      <td>1</td>
+      <td>0,0231152</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,34356</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel54"><h3>Ridge [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_054.png" alt="Residual temporal, histograma y ACF de Ridge [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00162045</td>
+      <td>0,134599</td>
+      <td>0,150745</td>
+      <td>30</td>
+      <td>0,693622</td>
+      <td>1</td>
+      <td>0,0231152</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,34356</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel55"><h3>Ridge [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_055.png" alt="Residual temporal, histograma y ACF de Ridge [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00162045</td>
+      <td>0,134599</td>
+      <td>0,150745</td>
+      <td>30</td>
+      <td>0,693622</td>
+      <td>1</td>
+      <td>0,0231152</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,34356</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel56"><h3>Ridge [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_056.png" alt="Residual temporal, histograma y ACF de Ridge [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00162045</td>
+      <td>0,134599</td>
+      <td>0,150745</td>
+      <td>30</td>
+      <td>0,693622</td>
+      <td>1</td>
+      <td>0,0231152</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,34356</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel57"><h3>SVR [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_057.png" alt="Residual temporal, histograma y ACF de SVR [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00371565</td>
+      <td>0,151066</td>
+      <td>0,201815</td>
+      <td>30</td>
+      <td>0,336665</td>
+      <td>1</td>
+      <td>4,38396e-08</td>
+      <td>4,51109e-05</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,000180544</td>
+      <td>0,137953</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel58"><h3>SVR [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_058.png" alt="Residual temporal, histograma y ACF de SVR [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00371565</td>
+      <td>0,151066</td>
+      <td>0,201815</td>
+      <td>30</td>
+      <td>0,336665</td>
+      <td>1</td>
+      <td>4,38396e-08</td>
+      <td>4,51109e-05</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,000180544</td>
+      <td>0,137953</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel59"><h3>SVR [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_059.png" alt="Residual temporal, histograma y ACF de SVR [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00371565</td>
+      <td>0,151066</td>
+      <td>0,201815</td>
+      <td>30</td>
+      <td>0,336665</td>
+      <td>1</td>
+      <td>4,38396e-08</td>
+      <td>4,51109e-05</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,000180544</td>
+      <td>0,137953</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel60"><h3>SVR [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_060.png" alt="Residual temporal, histograma y ACF de SVR [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,0119163</td>
+      <td>0,135935</td>
+      <td>0,132159</td>
+      <td>30</td>
+      <td>0,667234</td>
+      <td>1</td>
+      <td>0,105997</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,257733</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel61"><h3>XGBoost [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_061.png" alt="Residual temporal, histograma y ACF de XGBoost [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00381636</td>
+      <td>0,137096</td>
+      <td>0,190557</td>
+      <td>30</td>
+      <td>0,572197</td>
+      <td>1</td>
+      <td>0,000356414</td>
+      <td>0,302952</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,182493</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel62"><h3>XGBoost [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_062.png" alt="Residual temporal, histograma y ACF de XGBoost [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00580975</td>
+      <td>0,137795</td>
+      <td>0,19811</td>
+      <td>30</td>
+      <td>0,589256</td>
+      <td>1</td>
+      <td>0,000120102</td>
+      <td>0,10629</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,282117</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel63"><h3>XGBoost [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_063.png" alt="Residual temporal, histograma y ACF de XGBoost [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,00155143</td>
+      <td>0,140488</td>
+      <td>0,227561</td>
+      <td>30</td>
+      <td>0,531396</td>
+      <td>1</td>
+      <td>1,81861e-06</td>
+      <td>0,00182588</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,0919799</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel64"><h3>XGBoost [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_064.png" alt="Residual temporal, histograma y ACF de XGBoost [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>-0,0116591</td>
+      <td>0,137741</td>
+      <td>0,186725</td>
+      <td>30</td>
+      <td>0,415059</td>
+      <td>1</td>
+      <td>0,0495307</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0,102868</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel65"><h3>kNN [bayesian] · 2026</h3>
+<img loading="lazy" src="residual_2026_065.png" alt="Residual temporal, histograma y ACF de kNN [bayesian] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,000561804</td>
+      <td>0,163731</td>
+      <td>0,216626</td>
+      <td>30</td>
+      <td>0,273889</td>
+      <td>1</td>
+      <td>5,73293e-06</td>
+      <td>0,00555521</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,49465e-05</td>
+      <td>0,0129138</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel66"><h3>kNN [genetic] · 2026</h3>
+<img loading="lazy" src="residual_2026_066.png" alt="Residual temporal, histograma y ACF de kNN [genetic] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,000561804</td>
+      <td>0,163731</td>
+      <td>0,216626</td>
+      <td>30</td>
+      <td>0,273889</td>
+      <td>1</td>
+      <td>5,73293e-06</td>
+      <td>0,00555521</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,49465e-05</td>
+      <td>0,0129138</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel67"><h3>kNN [grid] · 2026</h3>
+<img loading="lazy" src="residual_2026_067.png" alt="Residual temporal, histograma y ACF de kNN [grid] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,000561804</td>
+      <td>0,163731</td>
+      <td>0,216626</td>
+      <td>30</td>
+      <td>0,273889</td>
+      <td>1</td>
+      <td>5,73293e-06</td>
+      <td>0,00555521</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,49465e-05</td>
+      <td>0,0129138</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<section id="panel68"><h3>kNN [random] · 2026</h3>
+<img loading="lazy" src="residual_2026_068.png" alt="Residual temporal, histograma y ACF de kNN [random] · 2026">
+<div class="scroll"><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>n</th>
+      <th>residual_mean</th>
+      <th>residual_std</th>
+      <th>acf1</th>
+      <th>ljung_box_lag</th>
+      <th>white_p</th>
+      <th>white_p_holm_all_evaluated_series</th>
+      <th>bds_p</th>
+      <th>bds_p_holm_all_evaluated_series</th>
+      <th>jarque_bera_p</th>
+      <th>jarque_bera_p_holm_all_evaluated_series</th>
+      <th>ljung_box_p</th>
+      <th>ljung_box_p_holm_all_series</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>236</td>
+      <td>0,000561804</td>
+      <td>0,163731</td>
+      <td>0,216626</td>
+      <td>30</td>
+      <td>0,273889</td>
+      <td>1</td>
+      <td>5,73293e-06</td>
+      <td>0,00555521</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1,49465e-05</td>
+      <td>0,0129138</td>
+    </tr>
+  </tbody>
+</table></div>
+<p>Las columnas <code>holm_all...</code> ajustan la familia completa de cada diagnóstico, no sólo los paneles dibujados. El ajuste del subconjunto representativo se conserva por separado en su CSV.</p></section>
+<p><a href="../report.html">Volver a la evaluación</a></p></html>

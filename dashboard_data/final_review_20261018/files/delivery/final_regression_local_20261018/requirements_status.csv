@@ -1,0 +1,16 @@
+section,requirement,status,evidence
+2 y 7.2,Solo regresión; 7 familias × 4 optimizadores,28 combinaciones observadas,outer_metrics.csv; 
+3.2,"Validación temporal anidada, purga y escalado por train",Evidencia local disponible,"protocol.json, outer_metrics.csv; verificar calendarios y código, no basta la presencia de archivos"
+3.3–3.4,"Comparar optimizadores: presupuesto, convergencia y tiempos",Evidencia local disponible,master_trials.csv; Grid limitado no es exhaustivo; TPE no es GP; operadores y diversidad DEAP en detalles
+4,"Eficiencia: complejidad, entrenamiento, inferencia, memoria",Evidencia local disponible,"efficiency/report.html; revisar alcance de familias, repeticiones y tamaños"
+5.2 y 5.4,RMSE/MAE externos y media ± desviación por fold,Evidencia local disponible,outer_metrics.csv y tabla externa de este libro
+5.2.1,Gráfica train/validación/test con predicciones,"Evidencia de los 32 procedimientos: mismo ejemplo BTC, w=21, h=1","plots/train_validation_test_all/: train in-sample, validación OOF, test retrospectivo, replay de siete salidas y pérdidas OOF verificadas; mismo ejemplo, no todas las configuraciones"
+5.2.2,"White, BDS, Ljung–Box, ACF e histogramas de residuos",Evidencia local disponible,evaluation/residuals/report.html y coverage.json; distinguir diagnóstico cuantitativo de todas las series de paneles gráficos representativos
+5.3,SHAP global/local y LIME; dos casos,Evidencia local disponible,explain_best/report.html: mejor procedimiento por 2024 y dos casos; explain_global/report.html: ámbito HAR primario 2026 completo; explain/report.html: SHAP/LIME. Verificar supuestos y cobertura
+6,"MCS → GW/CW pertinente → DM-HLN, Holm y bootstrap estacionario",Evidencia local disponible,"evaluation/report.html; inferencia retrospectiva, GW exploratorio cuando sus supuestos no se cumplen plenamente"
+6.4,Tamaños de efecto e IC de métricas,Evidencia local disponible,evaluation/paired_effects_vs_original.csv; evaluation/metric_intervals.csv
+7.1,EDA corregido y referencia HAR,Interpretación numérica y figura intradía integradas,"Capítulo1: CSV de MI/VIF, metadatos y figura intradía de desarrollo; informe original HAR. La integración no modifica retrospectivamente el orden EDA/modelo"
+7.3,"Entorno exacto, semillas, registro y hashes",Evidencia local disponible,"protocol.json, master_trials.csv, delivery_manifest.json; entorno fijado debe acompañar la ejecución"
+5.4,Sensibilidad a semillas y estabilidad de optimización,Evidencia local disponible,sensitivity/report.html; distinguir reentrenamiento con parámetros fijos de repetir la búsqueda completa
+7–8,"JBook, notebook de revisión y presentación de 10 min",Fuentes locales generadas; compilación MyST/TeX se verifica por separado,"myst.yml, notebooks/revision_resultados.ipynb, presentacion_final_10min.tex"
+Decisión del proyecto,Mejora demostrada frente al HAR-Ridge + XGBoost vigente,No demostrada con la evidencia disponible,inference_plan.json + review_summary.json: regla fuerte con SPA y dirección2025. evaluation/summary.json conserva puerta estadística menos restrictiva. Publicación no autorizada

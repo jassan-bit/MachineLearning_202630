@@ -1,0 +1,96 @@
+{
+  "created_at_utc": "2026-10-18T20:13:53.747527+00:00",
+  "publication": "LOCAL ONLY",
+  "publication_authorized": false,
+  "primary_year": 2026,
+  "reference": "HAR-Ridge + XGBoost",
+  "model_universe": [
+    "DecisionTree [bayesian]",
+    "DecisionTree [genetic]",
+    "DecisionTree [grid]",
+    "DecisionTree [random]",
+    "HAR-Ridge + XGBoost",
+    "HAR-XG [bayesian]",
+    "HAR-XG [genetic]",
+    "HAR-XG [grid]",
+    "HAR-XG [random]",
+    "Lasso [bayesian]",
+    "Lasso [genetic]",
+    "Lasso [grid]",
+    "Lasso [random]",
+    "Persistencia",
+    "RandomForest [bayesian]",
+    "RandomForest [genetic]",
+    "RandomForest [grid]",
+    "RandomForest [random]",
+    "Ridge [bayesian]",
+    "Ridge [genetic]",
+    "Ridge [grid]",
+    "Ridge [random]",
+    "SVR [bayesian]",
+    "SVR [genetic]",
+    "SVR [grid]",
+    "SVR [random]",
+    "XGBoost [bayesian]",
+    "XGBoost [genetic]",
+    "XGBoost [grid]",
+    "XGBoost [random]",
+    "kNN [bayesian]",
+    "kNN [genetic]",
+    "kNN [grid]",
+    "kNN [random]"
+  ],
+  "predeclared_candidates": [
+    "HAR-XG [grid]",
+    "HAR-XG [random]",
+    "HAR-XG [bayesian]",
+    "HAR-XG [genetic]"
+  ],
+  "candidates_explicit": true,
+  "retrospective_years": [
+    2025,
+    2026
+  ],
+  "prior_inspection": "2025 and 2026 already inspected; no new confirmatory holdout",
+  "loss": "mean squared error within each date across assets/windows/horizons",
+  "mcs": {
+    "alpha": 0.1,
+    "reps": 2000,
+    "block_length": 34
+  },
+  "intervals": {
+    "reps": 2000,
+    "block_length": 34,
+    "coverage": 0.95,
+    "method": "paired stationary bootstrap percentile; individual, not simultaneous"
+  },
+  "dm": {
+    "hln_horizon": 7,
+    "hac_lags": 33,
+    "adjustment": "Holm4 over predeclared candidate-reference contrasts separately within each year"
+  },
+  "gw": "HAC conditional-moment diagnostic; instrument constant + differential lagged max horizon; MCS-filtered finalists",
+  "clark_west": "Not automatic: only explicitly documented genuinely nested unpenalized linear pairs",
+  "residuals": {
+    "enabled": true,
+    "full_white_bds_normality": true,
+    "representative_plots": [
+      "BTCUSDT",
+      21,
+      1
+    ]
+  },
+  "seed": 42,
+  "sources": {
+    "MCS": "https://doi.org/10.3982/ECTA5771",
+    "SPA": "https://doi.org/10.1198/073500105000000063",
+    "Stationary bootstrap": "https://doi.org/10.1080/01621459.1994.10476870",
+    "DM-HLN": "https://pkg.robjhyndman.com/forecast/reference/dm.test.html",
+    "Giacomini-White": "https://doi.org/10.1111/j.1468-0262.2006.00718.x",
+    "Clark-West": "https://www.kansascityfed.org/documents/5368/pdf-RWP05-05.pdf",
+    "White": "https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.het_white.html",
+    "BDS": "https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.bds.html",
+    "Ljung-Box": "https://www.statsmodels.org/stable/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html",
+    "Friedman-Nemenyi": "https://jmlr.org/papers/v7/demsar06a.html"
+  }
+}

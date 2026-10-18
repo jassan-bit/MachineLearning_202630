@@ -1,0 +1,11 @@
+{
+  "statistic": 161.380876737437,
+  "p": 1.4632348538408807e-19,
+  "outer_blocks": 6,
+  "models": 32,
+  "critical_difference": 20.47362080441152,
+  "posthoc_enabled": true,
+  "warning": "Few dependent chronological blocks; chi-square approximation and Nemenyi are exploratory",
+  "metric": "rmse",
+  "source": "https://jmlr.org/papers/v7/demsar06a.html"
+}

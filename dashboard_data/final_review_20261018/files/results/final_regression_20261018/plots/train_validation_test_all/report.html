@@ -1,0 +1,103 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>32 procedimientos: train, OOF y test</title>
+<style>body{max-width:1200px;margin:2em auto;font:16px/1.5 system-ui;color:#17324d;padding:1em}img{max-width:100%}td,th{padding:7px;border:1px solid #ddd}table{border-collapse:collapse}a{color:#087f8c}</style>
+<aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="ad35e51098016ad3885618905ba6b7c0622724415ee746b3e6875f966cf77939"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Entrenamiento, validación externa y prueba: los32 procedimientos</h1>
+<p>BTCUSDT, w=21, h=1; mismos calendarios y objetivos. Los32 modelos finales permanecen congelados. La validación utiliza predicciones fuera del ajuste de cada fold, no el modelo final.</p>
+<ul><li>BTC/w21/h1 is the same representative example for every procedure; not every configuration is plotted.</li><li>Final-fit training curves are in-sample and overlap2024 OOF dates with different estimation roles.</li><li>OOF fold models were not serialized: saved forecasts reproduce targets and losses, without claiming model replay.</li><li>Both test years have been inspected; no plot establishes prospective generalization.</li></ul>
+<p><a href="index.csv">Índice completo</a> · <a href="predictions.csv">Predicciones de los tres roles</a> · <a href="frozen_test_replay.csv">Replay test de siete salidas</a> · <a href="oof_verification.csv">Objetivos y pérdidas OOF</a> · <a href="summary.json">Cobertura y hashes</a></p>
+<nav><a href="#DecisionTree_bayesian">DecisionTree [bayesian]</a> · <a href="#DecisionTree_genetic">DecisionTree [genetic]</a> · <a href="#DecisionTree_grid">DecisionTree [grid]</a> · <a href="#DecisionTree_random">DecisionTree [random]</a> · <a href="#HAR-XG_bayesian">HAR-XG [bayesian]</a> · <a href="#HAR-XG_genetic">HAR-XG [genetic]</a> · <a href="#HAR-XG_grid">HAR-XG [grid]</a> · <a href="#HAR-XG_random">HAR-XG [random]</a> · <a href="#Lasso_bayesian">Lasso [bayesian]</a> · <a href="#Lasso_genetic">Lasso [genetic]</a> · <a href="#Lasso_grid">Lasso [grid]</a> · <a href="#Lasso_random">Lasso [random]</a> · <a href="#RandomForest_bayesian">RandomForest [bayesian]</a> · <a href="#RandomForest_genetic">RandomForest [genetic]</a> · <a href="#RandomForest_grid">RandomForest [grid]</a> · <a href="#RandomForest_random">RandomForest [random]</a> · <a href="#Ridge_bayesian">Ridge [bayesian]</a> · <a href="#Ridge_genetic">Ridge [genetic]</a> · <a href="#Ridge_grid">Ridge [grid]</a> · <a href="#Ridge_random">Ridge [random]</a> · <a href="#SVR_bayesian">SVR [bayesian]</a> · <a href="#SVR_genetic">SVR [genetic]</a> · <a href="#SVR_grid">SVR [grid]</a> · <a href="#SVR_random">SVR [random]</a> · <a href="#XGBoost_bayesian">XGBoost [bayesian]</a> · <a href="#XGBoost_genetic">XGBoost [genetic]</a> · <a href="#XGBoost_grid">XGBoost [grid]</a> · <a href="#XGBoost_random">XGBoost [random]</a> · <a href="#kNN_bayesian">kNN [bayesian]</a> · <a href="#kNN_genetic">kNN [genetic]</a> · <a href="#kNN_grid">kNN [grid]</a> · <a href="#kNN_random">kNN [random]</a></nav>
+<section id="DecisionTree_bayesian"><h2>DecisionTree [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="DecisionTree_bayesian.csv">CSV</a></p>
+<img src="DecisionTree_bayesian.png" alt="Observado y pronosticado por roles de evaluación para DecisionTree [bayesian]"></section>
+<section id="DecisionTree_genetic"><h2>DecisionTree [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="DecisionTree_genetic.csv">CSV</a></p>
+<img src="DecisionTree_genetic.png" alt="Observado y pronosticado por roles de evaluación para DecisionTree [genetic]"></section>
+<section id="DecisionTree_grid"><h2>DecisionTree [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="DecisionTree_grid.csv">CSV</a></p>
+<img src="DecisionTree_grid.png" alt="Observado y pronosticado por roles de evaluación para DecisionTree [grid]"></section>
+<section id="DecisionTree_random"><h2>DecisionTree [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="DecisionTree_random.csv">CSV</a></p>
+<img src="DecisionTree_random.png" alt="Observado y pronosticado por roles de evaluación para DecisionTree [random]"></section>
+<section id="HAR-XG_bayesian"><h2>HAR-XG [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="HAR-XG_bayesian.csv">CSV</a></p>
+<img src="HAR-XG_bayesian.png" alt="Observado y pronosticado por roles de evaluación para HAR-XG [bayesian]"></section>
+<section id="HAR-XG_genetic"><h2>HAR-XG [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="HAR-XG_genetic.csv">CSV</a></p>
+<img src="HAR-XG_genetic.png" alt="Observado y pronosticado por roles de evaluación para HAR-XG [genetic]"></section>
+<section id="HAR-XG_grid"><h2>HAR-XG [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="HAR-XG_grid.csv">CSV</a></p>
+<img src="HAR-XG_grid.png" alt="Observado y pronosticado por roles de evaluación para HAR-XG [grid]"></section>
+<section id="HAR-XG_random"><h2>HAR-XG [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="HAR-XG_random.csv">CSV</a></p>
+<img src="HAR-XG_random.png" alt="Observado y pronosticado por roles de evaluación para HAR-XG [random]"></section>
+<section id="Lasso_bayesian"><h2>Lasso [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Lasso_bayesian.csv">CSV</a></p>
+<img src="Lasso_bayesian.png" alt="Observado y pronosticado por roles de evaluación para Lasso [bayesian]"></section>
+<section id="Lasso_genetic"><h2>Lasso [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Lasso_genetic.csv">CSV</a></p>
+<img src="Lasso_genetic.png" alt="Observado y pronosticado por roles de evaluación para Lasso [genetic]"></section>
+<section id="Lasso_grid"><h2>Lasso [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Lasso_grid.csv">CSV</a></p>
+<img src="Lasso_grid.png" alt="Observado y pronosticado por roles de evaluación para Lasso [grid]"></section>
+<section id="Lasso_random"><h2>Lasso [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Lasso_random.csv">CSV</a></p>
+<img src="Lasso_random.png" alt="Observado y pronosticado por roles de evaluación para Lasso [random]"></section>
+<section id="RandomForest_bayesian"><h2>RandomForest [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="RandomForest_bayesian.csv">CSV</a></p>
+<img src="RandomForest_bayesian.png" alt="Observado y pronosticado por roles de evaluación para RandomForest [bayesian]"></section>
+<section id="RandomForest_genetic"><h2>RandomForest [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="RandomForest_genetic.csv">CSV</a></p>
+<img src="RandomForest_genetic.png" alt="Observado y pronosticado por roles de evaluación para RandomForest [genetic]"></section>
+<section id="RandomForest_grid"><h2>RandomForest [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="RandomForest_grid.csv">CSV</a></p>
+<img src="RandomForest_grid.png" alt="Observado y pronosticado por roles de evaluación para RandomForest [grid]"></section>
+<section id="RandomForest_random"><h2>RandomForest [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="RandomForest_random.csv">CSV</a></p>
+<img src="RandomForest_random.png" alt="Observado y pronosticado por roles de evaluación para RandomForest [random]"></section>
+<section id="Ridge_bayesian"><h2>Ridge [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Ridge_bayesian.csv">CSV</a></p>
+<img src="Ridge_bayesian.png" alt="Observado y pronosticado por roles de evaluación para Ridge [bayesian]"></section>
+<section id="Ridge_genetic"><h2>Ridge [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Ridge_genetic.csv">CSV</a></p>
+<img src="Ridge_genetic.png" alt="Observado y pronosticado por roles de evaluación para Ridge [genetic]"></section>
+<section id="Ridge_grid"><h2>Ridge [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Ridge_grid.csv">CSV</a></p>
+<img src="Ridge_grid.png" alt="Observado y pronosticado por roles de evaluación para Ridge [grid]"></section>
+<section id="Ridge_random"><h2>Ridge [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="Ridge_random.csv">CSV</a></p>
+<img src="Ridge_random.png" alt="Observado y pronosticado por roles de evaluación para Ridge [random]"></section>
+<section id="SVR_bayesian"><h2>SVR [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="SVR_bayesian.csv">CSV</a></p>
+<img src="SVR_bayesian.png" alt="Observado y pronosticado por roles de evaluación para SVR [bayesian]"></section>
+<section id="SVR_genetic"><h2>SVR [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="SVR_genetic.csv">CSV</a></p>
+<img src="SVR_genetic.png" alt="Observado y pronosticado por roles de evaluación para SVR [genetic]"></section>
+<section id="SVR_grid"><h2>SVR [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="SVR_grid.csv">CSV</a></p>
+<img src="SVR_grid.png" alt="Observado y pronosticado por roles de evaluación para SVR [grid]"></section>
+<section id="SVR_random"><h2>SVR [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="SVR_random.csv">CSV</a></p>
+<img src="SVR_random.png" alt="Observado y pronosticado por roles de evaluación para SVR [random]"></section>
+<section id="XGBoost_bayesian"><h2>XGBoost [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="XGBoost_bayesian.csv">CSV</a></p>
+<img src="XGBoost_bayesian.png" alt="Observado y pronosticado por roles de evaluación para XGBoost [bayesian]"></section>
+<section id="XGBoost_genetic"><h2>XGBoost [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="XGBoost_genetic.csv">CSV</a></p>
+<img src="XGBoost_genetic.png" alt="Observado y pronosticado por roles de evaluación para XGBoost [genetic]"></section>
+<section id="XGBoost_grid"><h2>XGBoost [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="XGBoost_grid.csv">CSV</a></p>
+<img src="XGBoost_grid.png" alt="Observado y pronosticado por roles de evaluación para XGBoost [grid]"></section>
+<section id="XGBoost_random"><h2>XGBoost [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="XGBoost_random.csv">CSV</a></p>
+<img src="XGBoost_random.png" alt="Observado y pronosticado por roles de evaluación para XGBoost [random]"></section>
+<section id="kNN_bayesian"><h2>kNN [bayesian]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="kNN_bayesian.csv">CSV</a></p>
+<img src="kNN_bayesian.png" alt="Observado y pronosticado por roles de evaluación para kNN [bayesian]"></section>
+<section id="kNN_genetic"><h2>kNN [genetic]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="kNN_genetic.csv">CSV</a></p>
+<img src="kNN_genetic.png" alt="Observado y pronosticado por roles de evaluación para kNN [genetic]"></section>
+<section id="kNN_grid"><h2>kNN [grid]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="kNN_grid.csv">CSV</a></p>
+<img src="kNN_grid.png" alt="Observado y pronosticado por roles de evaluación para kNN [grid]"></section>
+<section id="kNN_random"><h2>kNN [random]</h2>
+<p>Train: 660; validación OOF: 359; test2025: 358; test2026: 236. <a href="kNN_random.csv">CSV</a></p>
+<img src="kNN_random.png" alt="Observado y pronosticado por roles de evaluación para kNN [random]"></section></html>

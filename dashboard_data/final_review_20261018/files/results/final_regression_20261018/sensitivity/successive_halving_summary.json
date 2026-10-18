@@ -1,0 +1,30 @@
+{
+  "resources": [
+    16,
+    32,
+    64
+  ],
+  "reduction": 2,
+  "candidate_counts": [
+    8,
+    4,
+    2
+  ],
+  "fidelity": "number of boosting rounds / trees per direct horizon, refit at each stage",
+  "n_inner": 3,
+  "halving_best_candidate": 3,
+  "full_best_candidate": 3,
+  "halving_best_inner_mse": 0.07849691861119969,
+  "full_best_inner_mse": 0.07849691861119969,
+  "inner_mse_change_percent": 0.0,
+  "halving_seconds": 5.289876800001366,
+  "full_resource_seconds": 6.6311653000011574,
+  "speedup": 1.2535576064832823,
+  "halving_tree_rounds_x_folds": 1152,
+  "full_resource_tree_rounds_x_folds": 1536,
+  "tree_resource_reduction_percent": 25.0,
+  "note": "XGBoost has seven outputs; tree-round proxy omits common horizon factor7. Wall time includes refits.",
+  "no_test_selection": true,
+  "no_primary_model_change": true,
+  "limitation": "One predeclared BTC/w21 task and one seed; cannot generalize efficiency to every model"
+}

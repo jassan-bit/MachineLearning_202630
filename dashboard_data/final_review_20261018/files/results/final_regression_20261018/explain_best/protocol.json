@@ -1,0 +1,166 @@
+{
+  "created_at_utc": "2026-10-18T20:26:52.012837+00:00",
+  "publication": "LOCAL ONLY",
+  "no_training": true,
+  "selected_family": "HAR-XG",
+  "selected_method": "bayesian",
+  "selection": "Minimum equal-weight2024outerMSE among32procedures;16configs×6folds,seed42; alphabetical tie break",
+  "selected_models": [
+    {
+      "symbol": "BNBUSDT",
+      "volatility_window": 7,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BNBUSDT_w7_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "58e98b4a98a98edede7825394cc618ae7e1644feac778932b955f3b02885231c"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "volatility_window": 14,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BNBUSDT_w14_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "774427b613f96550ddad452daff6743f88552e2b996159eaa220f4308fa60d2c"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "volatility_window": 21,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BNBUSDT_w21_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "895a489dff319ba917f6af1702d498aecd320685f4017c19f1ca7fd4cfe147f2"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "volatility_window": 28,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BNBUSDT_w28_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "4b9d38fd178b488cfa0d5851716c91a066669db97830cc2b70142b85774d2658"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "volatility_window": 7,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BTCUSDT_w7_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "c0acd8181efa22a6cd69c4db9e26e3be7fa335bbe58b6bbe4fe929427a3420fd"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "volatility_window": 14,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BTCUSDT_w14_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "72fb67b3ca3fe0cef0fa0c0bc4bacc5ab3037221a1e697200633f540e909fce0"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "volatility_window": 21,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BTCUSDT_w21_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "86434e397bddf20d9674e7effbecddf60e3f4afaf0a5f5996d7c82569489ecd6"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "volatility_window": 28,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/BTCUSDT_w28_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "15d36b5a3ec589171be6c03d029e68114bcd84a60ae431eba9bba0ce63138d5e"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "volatility_window": 7,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/ETHUSDT_w7_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "c92ddf3332d4eea14af0d464a518f109c8f24e4c968869381e27987d32a24d5d"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "volatility_window": 14,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/ETHUSDT_w14_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "fb3659d8d52224cbc51bf0be936539df223d9b7eb4d3a706fc7d6ce7705c5edc"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "volatility_window": 21,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/ETHUSDT_w21_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "bbf0144016b90bfafe24ae97053211bf800eef37babd4e52cc2c88913d558af6"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "volatility_window": 28,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/ETHUSDT_w28_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "a4bf28d7bb7b90a4e6339dce39e29c37725a992f105e43888f5f448d696046cf"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "volatility_window": 7,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/XRPUSDT_w7_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "44ec3eb686d78676a1c0bda9de6c92ff9839684b87641c0c54ac6f4bfdaf8ae4"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "volatility_window": 14,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/XRPUSDT_w14_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "be9e5495eae9cddf08eb569547a5735e88d689e81c8d1b5ed6bb672068b174a7"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "volatility_window": 21,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/XRPUSDT_w21_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "8ef65781b38be685f826ddf80960ada5a78e09be592d7ba219711dee1a03c871"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "volatility_window": 28,
+      "model": "HAR-XG [bayesian]",
+      "model_path": "models/XRPUSDT_w28_HAR-XG_bayesian_s42.joblib",
+      "model_sha256": "66ab7218a865b702fdb5c8c7ed6b19c8ea022c91809f68421b476e3011bd8508"
+    }
+  ],
+  "primary_selection_sha256": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+  "outer_metrics_sha256": "08c0f24b10f001e4eeeddc3e4153c3e0b1cdbcf819fb3303bdde1a473e8eaafd",
+  "own_sources_sha256": {
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\src\\final_regression_best_explain.py": "7d3c532f48bf0326dd78c2c8450f6418d0aeb69f12249f4dbb51aaefd9c8a501",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\src\\final_regression_global_shap.py": "0387809aadb890384fd5cfa3a306b158218a0588640f2d3d8fad4c237b75346e",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\src\\audit_current_model.py": "ed27e1d8f5ff36b4de1565c0a74615d6a00771a60d6799a4d488f0a0caaa1d44",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\src\\professor_feedback_diagnostics.py": "7ebc8155d5c85275ce84a861f66a1f60e1142bb9e65dcf700ab92bba74572281"
+  },
+  "primary_tracked_sha256": {
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\protocol.json": "43525a3d4d1f934d455972bc1c89f16a5200efbad485a9f6db1fa47d0da123f6",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\selection_freeze.json": "80626f43ece8925c4c9e5dd3c769f2273d4fecdea8bc7b505748b347acd3b771",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\selected_inputs.csv": "a2aa2848f3cddd44d60c9307fd4109a358d3730da624b3b764a6b29bf9aefaa7",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\status.json": "614e33328d412d63fcac37de6217def53cd0f38c8bfac5d78921d779d1a87c46",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\protected_before.json": "ce7d965b1581a674aa7cb360c7f2c8096444f6291ca9bb431791189310be957c",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\predictions_2026.csv.gz": "d56ee1c31f7723e4552dcf36bc3acd074a820bc7f1ff9853016c9ffb5412fa08",
+    "C:\\Users\\Lenovo\\Proyectos.py\\MachineLearning\\results\\final_regression_20261018\\outer_metrics.csv": "08c0f24b10f001e4eeeddc3e4153c3e0b1cdbcf819fb3303bdde1a473e8eaafd"
+  },
+  "explained_year": 2026,
+  "configurations": 16,
+  "origins": 236,
+  "horizons": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "forecasts": 26432,
+  "schema_width": 220,
+  "training_background_rows": 8,
+  "nominal_permutations": 1,
+  "max_evals": 441,
+  "evaluation_subsampling": false,
+  "units": "percentage points of volatility",
+  "local_cases": "BTCUSDT/w21/h1 minimum and maximum absolute2026error for illustration only",
+  "reused_har_global": true,
+  "sources": {
+    "Permutation SHAP": "https://shap.readthedocs.io/en/stable/generated/shap.PermutationExplainer.html",
+    "Independent background masker": "https://shap.readthedocs.io/en/stable/generated/shap.maskers.Independent.html",
+    "Shapley explanations": "https://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions"
+  }
+}

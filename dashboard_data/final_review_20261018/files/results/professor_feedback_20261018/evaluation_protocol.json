@@ -1,0 +1,28 @@
+{
+  "feedback_date": "2026-10-18",
+  "publication": "LOCAL ONLY",
+  "github_or_render_updates_authorized": false,
+  "frozen_before_new_ar_test_results_read_by_integrator": true,
+  "candidate": "HAR-XG + AR mature errors",
+  "primary_year": 2026,
+  "secondary_year": 2025,
+  "scope": "All four assets, four volatility windows, seven horizons; equal weight per series and one squared-loss observation per daily origin",
+  "primary_references": [
+    "HAR-Ridge + XGBoost",
+    "HAR-XG + last mature error",
+    "HAR-XG Ridge ponderado",
+    "HAR-Ridge + XGBoost residual"
+  ],
+  "primary_inference": "Two-sided Diebold-Mariano with HLN horizon7, Bartlett HAC33 and Holm adjustment across the four declared references in2026",
+  "sensitivity_hac_lags": [14, 33, 56],
+  "sensitivity_holm": "Same four references adjusted together for each bandwidth and year separately; sensitivity is not a separate acceptance route",
+  "secondary_windows": "7/14/21/28 individually, HAC window+5; Holm4 per window and year, descriptive without joint adjustment across windows/years",
+  "strong_retrospective_improvement_rule": "Lower global2026 MSE and favorable DM-Holm4 p<.05 versus ALL FOUR declared references at HAC33, and lower global2025 MSE than original model",
+  "macro_metrics": "Compute per asset/window/horizon then average. MacroRMSE is mean of individualRMSE, not sqrt(globalMSE)",
+  "baseline_comparison": "SVR versus persistence and simple daily-target HAR-OLS, Holm2 per year; published hybrid and new AR shown separately",
+  "time_integrity": "AR coefficient/hyperparameter selection restricted to2024. Residual of origin s/horizon h usable after s+h<=current origin close; coefficients stay fixed in2025/26",
+  "selection_limit": "Base hyperparameters were preselected over all2024. AR validation conditional on this representation is not nested independent model-selection validation",
+  "inspection_limit": "2025 and cached2026 Jan01-Aug24 were already examined. Passing this rule is retrospective evidence only and does not restore an untouched confirmatory period",
+  "chronology_correction": "Retain truthful history: diagnostics added after original modeling; development-only reconstruction cannot retroactively make EDA prior to modeling",
+  "publication_gate": "No publication in this task. Stronger evidence must be reviewed; no automatic GitHub/Render action even if statistical criterion passes"
+}

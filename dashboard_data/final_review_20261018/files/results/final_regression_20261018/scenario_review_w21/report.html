@@ -1,0 +1,283 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Exploración w21</title><style>body{font:16px/1.5 system-ui;max-width:1400px;margin:2em auto}table{border-collapse:collapse;font-size:12px}td,th{border:1px solid #ddd;padding:6px}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="d4e98813515cbd790a660ec51e38826731728fb7026f28bc1242e23de1ace3f0"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Escenario solicitado: ventana21</h1><p>Análisis exploratorio posterior a inspeccionar las pruebas. Se conserva el plan primario global. Holm4 controla las cuatro comparaciones por año, sin corregir la selección retrospectiva de ventana. Los resultados MCS/SPA globales no se trasladan a este escenario.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>model</th>
+      <th>origins</th>
+      <th>series</th>
+      <th>mse</th>
+      <th>rmse</th>
+      <th>mae</th>
+      <th>r2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>358</td>
+      <td>28</td>
+      <td>0.184440</td>
+      <td>0.386006</td>
+      <td>0.253723</td>
+      <td>0.844467</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>358</td>
+      <td>28</td>
+      <td>0.181088</td>
+      <td>0.382346</td>
+      <td>0.244879</td>
+      <td>0.845783</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [genetic]</td>
+      <td>358</td>
+      <td>28</td>
+      <td>0.183766</td>
+      <td>0.384988</td>
+      <td>0.249018</td>
+      <td>0.842759</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [grid]</td>
+      <td>358</td>
+      <td>28</td>
+      <td>0.177353</td>
+      <td>0.378897</td>
+      <td>0.239478</td>
+      <td>0.848915</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [random]</td>
+      <td>358</td>
+      <td>28</td>
+      <td>0.193755</td>
+      <td>0.392398</td>
+      <td>0.254753</td>
+      <td>0.837587</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>236</td>
+      <td>28</td>
+      <td>0.225210</td>
+      <td>0.432512</td>
+      <td>0.244086</td>
+      <td>0.837947</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>236</td>
+      <td>28</td>
+      <td>0.216182</td>
+      <td>0.427918</td>
+      <td>0.226329</td>
+      <td>0.840977</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [genetic]</td>
+      <td>236</td>
+      <td>28</td>
+      <td>0.217273</td>
+      <td>0.426321</td>
+      <td>0.234547</td>
+      <td>0.842069</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [grid]</td>
+      <td>236</td>
+      <td>28</td>
+      <td>0.215776</td>
+      <td>0.424679</td>
+      <td>0.227195</td>
+      <td>0.843832</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [random]</td>
+      <td>236</td>
+      <td>28</td>
+      <td>0.227802</td>
+      <td>0.434258</td>
+      <td>0.244433</td>
+      <td>0.836263</td>
+    </tr>
+  </tbody>
+</table><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>model_a</th>
+      <th>model_b</th>
+      <th>reference_mse</th>
+      <th>candidate_mse</th>
+      <th>mse_reduction_percent</th>
+      <th>n</th>
+      <th>horizonte_hln</th>
+      <th>rezagos_hac</th>
+      <th>diferencia_mse</th>
+      <th>dm</th>
+      <th>p</th>
+      <th>estado</th>
+      <th>p_holm4</th>
+      <th>holm_family_size</th>
+      <th>favorable_exploratory_holm4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [grid]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.18444</td>
+      <td>0.177353</td>
+      <td>3.842149</td>
+      <td>358</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.007086</td>
+      <td>-1.029149</td>
+      <td>0.304106</td>
+      <td>OK</td>
+      <td>0.912319</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [random]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.18444</td>
+      <td>0.193755</td>
+      <td>-5.050896</td>
+      <td>358</td>
+      <td>7</td>
+      <td>26</td>
+      <td>0.009316</td>
+      <td>1.474227</td>
+      <td>0.141302</td>
+      <td>OK</td>
+      <td>0.565206</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.18444</td>
+      <td>0.181088</td>
+      <td>1.817263</td>
+      <td>358</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.003352</td>
+      <td>-0.439154</td>
+      <td>0.660816</td>
+      <td>OK</td>
+      <td>1.000000</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [genetic]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.18444</td>
+      <td>0.183766</td>
+      <td>0.365166</td>
+      <td>358</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.000674</td>
+      <td>-0.102712</td>
+      <td>0.918249</td>
+      <td>OK</td>
+      <td>1.000000</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [grid]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.22521</td>
+      <td>0.215776</td>
+      <td>4.188907</td>
+      <td>236</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.009434</td>
+      <td>-1.348242</td>
+      <td>0.178879</td>
+      <td>OK</td>
+      <td>0.715514</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [random]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.22521</td>
+      <td>0.227802</td>
+      <td>-1.151228</td>
+      <td>236</td>
+      <td>7</td>
+      <td>26</td>
+      <td>0.002593</td>
+      <td>0.808283</td>
+      <td>0.419745</td>
+      <td>OK</td>
+      <td>0.715514</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.22521</td>
+      <td>0.216182</td>
+      <td>4.008469</td>
+      <td>236</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.009027</td>
+      <td>-1.277201</td>
+      <td>0.202792</td>
+      <td>OK</td>
+      <td>0.715514</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [genetic]</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.22521</td>
+      <td>0.217273</td>
+      <td>3.523969</td>
+      <td>236</td>
+      <td>7</td>
+      <td>26</td>
+      <td>-0.007936</td>
+      <td>-1.203341</td>
+      <td>0.230055</td>
+      <td>OK</td>
+      <td>0.715514</td>
+      <td>4</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table><p>RMSE/MAE en puntos porcentuales de volatilidad; MSE en esas unidades al cuadrado; R² adimensional. El 6/6 de las diapositivas compara el original con seis rivales diferentes: no demuestra que estos reajustes nuevos superen al original. Para escoger entre cuatro ventanas y cuatro reajustes se debe considerar la familia completa de16contrastes por año;32si también se escoge el año favorable.</p><p><a href="protocol.json">Protocolo</a> · <a href="macro_metrics_w21.csv">Métricas</a> · <a href="dm_new_vs_original_w21.csv">DM y Holm4</a></p></html>

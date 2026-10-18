@@ -1,0 +1,55 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage[a4paper,landscape,margin=1.5cm]{geometry}
+\usepackage{booktabs}
+\begin{document}
+\noindent Modelo A: HAR-Ridge + XGBoost original. 2025; cuatro activos, siete horizontes; $n=358$.
+\par Vista seleccionada retrospectivamente: $w=7$; HLN(7), HAC(12), referencia $t_{357}$.
+\par $DM<0$ favorece al original. Holm112 ajusta las cuatro ventanas y los 28 rivales; no confirma generalización futura.
+\section*{Grid Search}
+\begin{center}\small\begin{tabular}{lrrrrrl}\toprule
+Modelo B & DM-HLN & $p$ bruto & $p$ Holm7 & $p$ Holm28 & $p$ Holm112 & Decisión Holm112\\\midrule
+KNN & -3,933 & 0,0001 & 0,0005 & 0,0021 & 0,0102 & Rechaza $H_0$: favorece al original\\
+Ridge & -2,709 & 0,0071 & 0,0253 & 0,0919 & 0,5373 & No rechaza $H_0$\\
+Lasso & -2,440 & 0,0152 & 0,0303 & 0,1515 & 1,0000 & No rechaza $H_0$\\
+Decision Tree & -6,182 & 1,73e-09 & 1,21e-08 & 4,79e-08 & 1,92e-07 & Rechaza $H_0$: favorece al original\\
+Random Forest & -4,344 & 1,82e-05 & 0,0001 & 0,0004 & 0,0019 & Rechaza $H_0$: favorece al original\\
+XGBoost & -2,746 & 0,0063 & 0,0253 & 0,0887 & 0,4878 & No rechaza $H_0$\\
+SVR lineal & -2,014 & 0,0448 & 0,0448 & 0,3134 & 1,0000 & No rechaza $H_0$\\
+\bottomrule\end{tabular}\end{center}
+\section*{Random Search}
+\begin{center}\small\begin{tabular}{lrrrrrl}\toprule
+Modelo B & DM-HLN & $p$ bruto & $p$ Holm7 & $p$ Holm28 & $p$ Holm112 & Decisión Holm112\\\midrule
+KNN & -3,831 & 0,0002 & 0,0006 & 0,0026 & 0,0145 & Rechaza $H_0$: favorece al original\\
+Ridge & -2,437 & 0,0153 & 0,0359 & 0,1515 & 1,0000 & No rechaza $H_0$\\
+Lasso & -2,526 & 0,0120 & 0,0359 & 0,1317 & 0,8139 & No rechaza $H_0$\\
+Decision Tree & -6,184 & 1,71e-09 & 1,20e-08 & 4,79e-08 & 1,92e-07 & Rechaza $H_0$: favorece al original\\
+Random Forest & -3,896 & 0,0001 & 0,0006 & 0,0021 & 0,0113 & Rechaza $H_0$: favorece al original\\
+XGBoost & -4,423 & 1,30e-05 & 7,78e-05 & 0,0003 & 0,0013 & Rechaza $H_0$: favorece al original\\
+SVR lineal & -1,097 & 0,2733 & 0,2733 & 1,0000 & 1,0000 & No rechaza $H_0$\\
+\bottomrule\end{tabular}\end{center}
+\section*{Bayesiana (Optuna TPE)}
+\begin{center}\small\begin{tabular}{lrrrrrl}\toprule
+Modelo B & DM-HLN & $p$ bruto & $p$ Holm7 & $p$ Holm28 & $p$ Holm112 & Decisión Holm112\\\midrule
+KNN & -3,917 & 0,0001 & 0,0005 & 0,0021 & 0,0106 & Rechaza $H_0$: favorece al original\\
+Ridge & -1,271 & 0,2047 & 0,6140 & 1,0000 & 1,0000 & No rechaza $H_0$\\
+Lasso & -1,197 & 0,2320 & 0,6140 & 1,0000 & 1,0000 & No rechaza $H_0$\\
+Decision Tree & -5,995 & 4,98e-09 & 3,48e-08 & 1,29e-07 & 5,47e-07 & Rechaza $H_0$: favorece al original\\
+Random Forest & -4,593 & 6,06e-06 & 3,63e-05 & 0,0001 & 0,0006 & Rechaza $H_0$: favorece al original\\
+XGBoost & -2,563 & 0,0108 & 0,0431 & 0,1294 & 0,7441 & No rechaza $H_0$\\
+SVR lineal & -1,115 & 0,2654 & 0,6140 & 1,0000 & 1,0000 & No rechaza $H_0$\\
+\bottomrule\end{tabular}\end{center}
+\section*{Genética (DEAP)}
+\begin{center}\small\begin{tabular}{lrrrrrl}\toprule
+Modelo B & DM-HLN & $p$ bruto & $p$ Holm7 & $p$ Holm28 & $p$ Holm112 & Decisión Holm112\\\midrule
+KNN & -3,933 & 0,0001 & 0,0006 & 0,0021 & 0,0102 & Rechaza $H_0$: favorece al original\\
+Ridge & -2,399 & 0,0170 & 0,0509 & 0,1515 & 1,0000 & No rechaza $H_0$\\
+Lasso & -1,533 & 0,1260 & 0,2521 & 0,7563 & 1,0000 & No rechaza $H_0$\\
+Decision Tree & -5,911 & 7,96e-09 & 5,57e-08 & 1,99e-07 & 8,67e-07 & Rechaza $H_0$: favorece al original\\
+Random Forest & -3,485 & 0,0006 & 0,0028 & 0,0089 & 0,0509 & No rechaza $H_0$\\
+XGBoost & -3,362 & 0,0009 & 0,0034 & 0,0129 & 0,0755 & No rechaza $H_0$\\
+SVR lineal & -1,097 & 0,2733 & 0,2733 & 1,0000 & 1,0000 & No rechaza $H_0$\\
+\bottomrule\end{tabular}\end{center}
+\end{document}

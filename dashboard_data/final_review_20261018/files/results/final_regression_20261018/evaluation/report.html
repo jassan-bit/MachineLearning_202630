@@ -1,0 +1,558 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Evaluación final local</title><style>body{font:16px/1.5 system-ui;max-width:1200px;margin:2em auto;padding:1em}table{border-collapse:collapse;font-size:13px}td,th{padding:6px;border:1px solid #ddd}</style><aside id="public-review-context" role="note" style="box-sizing:border-box;clear:both;max-width:1250px;margin:16px auto;padding:16px 18px;background:#edf4f7;border:2px solid #087f8c;color:#17324d;font:15px/1.5 system-ui,sans-serif;text-align:left" data-source-sha256="6e72438fdde320733ae95134284135d67e6d0dcf3a4edc7a90eb790f2ec2f97e"><strong>Revisión publicada · 18 de octubre de 2026.</strong> Estos informes documentan el estudio local realizado antes de esta publicación. <strong>HAR-Ridge + XGBoost original continúa como modelo vigente:</strong> publicar esta revisión no sustituye el modelo ni demuestra una mejora confirmada. Los resultados de 2025 y 2026 son retrospectivos. Las referencias históricas a «solo local» o «sin cambios en GitHub/Render» describen el estado al generar las fuentes. Los manifiestos y archivos descargables conservan ese contexto previo.</aside><h1>Evaluación local de regresión</h1><p>Los informes se generaron antes de publicar esta revisión el 18/10/2026; el modelo original sigue vigente. Los dos periodos ya fueron explorados: los resultados son retrospectivos.</p><p><strong>La confirmación de generalización exige un periodo nuevo.</strong> Los intervalos son individuales. Pertenecer al MCS no demuestra equivalencia.</p><p>Candidatos con evidencia retrospectiva bajo la regla declarada: ninguno.</p><p>RMSE es media de RMSE por serie; MSE se promedia por fecha. Los 112 pronósticos de una fecha no se consideran observaciones independientes.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>model</th>
+      <th>mse</th>
+      <th>rmse</th>
+      <th>mae</th>
+      <th>r2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [bayesian]</td>
+      <td>0.641554</td>
+      <td>0.660793</td>
+      <td>0.452133</td>
+      <td>0.640662</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [genetic]</td>
+      <td>0.628339</td>
+      <td>0.652484</td>
+      <td>0.448196</td>
+      <td>0.648184</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [grid]</td>
+      <td>0.632238</td>
+      <td>0.657704</td>
+      <td>0.450775</td>
+      <td>0.643455</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>DecisionTree [random]</td>
+      <td>0.639017</td>
+      <td>0.660651</td>
+      <td>0.451846</td>
+      <td>0.639092</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.464681</td>
+      <td>0.558168</td>
+      <td>0.375569</td>
+      <td>0.737997</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0.458839</td>
+      <td>0.55191</td>
+      <td>0.365238</td>
+      <td>0.743009</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0.466882</td>
+      <td>0.556978</td>
+      <td>0.368159</td>
+      <td>0.736411</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [grid]</td>
+      <td>0.451651</td>
+      <td>0.547017</td>
+      <td>0.359488</td>
+      <td>0.746643</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG [random]</td>
+      <td>0.481248</td>
+      <td>0.566846</td>
+      <td>0.376259</td>
+      <td>0.729997</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [bayesian]</td>
+      <td>0.476969</td>
+      <td>0.560174</td>
+      <td>0.364462</td>
+      <td>0.731404</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [genetic]</td>
+      <td>0.48395</td>
+      <td>0.563203</td>
+      <td>0.369304</td>
+      <td>0.727548</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [grid]</td>
+      <td>0.511643</td>
+      <td>0.575444</td>
+      <td>0.380561</td>
+      <td>0.714042</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Lasso [random]</td>
+      <td>0.502721</td>
+      <td>0.57261</td>
+      <td>0.381302</td>
+      <td>0.718243</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Persistencia</td>
+      <td>0.828196</td>
+      <td>0.7477</td>
+      <td>0.497194</td>
+      <td>0.537732</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [bayesian]</td>
+      <td>0.520737</td>
+      <td>0.593118</td>
+      <td>0.403702</td>
+      <td>0.708072</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [genetic]</td>
+      <td>0.516668</td>
+      <td>0.591169</td>
+      <td>0.400636</td>
+      <td>0.708554</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [grid]</td>
+      <td>0.519578</td>
+      <td>0.594527</td>
+      <td>0.403541</td>
+      <td>0.704992</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>RandomForest [random]</td>
+      <td>0.516857</td>
+      <td>0.591746</td>
+      <td>0.401843</td>
+      <td>0.708329</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [bayesian]</td>
+      <td>0.482548</td>
+      <td>0.566782</td>
+      <td>0.374908</td>
+      <td>0.729011</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [genetic]</td>
+      <td>0.506284</td>
+      <td>0.577544</td>
+      <td>0.384245</td>
+      <td>0.715361</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [grid]</td>
+      <td>0.513144</td>
+      <td>0.580273</td>
+      <td>0.384025</td>
+      <td>0.712474</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>Ridge [random]</td>
+      <td>0.509114</td>
+      <td>0.578276</td>
+      <td>0.385443</td>
+      <td>0.714723</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [bayesian]</td>
+      <td>0.479832</td>
+      <td>0.565097</td>
+      <td>0.373782</td>
+      <td>0.730622</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [genetic]</td>
+      <td>0.477856</td>
+      <td>0.562727</td>
+      <td>0.371558</td>
+      <td>0.732901</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [grid]</td>
+      <td>0.494043</td>
+      <td>0.570586</td>
+      <td>0.380103</td>
+      <td>0.723233</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>SVR [random]</td>
+      <td>0.47997</td>
+      <td>0.564394</td>
+      <td>0.373716</td>
+      <td>0.731004</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [bayesian]</td>
+      <td>0.490854</td>
+      <td>0.570562</td>
+      <td>0.377936</td>
+      <td>0.723194</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [genetic]</td>
+      <td>0.499663</td>
+      <td>0.577537</td>
+      <td>0.385491</td>
+      <td>0.715055</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [grid]</td>
+      <td>0.494993</td>
+      <td>0.573432</td>
+      <td>0.379643</td>
+      <td>0.718551</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>XGBoost [random]</td>
+      <td>0.509589</td>
+      <td>0.583665</td>
+      <td>0.391528</td>
+      <td>0.707476</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [bayesian]</td>
+      <td>0.555661</td>
+      <td>0.610281</td>
+      <td>0.411129</td>
+      <td>0.691468</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [genetic]</td>
+      <td>0.565501</td>
+      <td>0.61348</td>
+      <td>0.414542</td>
+      <td>0.687254</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [grid]</td>
+      <td>0.565408</td>
+      <td>0.61334</td>
+      <td>0.414441</td>
+      <td>0.687301</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>kNN [random]</td>
+      <td>0.555733</td>
+      <td>0.610304</td>
+      <td>0.41088</td>
+      <td>0.691276</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [bayesian]</td>
+      <td>0.530536</td>
+      <td>0.63329</td>
+      <td>0.38192</td>
+      <td>0.692958</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [genetic]</td>
+      <td>0.537306</td>
+      <td>0.637166</td>
+      <td>0.381066</td>
+      <td>0.690393</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [grid]</td>
+      <td>0.519573</td>
+      <td>0.628705</td>
+      <td>0.379455</td>
+      <td>0.698396</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>DecisionTree [random]</td>
+      <td>0.530436</td>
+      <td>0.633013</td>
+      <td>0.381359</td>
+      <td>0.693341</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0.456042</td>
+      <td>0.579586</td>
+      <td>0.344786</td>
+      <td>0.740759</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [bayesian]</td>
+      <td>0.442956</td>
+      <td>0.571853</td>
+      <td>0.331967</td>
+      <td>0.747202</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [genetic]</td>
+      <td>0.440576</td>
+      <td>0.569879</td>
+      <td>0.331115</td>
+      <td>0.747099</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [grid]</td>
+      <td>0.437531</td>
+      <td>0.566798</td>
+      <td>0.327117</td>
+      <td>0.751143</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG [random]</td>
+      <td>0.444195</td>
+      <td>0.572252</td>
+      <td>0.340252</td>
+      <td>0.745424</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [bayesian]</td>
+      <td>0.429275</td>
+      <td>0.563763</td>
+      <td>0.315734</td>
+      <td>0.752896</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [genetic]</td>
+      <td>0.427513</td>
+      <td>0.562446</td>
+      <td>0.316601</td>
+      <td>0.754606</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [grid]</td>
+      <td>0.433918</td>
+      <td>0.560853</td>
+      <td>0.31743</td>
+      <td>0.753927</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Lasso [random]</td>
+      <td>0.435653</td>
+      <td>0.562656</td>
+      <td>0.322304</td>
+      <td>0.752286</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Persistencia</td>
+      <td>0.795143</td>
+      <td>0.767783</td>
+      <td>0.434525</td>
+      <td>0.545999</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [bayesian]</td>
+      <td>0.470647</td>
+      <td>0.594612</td>
+      <td>0.354472</td>
+      <td>0.730142</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [genetic]</td>
+      <td>0.467997</td>
+      <td>0.592978</td>
+      <td>0.35224</td>
+      <td>0.731375</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [grid]</td>
+      <td>0.472711</td>
+      <td>0.596835</td>
+      <td>0.35288</td>
+      <td>0.72922</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>RandomForest [random]</td>
+      <td>0.467443</td>
+      <td>0.592736</td>
+      <td>0.35033</td>
+      <td>0.731481</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [bayesian]</td>
+      <td>0.444992</td>
+      <td>0.57352</td>
+      <td>0.325931</td>
+      <td>0.745329</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [genetic]</td>
+      <td>0.437929</td>
+      <td>0.568245</td>
+      <td>0.324059</td>
+      <td>0.750202</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [grid]</td>
+      <td>0.43827</td>
+      <td>0.563217</td>
+      <td>0.319862</td>
+      <td>0.752255</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>Ridge [random]</td>
+      <td>0.440311</td>
+      <td>0.565966</td>
+      <td>0.32282</td>
+      <td>0.750532</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [bayesian]</td>
+      <td>0.438435</td>
+      <td>0.568941</td>
+      <td>0.320598</td>
+      <td>0.749568</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [genetic]</td>
+      <td>0.44079</td>
+      <td>0.570459</td>
+      <td>0.322513</td>
+      <td>0.747683</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [grid]</td>
+      <td>0.436465</td>
+      <td>0.567429</td>
+      <td>0.322496</td>
+      <td>0.750949</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>SVR [random]</td>
+      <td>0.43971</td>
+      <td>0.568864</td>
+      <td>0.321899</td>
+      <td>0.748755</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [bayesian]</td>
+      <td>0.45743</td>
+      <td>0.579546</td>
+      <td>0.335222</td>
+      <td>0.739029</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [genetic]</td>
+      <td>0.467662</td>
+      <td>0.585395</td>
+      <td>0.34279</td>
+      <td>0.730643</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [grid]</td>
+      <td>0.459136</td>
+      <td>0.58086</td>
+      <td>0.33483</td>
+      <td>0.737646</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>XGBoost [random]</td>
+      <td>0.482787</td>
+      <td>0.595027</td>
+      <td>0.34583</td>
+      <td>0.723475</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [bayesian]</td>
+      <td>0.528021</td>
+      <td>0.623489</td>
+      <td>0.363137</td>
+      <td>0.70032</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [genetic]</td>
+      <td>0.530252</td>
+      <td>0.623815</td>
+      <td>0.364509</td>
+      <td>0.699907</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [grid]</td>
+      <td>0.529506</td>
+      <td>0.623113</td>
+      <td>0.364168</td>
+      <td>0.700556</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>kNN [random]</td>
+      <td>0.526366</td>
+      <td>0.622503</td>
+      <td>0.362811</td>
+      <td>0.701668</td>
+    </tr>
+  </tbody>
+</table><ul><li><a href="2025/mcs_membership.csv">2025: MCS</a> · <a href="2025/directed_dm_holm.csv">DM dirigido</a> · <a href="2025/spa_vs_original.json">SPA</a></li><li><a href="2026/mcs_membership.csv">2026: MCS</a> · <a href="2026/directed_dm_holm.csv">DM dirigido</a> · <a href="2026/spa_vs_original.json">SPA</a></li></ul><p><a href="metric_intervals.csv">Intervalos de métricas</a> · <a href="paired_effects_vs_original.csv">Tamaños de efecto e intervalos</a> · <a href="residuals/report.html">Residuos: tablas, histogramas y ACF</a> · <a href="protocol.json">Protocolo</a> · <a href="summary.json">Resumen</a></p></html>

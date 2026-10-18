@@ -1,0 +1,5 @@
+volatility_window,reference_rmse,reference_mae,reference_mse,reference_r2,original_lower_mse,original_wins_holm7,benchmark_wins_holm7,no_rejection_holm7,majority_holm7,original_wins_holm28,benchmark_wins_holm28,no_rejection_holm28,majority_holm28,original_wins_holm112,benchmark_wins_holm112,no_rejection_holm112,majority_holm112
+7,0.9920071871426748,0.6914159800456676,1.1864010579892794,0.4710523692874891,28,21,0,7,True,14,0,14,False,12,0,16,False
+14,0.5499585008573041,0.3614336628848173,0.3688850985611416,0.7610159870283582,28,9,0,19,False,6,0,22,False,5,0,23,False
+21,0.3860056050056455,0.2537228329616202,0.1844395290325715,0.8444669381759489,27,12,0,16,False,4,0,24,False,1,0,27,False
+28,0.3047024784613597,0.1957030344208666,0.1189985154473721,0.8754529706640614,19,3,0,25,False,2,0,26,False,2,0,26,False

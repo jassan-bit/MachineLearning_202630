@@ -56,16 +56,17 @@ class ComparativeDashboardTests(unittest.TestCase):
         expected = self.metrics.query('symbol == "BTCUSDT" and volatility_window == 14 and horizon == 3 and model in ["XGBoost","Ridge"]')
         np.testing.assert_allclose(view.set_index('model').sort_index().rmse,expected.set_index('model').sort_index().rmse)
 
-    def test_http_routes_and_three_tabs(self):
+    def test_http_routes_and_four_tabs(self):
         client = app.server.test_client()
         for route in ['/','/healthz','/_dash-layout','/_dash-dependencies','/assets/style.css','/book-report']:
             with client.get(route) as response:
                 self.assertEqual(response.status_code,200,route)
         self.assertEqual(client.get('/healthz').get_json(), {'status': 'ok'})
         layout = client.get('/_dash-layout').get_json()
-        tabs = layout['props']['children'][1]['props']['children']
-        self.assertEqual(len(tabs),3)
-        for tab in ['contexto','eda','modelos']:
+        tabs = next(child['props']['children'] for child in layout['props']['children']
+                    if child.get('props', {}).get('id') == 'main-tabs')
+        self.assertEqual(len(tabs),4)
+        for tab in ['contexto','eda','modelos','revision-final']:
             response = client.post('/_dash-update-component',json={
                 'output':'tab-content.children','outputs':{'id':'tab-content','property':'children'},
                 'inputs':[{'id':'main-tabs','property':'value','value':tab}],

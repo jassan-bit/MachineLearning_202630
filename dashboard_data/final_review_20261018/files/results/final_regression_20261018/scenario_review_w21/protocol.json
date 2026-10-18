@@ -1,0 +1,51 @@
+{
+  "created_at_utc": "2026-10-18T21:40:30.241676+00:00",
+  "requested_date": "2026-10-18",
+  "purpose": "User-selected w21 slide scenario AFTER prior inspection of2025/2026; exploratory post-hoc analysis",
+  "primary_inference_plan_unchanged": true,
+  "no_retraining": true,
+  "no_new_forecasts": true,
+  "volatility_window": 21,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT"
+  ],
+  "horizons": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "years": [
+    2025,
+    2026
+  ],
+  "reference": "HAR-Ridge + XGBoost",
+  "candidates": [
+    "HAR-XG [grid]",
+    "HAR-XG [random]",
+    "HAR-XG [bayesian]",
+    "HAR-XG [genetic]"
+  ],
+  "loss": "Paired mean squared loss of28asset/horizon outputs within each daily origin",
+  "dm": "Two-sided DM-HLN7; BartlettHAC26; t(n-1)",
+  "adjustment": "Holm4 separately within each year on the four optimizedHAR versus original comparisons",
+  "selection_warning": "Holm4 does not adjust for post-hoc window selection or prior experimentation",
+  "broader_search": "If selecting a favorable result across4windows×4candidates, adjust all16 planned contrasts per year; both years32 if choosing a favorable year too",
+  "no_bootstrap": true,
+  "no_new_mcs_or_spa": true,
+  "no_transfer_of_global_inference_to_w21": true,
+  "original_slide_holm6": "Different hypotheses: original HAR versus its six old rivals, not new HAR versus original",
+  "input_sha256": {
+    "results\\final_regression_20261018\\predictions_2025.csv.gz": "727b524df49303dc50d8ee277b18d7adfe37a819a1837d9339cbb0419f3818b5",
+    "results\\final_regression_20261018\\predictions_2026.csv.gz": "d56ee1c31f7723e4552dcf36bc3acd074a820bc7f1ff9853016c9ffb5412fa08"
+  },
+  "source_sha256": "64cb5d78fdc0d83d902f00fb9f0d458b2c9550709b7ad113f7125951bf794531",
+  "publication": "LOCAL ONLY",
+  "publication_authorized": false
+}

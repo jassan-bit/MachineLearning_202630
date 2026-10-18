@@ -1,0 +1,8 @@
+.final-review-links { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 22px; }
+.final-review-status { border-left:4px solid #bd811f; }
+.final-review .stat-card span { display:block; margin-top:7px; color:#596979; }
+.final-review .stat-card strong { font-size:1.5rem; }
+.final-review .final-review-preview { display:block; width:100%; max-height:300px; object-fit:contain; margin:12px auto; }
+.final-review details > summary { cursor:pointer; color:#17324d; font-weight:600; padding:10px 0; }
+.final-review .panel { min-width:0; }
+.final-review a { overflow-wrap:anywhere; }

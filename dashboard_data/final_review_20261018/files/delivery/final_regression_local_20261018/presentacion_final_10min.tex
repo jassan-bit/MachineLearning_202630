@@ -1,0 +1,135 @@
+% Entrega final LOCAL; diez diapositivas, duración total 600 segundos.
+% Fuentes de resultados: results/final_regression_20261018/.
+% Archivo nuevo: no modifica la presentación previa ni publica el proyecto.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern,booktabs}
+\definecolor{Navy}{HTML}{17324D}
+\definecolor{Teal}{HTML}{087F8C}
+\setbeamercolor{structure}{fg=Teal}
+\setbeamercolor{frametitle}{fg=white,bg=Navy}
+\setbeamertemplate{navigation symbols}{}
+% Text-only bullets avoid uncached AMS symbol fonts in offline Tectonic.
+\setbeamertemplate{itemize item}{\textnormal{-}}
+\setbeamertemplate{itemize subitem}{\textnormal{-}}
+\setbeamertemplate{footline}[frame number]
+\setbeameroption{hide notes}
+\title{Regresión de volatilidad: revisión final local}
+\author{Jassan Arteta y Mateo Bernal}
+\institute{Universidad del Norte}
+\date{Exposición de 10 minutos}
+\begin{document}
+% duration_seconds: 40
+\begin{frame}{Pregunta y alcance}
+\framesubtitle{Tiempo sugerido: 0:40}
+\begin{itemize}
+\item \textquestiondown{}Mejoran los cambios al HAR-Ridge + XGBoost vigente?
+\item Solo regresión de volatilidad; siete horizontes diarios.
+\item Experimento y entrega locales. Publicación no autorizada.
+\end{itemize}\par\bigskip\small Jassan Arteta y Mateo Bernal\par Universidad del Norte
+\note{Presentar la pregunta. Distinguir completar la guía académica de demostrar una mejora predictiva. La comparación usa un modelo vigente como referencia congelada.}
+\end{frame}
+% duration_seconds: 55
+\begin{frame}{Datos y EDA corregido}
+\framesubtitle{Tiempo sugerido: 0:55}
+\begin{itemize}
+\item Cierres de un minuto; características y objetivo diarios.
+\item Calendario conservado; sin interpolar precios.
+\item Información mutua, VIF y estacionalidad intradía; referencia HAR.
+\item El orden histórico EDA/modelo y los periodos ya explorados se declaran.
+\end{itemize}
+\note{Explicar adquisición, agregación y objetivo sin confundir frecuencias. Las correcciones descriptivas no implican automáticamente mejor pronóstico. Indicar activos y ventanas realmente ejecutados según el protocolo.}
+\end{frame}
+% duration_seconds: 65
+\begin{frame}{Validación temporal anidada}
+\framesubtitle{Tiempo sugerido: 1:05}
+\begin{itemize}
+\item Bucle interno: búsqueda y selección usando solo pasado.
+\item Bucle externo: evaluación del procedimiento completo.
+\item Escalado ajustado en train y purga según última fecha objetivo.
+\item 2025 y 2026 son auditorías retrospectivas, no datos nuevos.
+\end{itemize}
+\note{Dibujar verbalmente train interno, validación interna y bloque externo. La etiqueta de entrenamiento termina antes del primer origen de validación. Las métricas externas no seleccionan dentro de ese mismo bloque.}
+\end{frame}
+% duration_seconds: 70
+\begin{frame}{Siete familias por cuatro optimizadores}
+\framesubtitle{Tiempo sugerido: 1:10}
+\begin{itemize}
+\item Cobertura observada de la matriz: 28/28 combinaciones.
+\item KNN, Ridge, Lasso, Decision Tree, Random Forest, XGBoost y SVR lineal.
+\item Grid limitado, Random sin reemplazo, Optuna TPE y Genética DEAP.
+\item HAR-Ridge + XGBoost y sus variantes son adicionales.
+\end{itemize}
+\note{Grid con presupuesto ocho es una rejilla limitada, no una exploración exhaustiva. TPE usa densidades de configuraciones buenas y restantes y expected improvement. DEAP usa selección, cruce, mutación y elitismo documentados; se registra diversidad.}
+\end{frame}
+% duration_seconds: 70
+\begin{frame}{Comparación controlada de las búsquedas}
+\framesubtitle{Tiempo sugerido: 1:10}
+\begin{columns}[T,onlytextwidth]\begin{column}{0.57\textwidth}\includegraphics[width=\linewidth,height=4.35cm,keepaspectratio]{figures/presentation_optimizer_har.png}\end{column}\begin{column}{0.41\textwidth}\scriptsize\setlength{\tabcolsep}{3pt}\begin{tabular}{lrr}\toprule Método & MSE interno & Tiempo (s)\\\midrule
+grid & 0.0745944 & 1.53241\\
+random & 0.0753055 & 8.97636\\
+bayesian & 0.077765 & 7.90131\\
+genetic & 0.0753055 & 7.9757\\
+\bottomrule\end{tabular}\par\medskip\scriptsize Tres repeticiones secuenciales, semilla 42. Tiempos medios; calidad de validación interna.\end{column}\end{columns}\par\medskip\footnotesize Mismo presupuesto: ocho evaluaciones únicas y tres bloques internos. El resultado no demuestra superioridad universal.
+\note{La curva y la tabla corresponden a BTC con ventana 21 y al mismo presupuesto ocho. Las tres repeticiones usan la misma semilla 42 y miden variación temporal, no tres muestras de calidad predictiva. La comparación es interna; la siguiente diapositiva contiene pérdidas externas. El compromiso real entre calidad encontrada y tiempo puede favorecer a cualquier método.}
+\end{frame}
+% duration_seconds: 60
+\begin{frame}{Resultados del bucle externo}
+\framesubtitle{Tiempo sugerido: 1:00}
+\small\begin{tabular}{p{6cm}rr}\toprule Modelo & RMSE & Desv. entre folds\\\midrule
+Lasso [genetic] & 0.491984 & 0.154097\\
+Lasso [bayesian] & 0.492708 & 0.149398\\
+SVR [genetic] & 0.495407 & 0.146329\\
+SVR [bayesian] & 0.496078 & 0.147854\\
+SVR [random] & 0.496473 & 0.146329\\
+SVR [grid] & 0.496602 & 0.147437\\\bottomrule\end{tabular}\par\medskip\footnotesize Orden por RMSE medio; la selección del procedimiento SHAP utiliza MSE medio.\par Primero se promedian configuraciones dentro de cada fold; después se calcula la dispersión entre folds.
+\note{Leer la tabla como evaluación externa del procedimiento. Los datos crudos conservan resultados por activo, ventana y semilla. No confundir la dispersión entre objetivos con incertidumbre entre folds. Los seis renglones mostrados son un resumen; el libro conserva la tabla completa.}
+\end{frame}
+% duration_seconds: 70
+\begin{frame}{HAR-XG frente al modelo vigente}
+\framesubtitle{Tiempo sugerido: 1:10}
+\small\begin{tabular}{p{4.7cm}rrr}\toprule Modelo & MSE 2025 & MSE 2026 & Red. 2026 (\%)\\\midrule
+HAR-Ridge + XGBoost & 0.464681 & 0.456042 & --\\
+HAR-XG [grid] & 0.451651 & 0.437531 & 4.05888\\
+HAR-XG [random] & 0.481248 & 0.444195 & 2.59777\\
+HAR-XG [bayesian] & 0.458839 & 0.442956 & 2.86938\\
+HAR-XG [genetic] & 0.466882 & 0.440576 & 3.39133\\
+\bottomrule\end{tabular}\par\medskip\footnotesize Cuatro activos, cuatro ventanas y siete horizontes; mismas fechas. MSE en puntos porcentuales al cuadrado. Reducción positiva favorece al candidato; la inferencia se evalúa por separado.
+\note{Mostrar las cuatro variantes predeclaradas y ambos años, con las mismas configuraciones y fechas. Las selecciones y los pesos usan desarrollo; la evaluación solo se muestra aquí. La reducción es cien por uno menos el cociente entre MSE candidato y original en 2026. Un número positivo no basta: continuar con la regla fuerte y sus intervalos. No escoger una ventana o un método por su mejor resultado test.}
+\end{frame}
+% duration_seconds: 65
+\begin{frame}{Evidencia estadística e incertidumbre}
+\framesubtitle{Tiempo sugerido: 1:05}
+\small\setlength{\tabcolsep}{5pt}\begin{tabular}{lrlc}\toprule Candidato & $p$ DM-Holm4 & IC 95\% de ganancia MSE & Regla fuerte\\\midrule
+grid & 0.656685 & [-0.000675315; 0.0455451] & No\\
+random & 0.759366 & [-0.0112749; 0.0432099] & No\\
+bayesian & 0.759366 & [-0.00554905; 0.0378098] & No\\
+genetic & 0.759366 & [-0.00519269; 0.041059] & No\\
+\bottomrule\end{tabular}\par\medskip\small 2026 primario: SPA global p=0.226887; MCS incluye 4/4 candidatos HAR-XG.\par\smallskip\footnotesize Ganancia = MSE vigente menos candidato. IC estacionario; regla fuerte añade dirección favorable en 2025 y requisitos predeclarados.\par\medskip\small Mejora bajo regla fuerte (SPA y dirección 2025): no demostrada.
+\note{Las cuatro comparaciones son la familia primaria predeclarada. La dependencia se conserva agregando pérdidas por origen y remuestreando fechas comunes. Pertenecer al MCS no prueba equivalencia. Los intervalos de diferencias de MSE no son bandas de pronóstico. GW sobre pronósticos fijos es exploratorio. La decisión global proviene de review\_summary y del plan inferencial previo.}
+\end{frame}
+% duration_seconds: 60
+\begin{frame}{Interpretación, residuos y eficiencia}
+\framesubtitle{Tiempo sugerido: 1:00}
+\begin{columns}[T,onlytextwidth]\begin{column}{0.60\textwidth}\includegraphics[width=\linewidth,height=4.6cm,keepaspectratio]{figures/presentation_best_shap_top8.png}\end{column}\begin{column}{0.38\textwidth}\scriptsize \begin{itemize}
+\item Menor MSE de desarrollo: HAR-XG / bayesian.
+\item SHAP: 26432 pronósticos; fondo de ocho filas train.
+\item Ljung-Box: 6805/7616 series rechazan tras Holm.
+\item HAR-XG, n=600: ajuste 3.30x e inferencia 0.82x respecto al vigente.
+\end{itemize}\par\medskip\scriptsize SHAP asociativo; etiquetas abreviadas, una permutación nominal. Velocidad mayor que 1 favorece al seleccionado; benchmark diagnóstico, no test.\end{column}\end{columns}
+\note{El gráfico resume el mejor procedimiento seleccionado con MSE de desarrollo 2024, no con test. Las 26432 salidas primarias tienen igual ponderación. La atribución usa ocho filas train y una permutación nominal; aditividad no demuestra causalidad. Ljung-Box describe dependencia residual con ajuste en toda su familia. Los tiempos usan n600 y tres repeticiones instrumentadas; un cociente mayor que uno significa mayor velocidad, sin implicar menor error test. Los dos casos locales y LIME están en el libro.}
+\end{frame}
+% duration_seconds: 45
+\begin{frame}{Conclusión y decisión local}
+\framesubtitle{Tiempo sugerido: 0:45}
+\begin{itemize}
+\item Mejora bajo regla fuerte (SPA y dirección 2025): no demostrada.
+\item La confirmación de generalización requiere un periodo no inspeccionado.
+\item Resultados, código de revisión y hashes disponibles en la entrega local.
+\item GitHub, Render y el modelo publicado permanecen sin actualizar.
+\end{itemize}
+\note{Cerrar con la decisión respaldada por los números y la regla. Si no se cumple, conservar el modelo vigente. Si se cumple retrospectivamente, distinguir esa evidencia de una confirmación prospectiva y de una autorización para publicar.}
+\end{frame}
+\end{document}

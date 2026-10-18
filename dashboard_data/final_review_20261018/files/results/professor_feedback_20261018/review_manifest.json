@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "publication": "LOCAL ONLY",
+  "tests_passed": 23,
+  "test_command": ".venv-repro/Scripts/python.exe -m unittest discover -s tests -p test_professor_feedback*.py",
+  "protected_files_unchanged": 209,
+  "github_or_render_updated": false,
+  "analysis_summary_sha256": "4ce8d50cf93fb73f521eb175eb6f1cca6bca640c49e7f5223081902521d3ff72",
+  "report_sha256": "ce7b55f15e2b021fc98385ed88141296ae498bf1a6ecd62f74404789fe3dced7",
+  "code_sha256": {
+    "src/evaluate_professor_feedback.py": "f78b1b2ac458a8c5e5e7b47244337386e7d7961d532a58f480f3bd6eb7a1c425",
+    "src/professor_feedback_daily_har.py": "91881a31a79af394febbed55552eb473d78d4072a196d23ebec69e29b1a906ef",
+    "src/professor_feedback_diagnostics.py": "7ebc8155d5c85275ce84a861f66a1f60e1142bb9e65dcf700ab92bba74572281",
+    "src/professor_feedback_har_baseline.py": "7e289a7cb614c01a4cae0e624239be474587d975660b706e37f797b2bf9eeb7f",
+    "src/professor_feedback_residuals.py": "1847824047607d5599cea912347011906c08008dc25ac4040b5290354b008e0d",
+    "src/report_professor_feedback.py": "4ad1c4dea69a9d9b0cdcc55673d5e9bc92e3b526e6a60dfc5e1de6ad98768e8c",
+    "tests/test_professor_feedback_daily_har.py": "8f768a4ade7e83cdab8690cf9431ce0b0c4e2e2db24e6ec23bdfc8a0b098aef4",
+    "tests/test_professor_feedback_diagnostics.py": "94eb968600838a7b20e06fabedc33c68c20f190be5e66a48900d4c3d988b0a76",
+    "tests/test_professor_feedback_evaluation.py": "23e92ec9cb07d07c0b52e2f41ed5146963fc0de46c036a2ddc5b58eaf3bb8dbc",
+    "tests/test_professor_feedback_har_baseline.py": "17aebc30d3dec5bcf5870f96240f4f79794402df93c7834097b85b34d11fdada",
+    "tests/test_professor_feedback_residuals.py": "c0ee4fb262ad9255229d32581b5ba6f6c4bfbdb34aa72d20e1ab283458285396"
+  }
+}

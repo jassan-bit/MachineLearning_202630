@@ -1,0 +1,22 @@
+{
+  "full_series": 7616,
+  "representative_series": 68,
+  "full_expensive_diagnostics": true,
+  "white_bds_normality_series": 7616,
+  "white_bds_normality_complete_panel": true,
+  "finite_nominal_p_values": {
+    "white_p": 7616,
+    "bds_p": 7616,
+    "jarque_bera_p": 7616
+  },
+  "representative": {
+    "symbol": "BTCUSDT",
+    "volatility_window": 21,
+    "horizon": 1
+  },
+  "missing_representative": false,
+  "white_bds_scope": "Every forecast series; Holm separately per diagnostic over all models/configurations/horizons/years",
+  "plots_scope": "Only predeclared representative series per model and year",
+  "ljung_box_scope": "Every forecast series; Holm across all reported series and years",
+  "temporal_overlap": "Volatility windows and forecast horizons overlap; nonrejection does not prove independence"
+}
