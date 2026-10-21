@@ -1,0 +1,28 @@
+{
+  "publication": "LOCAL ONLY",
+  "github_or_render_updated": false,
+  "feedback_date": "2026-10-18",
+  "created_at_utc": "2026-10-18T17:32:28.475049+00:00",
+  "target": "Unchanged population std of daily percent log returns, windows7/14/21/28, h1..7",
+  "features": "sqrt(sum of minute percent log-return squares) today, trailing7 and trailing28 means",
+  "distinction": "HAR-inspired OLS/Ridge for study target; not original HAR realized-variance response",
+  "frequency": "Daily issuance at completed UTC close; original minute acquisition",
+  "ols": "Fixed three scales, intercept, direct seven-output OLS; nonnegative clip",
+  "ridge_alphas": [
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "ridge_selection": "Pooled natural-unit MSE on six original purged2024 blocks",
+  "scaler": "StandardScaler fit on train only in every fold and final fit",
+  "final_fit": "660 original eligible origins; all labels strictly before2025",
+  "evaluation": "Static model for2025 and2026; both already explored, retrospective",
+  "purpose": "Stronger baseline than persistence, not automatic replacement of HAR-XG",
+  "code_sha256": "7e289a7cb614c01a4cae0e624239be474587d975660b706e37f797b2bf9eeb7f",
+  "sources": {
+    "har": "https://doi.org/10.1093/jjfinec/nbp001",
+    "ridge": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html"
+  }
+}

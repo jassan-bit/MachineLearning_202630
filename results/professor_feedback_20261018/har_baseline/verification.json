@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "protected_files_unchanged": true,
+  "protected_files": 209,
+  "alignment": [
+    {
+      "year": 2025,
+      "exact_keys": true,
+      "rows": 40096,
+      "max_abs_actual_error": 1.7763568394002505e-15
+    },
+    {
+      "year": 2026,
+      "exact_keys": true,
+      "rows": 26432,
+      "max_abs_actual_error": 1.7763568394002505e-15
+    }
+  ],
+  "training_origins": 660,
+  "validation_origins": 359,
+  "test_origins": {
+    "2025": 358,
+    "2026": 236
+  },
+  "models": 32,
+  "github_or_render_updated": false,
+  "frozen_models_verified": true
+}

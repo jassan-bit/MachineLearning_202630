@@ -1,0 +1,18 @@
+{
+  "status": "complete",
+  "elapsed_seconds": 273.6719999999914,
+  "publication": "LOCAL ONLY",
+  "protected_artifacts_unchanged": true,
+  "conditional_validation_warning": "CONDITIONAL on 2024-selected base; not nested/independent validation of base architecture",
+  "primary_2026_mse": {
+    "HAR-Ridge + XGBoost": 0.4560416445197652,
+    "HAR-XG + AR mature errors": 0.4530543190911405,
+    "HAR-XG + AR no online labels": 0.45679789129021364,
+    "HAR-XG + last mature error": 0.45762034788208716
+  },
+  "lower_than_base_and_same_access_control": true,
+  "primary_significant_wins": 0,
+  "evidence_gate_passed": false,
+  "publication_authorized": false,
+  "retrospective_only": true
+}

@@ -1,0 +1,8 @@
+{
+  "pilot_2023_oof_seconds": 7.639999999999418,
+  "preparation_seconds": 3.7659999999887077,
+  "estimated_remaining_seconds": 85.94999999999345,
+  "workers": 2,
+  "required_new_xgboost_fits": 48,
+  "existing_2024_oof_reused": true
+}

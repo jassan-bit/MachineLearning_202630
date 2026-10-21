@@ -18,6 +18,11 @@ a esa selección. [Calendario y dimensiones](../../results/current_delivery_audi
 
 (reserva-test)=
 
+:::{div}
+:class: correccion-profesor
+
+(cronologia-retroalimentacion)=
+
 **Orden de trabajo:** Reserva del test y alcance de la evaluación
 
 2025 ya se exploró en experimentos anteriores y el EDA publicado incluye 2023–2025. Por ello, no se acredita una reserva inicial intacta del test. La selección programada utiliza 2024 y el escalado se ajusta dentro de cada entrenamiento, pero estos controles no revierten el conocimiento previo de 2025. Los resultados de ese año se presentan como retrospectivos.
@@ -36,6 +41,24 @@ auditados. No se certifica que ese periodo nunca se haya explorado fuera
 de esos archivos. Esta comprobación adicional no recupera retrospectivamente
 la reserva original de 2025 ni garantiza independencia entre los orígenes
 de un objetivo móvil. El estudio compara persistencia con el SVR lineal.
+
+**Respuesta a la observación del profesor.** El EDA se elaboró después del
+modelo y con 2025 ya explorado. Los diagnósticos añadidos el 18 de octubre
+de 2026 usan únicamente desarrollo 2023–2024, pero siguen siendo una
+auditoría retrospectiva: no convierten ese EDA en una exploración previa
+al entrenamiento. La evaluación adicional de 2026 descrita arriba conserva
+su protocolo histórico; al diseñar estas correcciones, tanto 2025 como
+enero–agosto de 2026 ya habían sido examinados. Una confirmación nueva
+requiere fijar el procedimiento antes de inspeccionar un periodo posterior.
+
+Se verificaron los resultados existentes de información mutua, VIF y
+perfil intradía: sus ocho archivos de salida y los cinco scripts de origen
+coinciden con los hashes del
+[manifiesto del diagnóstico](../../results/professor_feedback_20261018/diagnostics/metadata.json).
+Los apartados siguientes incorporan esa evidencia al JBook, sin volver a
+seleccionar variables ni modificar los pronósticos originales.
+
+:::
 
 ## 2.1 Análisis de la Variable Objetivo
 
@@ -185,6 +208,52 @@ se comparan como tasas. Los
 identifican cada familia y rezago. No se eliminan columnas con este
 diagnóstico: hacerlo exigiría repetir la validación dentro de desarrollo.
 
+:::{div}
+:class: correccion-profesor
+
+(informacion-mutua-profesor)=
+### 2.3.1 Información mutua añadida
+
+Se ejecutó información mutua marginal con el estimador continuo de vecinos
+próximos `mutual_info_regression`: cinco vecinos, semilla 42 y resultados
+en **nats**. Se estandariza cada muestra del diagnóstico y se conservan
+por separado los siete objetivos de volatilidad absoluta y las siete
+correcciones relativas que aprende el modelo, $z_{t,h}=y_{t,h}/b_t-1$.
+El estimador lleva a cero las estimaciones negativas; una estimación cero
+no demuestra independencia.
+
+El [CSV de información mutua](../../results/professor_feedback_20261018/diagnostics/mutual_information.csv)
+contiene **22.400 estimaciones** para cuatro activos, cuatro ventanas,
+dos representaciones de entrada y dos cortes de desarrollo. `HAR44`
+incluye las 44 columnas del componente HAR-Ridge; `daily6`, las seis
+características contemporáneas diarias del SVR. Se usan **660 orígenes**
+de desarrollo 2023–2024 y, como diagnóstico separado, **294 de 2023**;
+no son muestras independientes que deban sumarse. Todas las etiquetas
+terminan antes del corte correspondiente. El
+[calendario exacto](../../results/professor_feedback_20261018/diagnostics/diagnostic_calendar.csv)
+permite comprobarlo.
+
+Ejemplos de la MI media de entradas HAR con la **corrección relativa**, en
+2023–2024, promediando activos, ventanas y horizontes:
+
+| Entrada | MI media (nats) |
+| --- | ---: |
+| Decaimiento conocido h4 | 0,3079 |
+| Decaimiento conocido h5 | 0,3034 |
+| Decaimiento conocido h3 | 0,2915 |
+| Logaritmo de volatilidad actual | 0,2326 |
+
+La MI describe asociación marginal, incluidas relaciones no lineales;
+no es un valor p, importancia condicional ni evidencia de mejora
+predictiva incremental. La persistencia, la normalización por $b_t$ y
+los retornos compartidos por las ventanas móviles pueden contribuir a
+esa asociación. La dependencia temporal y el tamaño efectivo de muestra
+también limitan su interpretación. No se seleccionaron ni retiraron
+variables con estas cifras. Este diagnóstico cubre `HAR44` y `daily6`;
+no estima la MI de todos los rezagos del diseño SVR de $6L+7$ columnas.
+
+:::
+
 ## 2.4 Análisis multivariado
 
 Se ajustan `StandardScaler` y PCA por activo y configuración con **294
@@ -221,6 +290,47 @@ Los [resultados por origen](../../results/current_delivery_audit/eda/multivariat
 incluyen fecha, distancia, umbral y característica con mayor desviación
 estandarizada. Los círculos rojos de la proyección corresponden a esa
 distancia en todas las variables. Ninguna observación se elimina.
+
+:::{div}
+:class: correccion-profesor
+
+(vif-profesor)=
+### 2.4.1 Factor de inflación de la varianza (VIF) añadido
+
+Se calculó $\mathrm{VIF}_j=1/(1-R_j^2)$ mediante regresiones lineales
+auxiliares de cada predictor frente a los restantes, con intercepto y
+estandarización local. Las columnas constantes se marcan como no
+definidas. Si la fracción de variación sin explicar es menor o igual
+que $10^{-12}$, se informa dependencia lineal y VIF infinito, sin ocultarla
+mediante una pseudoinversa de la matriz de correlaciones.
+
+El [informe VIF](../../results/professor_feedback_20261018/diagnostics/variance_inflation.csv)
+tiene **1.600 filas**: 800 posiciones de columna en cada uno de los dos
+cortes de desarrollo descritos en 2.3.1. Para los **16 diseños de
+2023–2024**, con 660 orígenes por diseño:
+
+| Representación | Posiciones de columna | VIF > 10, incluidos infinitos | VIF infinitos | Constantes | Mediana VIF finito |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| HAR44 | 704 | 581 | 48 | 4 | 32,5379 |
+| daily6 | 96 | 53 | 0 | 0 | 16,8534 |
+
+Los **48 VIF infinitos** corresponden a tres columnas implicadas en
+**una sola redundancia lineal por diseño HAR**: a escala de un día,
+$\mathrm{downside}=(|r|-r)/2$. Las cuatro constantes corresponden a
+`known_decay_h7` con ventana objetivo de siete días. El
+[informe de rango y condición](../../results/professor_feedback_20261018/diagnostics/design_audit.csv)
+registra 43 columnas no constantes y rango 42 para HAR con $w=7$;
+con las otras ventanas, 44 columnas no constantes y rango 43.
+
+Un VIF mayor que diez es una señal de redundancia de una regresión
+sin penalizar, no una regla automática de exclusión ni una prueba de
+fallo de Ridge. No se eliminan columnas ni se reoptimiza el modelo con
+este resultado. **Alcance pendiente:** el VIF del diseño completo del SVR
+de $6L+7$ entradas no se recalculó; `daily6` cubre su bloque contemporáneo.
+Los VIF históricos de otras representaciones no sustituyen esta
+comprobación. La redundancia queda documentada con su alcance efectivo.
+
+:::
 
 ## 2.5 Auditoría de fuga de datos
 
@@ -326,6 +436,54 @@ incluyen tamaños de muestra y todas las variables.
 
 ![Deriva descriptiva entre años](../figures/current_eda_drift.png)
 
+:::{div}
+:class: correccion-profesor
+
+(intradia-profesor)=
+### 2.6.4 Perfil de estacionalidad intradía añadido
+
+Se calcularon perfiles por **minuto y hora UTC** del retorno absoluto y
+cuadrado de un minuto, conservando las posiciones del calendario y sin
+calcular retornos a través de huecos. Para comparar la forma horaria sin
+que los días de mayor variación dominen el promedio, cada retorno
+cuadrado se divide por la media de retornos cuadrados de su propio día
+**completo**. Esta normalización usa todo el día y sirve para descripción;
+no se introduce como predictor disponible antes de su cierre.
+
+Desarrollo 2023–2024 aporta **731 días de calendario y 729 días con todos
+sus retornos de minuto disponibles por activo**: se excluyen del perfil
+normalizado el primer día sin cierre previo y el día afectado por el
+hueco. Los cortes separados son 363 días completos en 2023 y 366 en 2024.
+En el perfil horario medio de desarrollo:
+
+| Activo | Hora pico UTC | Hora valle UTC | Razón pico/valle |
+| --- | ---: | ---: | ---: |
+| BTCUSDT | 14 | 4 | 3,6742 |
+| ETHUSDT | 14 | 4 | 3,3526 |
+| BNBUSDT | 14 | 4 | 2,0884 |
+| XRPUSDT | 15 | 4 | 2,1128 |
+
+![Perfiles horarios de desarrollo y comparación 2023–2024](../../results/professor_feedback_20261018/diagnostics/intraday_development.png)
+
+La figura compara 2023, 2024 y su conjunto. Las bandas del conjunto son
+intervalos percentiles individuales del 95 % obtenidos con **499
+réplicas bootstrap circular de bloques de siete días de calendario**,
+semilla 42; los días incompletos conservan su posición como ausentes.
+No son bandas simultáneas ni una prueba formal de estacionalidad
+estable. Los máximos y mínimos se describen después de observar el
+perfil y no llevan un contraste específico de su diferencia.
+
+Los perfiles muestran variación horaria en desarrollo, con cambios entre
+2023 y 2024: por ejemplo, el pico de BNB pasa de las 15 a las 14 UTC,
+y el de XRP también pasa de 15 a 14 UTC. No se demuestra estabilidad
+en años futuros ni que desestacionalizar reduzca el error del modelo.
+Se publican los
+[perfiles por minuto](../../results/professor_feedback_20261018/diagnostics/intraday_minute_profile.csv),
+[perfiles horarios e intervalos](../../results/professor_feedback_20261018/diagnostics/intraday_hour_profile.csv)
+y [resúmenes por periodo](../../results/professor_feedback_20261018/diagnostics/intraday_summary.csv).
+
+:::
+
 ## 2.7 Componente Espacial
 
 **No aplica:** el dataset no contiene latitud, longitud ni unidades
@@ -392,3 +550,26 @@ $env:MKL_NUM_THREADS='1'
 verificaciones antes de calcular resultados. Todos los CSV comprimidos
 enlazados son descargables y conservan identificadores de activo, ventana
 y variable para evitar mezclar poblaciones o versiones.
+
+:::{div}
+:class: correccion-profesor
+
+(correccion-reproduccion-eda)=
+**Reproducción de las adiciones MI, VIF e intradía.** El
+[script ejecutado](../../src/professor_feedback_diagnostics.py) y su
+[manifiesto](../../results/professor_feedback_20261018/diagnostics/metadata.json)
+registran métodos, versiones, prefijos de datos y hashes de resultados.
+Lee únicamente el prefijo anterior a 2025 de los archivos de minuto;
+no utiliza valores de test ni selecciona características o modelos.
+El ejecutor rechaza sobrescribir una carpeta de resultados existente:
+para reproducir en otra carpeta local de `results` que aún no exista:
+
+```powershell
+.venv-repro/Scripts/python.exe src/professor_feedback_diagnostics.py --output results/professor_feedback_reproduccion_eda
+```
+
+Estos resultados atienden la ausencia de información mutua y perfil
+intradía y documentan VIF con el alcance indicado en 2.4.1. No corrigen la
+cronología histórica del EDA ni certifican estabilidad futura.
+
+:::

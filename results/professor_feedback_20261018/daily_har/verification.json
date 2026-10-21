@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "protected_files_unchanged": true,
+  "protected_files": 209,
+  "original_training_origins": 660,
+  "models": 16,
+  "fold_validation_origins": 359,
+  "alignment": [
+    {
+      "year": 2025,
+      "exact_keys": true,
+      "rows": 40096,
+      "max_abs_actual_error": 1.7763568394002505e-15,
+      "all_original_test_origins_retained": true
+    },
+    {
+      "year": 2026,
+      "exact_keys": true,
+      "rows": 26432,
+      "max_abs_actual_error": 1.7763568394002505e-15,
+      "all_original_test_origins_retained": true
+    }
+  ],
+  "replay": [
+    {
+      "year": 2025,
+      "serialized_models_loaded": true,
+      "predictions_finite": true
+    },
+    {
+      "year": 2026,
+      "serialized_models_loaded": true,
+      "predictions_finite": true
+    }
+  ],
+  "frozen_models_verified": true,
+  "github_or_render_updated": false,
+  "publication_authorized": false
+}

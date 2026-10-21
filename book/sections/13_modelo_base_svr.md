@@ -1,10 +1,18 @@
 # 3. Modelo base y SVR lineal
 
-Los apartados 3.1–3.8 siguen los requisitos de la guía para el modelo base.
-El problema es de regresión temporal; el modelo entrenado es un SVR lineal
-y su referencia mínima es persistencia. La auditoría complementaria usa
-los 16 modelos y las predicciones guardadas del ajuste vigente. Sus hashes
-confirman que los originales permanecen intactos.
+:::{div}
+:class: correccion-profesor
+
+Los apartados 3.1–3.9 conservan **únicamente el SVR lineal como modelo inicial**
+del primer entregable, con persistencia como referencia sin entrenamiento.
+La ampliación del **18 de octubre
+de 2026**, incorporada en esta revisión, añade una referencia HAR diario
+OLS y un experimento de corrección autorregresiva sobre HAR-Ridge + XGBoost.
+Los apartados [3.10](#har-profesor) y [3.11](#residuos-profesor)
+distinguen estas incorporaciones del SVR original. Los modelos y sus
+resultados anteriores se conservan; la ampliación es retrospectiva.
+
+:::
 
 ## 3.1 Definición de la variable objetivo
 
@@ -24,7 +32,15 @@ con retornos diarios.
 Para cada origen, activo y ventana, la referencia repite la volatilidad
 actual en los siete horizontes: $\hat y_{t,h}=\sigma_t^{(w)}$.
 No requiere entrenamiento y utiliza únicamente información conocida.
-El único modelo entrenado de esta entrega es el SVR lineal.
+
+:::{div}
+:class: correccion-profesor
+
+El SVR lineal fue el único modelo entrenado del primer entregable.
+La revisión incorpora el [HAR diario OLS](#har-profesor) como referencia
+adicional sobre las mismas fechas y objetivos de evaluación.
+
+:::
 
 ## 3.3 División temporal y validación con tsxv
 
@@ -328,4 +344,112 @@ con los controles y limitaciones de la guía:
   mismos modelos a un periodo ausente de los artefactos previos auditados;
   no se ha establecido su uso externo anterior. El conocimiento previo
   de 2025 impide presentarlo como una prueba inicialmente intacta.
+
+:::{div}
+:class: correccion-profesor
+
+(har-profesor)=
+## 3.10 Corrección: referencia HAR diario OLS además de persistencia
+
+Para atender la ausencia de una referencia temporal entrenada se ejecutó
+un **HAR diario OLS con escalas de 1, 7 y 28 días**, sin búsqueda de
+hiperparámetros. Para cada activo y ventana objetivo $w$, sus entradas son
+
+$$
+x_t^{(w)}=\left(\sigma_t^{(w)},\;
+\frac{1}{7}\sum_{j=0}^{6}\sigma_{t-j}^{(w)},\;
+\frac{1}{28}\sum_{j=0}^{27}\sigma_{t-j}^{(w)}\right),\qquad
+\widehat\sigma_{t+h}^{(w)}=
+\max\left(\widehat\beta_{0,h}+\widehat\beta_h^\top x_t^{(w)},0\right).
+$$
+
+Se estiman intercepto y tres pendientes por horizonte mediante mínimos
+cuadrados ordinarios, con siete salidas directas. Las entradas contienen
+solo volatilidades observables al cierre UTC de $t$; los coeficientes se
+ajustan con etiquetas terminadas antes de 2025 y permanecen fijos en
+2025–2026. Es una **adaptación inspirada en HAR al objetivo de este estudio**,
+la desviación poblacional de retornos diarios; no reproduce la respuesta
+de varianza realizada intradía del HAR original.
+
+El promedio de 28 volatilidades requiere más historia que las entradas
+originales. De los 660 orígenes originales de ajuste quedan, por activo,
+**648, 634, 620 y 606** para $w=7,14,21,28$, respectivamente. Solo se
+excluyen filas de entrenamiento con historia inicial o posterior a huecos
+insuficiente, sin interpolar ni comprimir el calendario. Se conservan
+exactamente los 359 orígenes de validación de los seis cortes de 2024,
+los **358 de evaluación de 2025 y los 236 de 2026**. Por tanto, coinciden
+las fechas y etiquetas de evaluación, aunque el soporte de ajuste del HAR
+sea menor; esto limita una atribución de diferencias exclusivamente a la
+familia del modelo.
+
+Como sensibilidad se ejecutó también un HAR con la raíz de la suma diaria
+de retornos de minuto al cuadrado y sus medias de 7 y 28 días, con OLS y
+Ridge. El **HAR diario OLS es la referencia principal añadida** porque su
+señal histórica coincide con la cantidad que se pronostica. Las métricas
+y el contraste SVR frente a ambas referencias se presentan en
+[4.7](14_evaluacion.md#evaluacion-retroalimentacion).
+
+Evidencia: [protocolo HAR diario](../../results/professor_feedback_20261018/daily_har/protocol.json),
+[soporte de entrenamiento](../../results/professor_feedback_20261018/daily_har/training_support.csv),
+[congelación de los 16 modelos](../../results/professor_feedback_20261018/daily_har/selection_freeze.json)
+y [verificación de fechas, etiquetas y hashes](../../results/professor_feedback_20261018/daily_har/verification.json).
+Implementación: [professor_feedback_daily_har.py](../../src/professor_feedback_daily_har.py).
+
+:::
+
+:::{div}
+:class: correccion-profesor
+
+(residuos-profesor)=
+## 3.11 Corrección: modelar errores maduros con una componente AR
+
+El diagnóstico de 3.6 identificó dependencia serial. La ampliación ejecutó una corrección
+autorregresiva **sobre HAR-Ridge + XGBoost**, con siete regresiones Ridge
+directas sobre sus errores fuera de entrenamiento. Para horizonte $h$,
+el error del origen $s$ solo se conoce al terminar su etiqueta, en $s+h$:
+
+$$
+e_{s,h}=y_{s,h}-\widehat y^{\rm HAR-XG}_{s,h},\qquad
+\widehat e_{t,h}=a_h+\sum_{j=0}^{p-1}\phi_{j,h}e_{t-h-j,h},\qquad
+\widehat y^{\rm AR}_{t,h}=
+\max\left(\widehat y^{\rm HAR-XG}_{t,h}+\eta\widehat e_{t,h},0\right).
+$$
+
+Al cierre de $t$ se permite $e_{t-h,h}$; para $h>1$, usar directamente
+$e_{t-1,h}$ anticiparía información todavía desconocida. Los huecos
+conservan su posición temporal; si falta la historia exacta requerida,
+la corrección es cero. Los errores de ajuste proceden de predicciones
+cronológicas fuera de entrenamiento de 2023 y de los seis bloques
+purgados de 2024. El escalador de cada regresión usa solo su entrenamiento.
+
+Se compararon $p\in\{1,3,7\}$, penalización
+$\alpha\in\{1,10,100\}$ y peso $\eta\in\{0;0,25;0,5;1\}$:
+36 candidatos por activo y ventana, seleccionados por MSE de validación
+de 2024. Los coeficientes y las elecciones quedaron congelados antes
+de generar las nuevas predicciones de evaluación. Durante 2025–2026 se
+actualiza únicamente la historia con errores que ya maduraron. Un control
+usa el último error maduro con el mismo acceso a información reciente;
+otro conserva los coeficientes pero no incorpora nuevas etiquetas
+observadas después del inicio de 2025.
+
+**Límite de selección:** los hiperparámetros del HAR-XG base ya se habían
+elegido con todos los bloques de 2024. La validación del corrector es
+condicional a esa representación, no una validación anidada independiente
+de toda la arquitectura. Además, 2025 y enero–agosto de 2026 ya habían
+sido examinados: congelar esta selección no los convierte en reservas
+confirmatorias intactas.
+
+**Alcance de la corrección:** se ensayó una forma explícita de modelar
+dependencia, pero no se eliminó la autocorrelación. Los residuos del
+SVR original conservan el diagnóstico de 3.6 y no recibieron este
+corrector. La [evaluación de la ampliación](14_evaluacion.md#evaluacion-ar-profesor)
+informa resultados antes y después, controles y criterio de sustitución.
+
+Evidencia: [protocolo AR](../../results/professor_feedback_20261018/residuals/protocol.json),
+[búsqueda de 2024](../../results/professor_feedback_20261018/residuals/search_2024.csv),
+[elecciones congeladas](../../results/professor_feedback_20261018/residuals/selection_freeze.json)
+y [resultados y límites](../../results/professor_feedback_20261018/residuals/summary.json).
+Implementación: [professor_feedback_residuals.py](../../src/professor_feedback_residuals.py).
+
+:::
 

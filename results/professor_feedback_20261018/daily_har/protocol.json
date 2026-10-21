@@ -1,0 +1,22 @@
+{
+  "publication": "LOCAL ONLY",
+  "github_or_render_updates_authorized": false,
+  "created_at_utc": "2026-10-18T17:35:37.058971+00:00",
+  "model": "HAR diario OLS (1/7/28)",
+  "target": "Unchanged population std of daily percent log returns; w7/14/21/28; seven direct daily horizons",
+  "inputs": "sigma_t^(w), mean(sigma_(t-6:t)^(w)), mean(sigma_(t-27:t)^(w)); completed UTC days only",
+  "interpretation": "Daily-volatility HAR-inspired adaptation to study target, not original intraday realized-variance HAR",
+  "fixed_before_fitting": "OLS with intercept; three scales1/7/28; seven direct outputs; nonnegative clip",
+  "selection": "None: no alpha, scales, input selection or hyperparameter search",
+  "train_rule": "Start with660 original origins; remove only rows with unavailable causal HAR inputs/labels for each w",
+  "warmup": "A trailing28 mean of rollingw volatility needs w+27 daily returns; extra initial/post-gap history is not imputed",
+  "validation": "Six original purged2024 folds; exact validation origins retained, train finite rows audited separately",
+  "tests": "All358 original2025 and236 original2026 origins retained; incomplete test histories fail instead of dropping rows",
+  "final_fit": "All eligible finite training rows with seven labels ending strictly before2025; coefficients static thereafter",
+  "evaluation": "Both2025 and2026 already inspected: retrospective comparison; no untouched confirmatory test",
+  "primary_reference": "Daily HAR-OLS matches the historical quantity to the forecast target; intraday HAR remains a sensitivity",
+  "sources": {
+    "har": "https://doi.org/10.1093/jjfinec/nbp001"
+  },
+  "code_sha256": "91881a31a79af394febbed55552eb473d78d4072a196d23ebec69e29b1a906ef"
+}

@@ -1,0 +1,396 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Correcciones al proyecto de volatilidad · revisión local</title>
+<style>body{font:17px/1.55 system-ui;max-width:1120px;margin:36px auto;padding:0 22px;color:#17324d}h1{line-height:1.2}h2{margin-top:34px}table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}td,th{padding:8px;border-bottom:1px solid #d3dce3;text-align:left}th{background:#edf4f7}img{max-width:100%;height:auto}.decision{padding:20px;background:#fbf4e5;border-left:5px solid #bd811f}a{color:#087f8c}pre{white-space:pre-wrap;font-size:13px;overflow-wrap:anywhere}.scroll{overflow-x:auto}details{margin:18px 0}</style>
+<h1>Correcciones al proyecto de volatilidad</h1><p>Revisión local · 18 de octubre de 2026</p>
+<p class="decision"><b>Los cambios aún no justifican reemplazar el modelo vigente.</b> La corrección AR reduce ligeramente el error observado, pero la ventaja de 2026 no es significativa. GitHub, Render y la presentación TeX permanecen sin cambios.</p>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Año</th>
+      <th>MSE vigente</th>
+      <th>MSE con AR</th>
+      <th>Reducción MSE (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>0,464681</td>
+      <td>0,459498</td>
+      <td>1,115305</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>0,456042</td>
+      <td>0,453054</td>
+      <td>0,655055</td>
+    </tr>
+  </tbody>
+</table>
+<p>En 2026, DM contra el vigente: p = 0.3081; p ajustado Holm4 = 0.5851. La corrección también queda por detrás de los mejores experimentos locales anteriores. Ambos años ya habían sido examinados: los resultados son retrospectivos.</p>
+<h2>Correcciones implementadas</h2><ul><li>Información mutua y VIF de las 44 entradas HAR y de las seis variables diarias contemporáneas.</li><li>Estacionalidad intradía por minuto y hora UTC, con comparación 2023/2024 e intervalos por bloques.</li><li>Referencia HAR diario OLS con tres escalas, además de persistencia; HAR intradía como sensibilidad.</li><li>Corrección autorregresiva por horizonte que solo accede a errores cuyo objetivo ya se observó; controles de último error maduro y de funcionamiento sin nuevas etiquetas.</li></ul>
+<h2>Información mutua y colinealidad</h2><p>Se usó exclusivamente el prefijo de desarrollo 2023–2024: 660 orígenes con todas las etiquetas anteriores a 2025. Se añadió un diagnóstico separado de 2023 (294 orígenes). Las 22.400 estimaciones MI incluyen objetivos absolutos y correcciones relativas. No se eligieron variables mediante estos resultados.</p>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Entradas</th>
+      <th>Posiciones en 16 diseños</th>
+      <th>VIF &gt; 10</th>
+      <th>VIF infinitos</th>
+      <th>Constantes</th>
+      <th>Mediana VIF finito</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR44</td>
+      <td>704</td>
+      <td>581</td>
+      <td>48</td>
+      <td>4</td>
+      <td>32,537855</td>
+    </tr>
+    <tr>
+      <td>daily6</td>
+      <td>96</td>
+      <td>53</td>
+      <td>0</td>
+      <td>0</td>
+      <td>16,853416</td>
+    </tr>
+  </tbody>
+</table>
+<p>Los 48 VIF infinitos corresponden a tres columnas en cada diseño, con una sola redundancia lineal por diseño: para la escala de un día, downside = (|retorno| − retorno)/2. Además, el decaimiento conocido de horizonte 7 es constante cuando la ventana objetivo es 7. El VIF completo del diseño SVR de 6L+7 columnas no se recalculó; daily6 cubre el bloque contemporáneo. Un VIF alto no demuestra que retirar una columna mejore Ridge.</p>
+<h3>Mayor MI marginal con la corrección relativa</h3>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Entrada HAR</th>
+      <th>MI media (nats)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>known_decay_h4</td>
+      <td>0,307909</td>
+    </tr>
+    <tr>
+      <td>known_decay_h5</td>
+      <td>0,303441</td>
+    </tr>
+    <tr>
+      <td>known_decay_h3</td>
+      <td>0,291520</td>
+    </tr>
+    <tr>
+      <td>known_decay_h6</td>
+      <td>0,286323</td>
+    </tr>
+    <tr>
+      <td>known_decay_h2</td>
+      <td>0,255366</td>
+    </tr>
+    <tr>
+      <td>known_decay_h7</td>
+      <td>0,253009</td>
+    </tr>
+    <tr>
+      <td>log_current_volatility</td>
+      <td>0,232629</td>
+    </tr>
+    <tr>
+      <td>known_decay_h1</td>
+      <td>0,194470</td>
+    </tr>
+  </tbody>
+</table>
+<p>Promedios sobre activos, ventanas y horizontes. Son asociaciones marginales; no son valores p ni importancia condicional. El decaimiento y la normalización comparten información con el objetivo móvil.</p>
+<h2>Estacionalidad intradía</h2>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Activo</th>
+      <th>Días completos</th>
+      <th>Hora pico UTC</th>
+      <th>Hora valle UTC</th>
+      <th>Razón pico/valle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BTCUSDT</td>
+      <td>729</td>
+      <td>14</td>
+      <td>4</td>
+      <td>3,674169</td>
+    </tr>
+    <tr>
+      <td>ETHUSDT</td>
+      <td>729</td>
+      <td>14</td>
+      <td>4</td>
+      <td>3,352647</td>
+    </tr>
+    <tr>
+      <td>BNBUSDT</td>
+      <td>729</td>
+      <td>14</td>
+      <td>4</td>
+      <td>2,088417</td>
+    </tr>
+    <tr>
+      <td>XRPUSDT</td>
+      <td>729</td>
+      <td>15</td>
+      <td>4</td>
+      <td>2,112807</td>
+    </tr>
+  </tbody>
+</table>
+<img src="diagnostics/intraday_development.png" alt="Perfil horario UTC de volatilidad de desarrollo">
+<p>La figura usa retornos cuadrados normalizados por su media diaria, conserva los huecos y compara 2023 con 2024. Las bandas son intervalos individuales de un bootstrap circular de bloques de siete días de calendario, con 499 réplicas. Esto documenta patrones de desarrollo; no demuestra estabilidad futura ni mejora predictiva al desestacionalizar.</p>
+<h2>Referencias y evaluación del modelo</h2><p>El HAR diario usa [σ actual, media de 7 días de σ, media de 28 días de σ] e intercepto para cada horizonte, sin búsqueda de hiperparámetros. El calentamiento reduce sus muestras de entrenamiento por ventana a 648, 634, 620 y 606 orígenes. Conserva todas las fechas y objetivos de evaluación. El HAR intradía usa la raíz de la suma de retornos de minuto al cuadrado y sus medias de 7/28 días. Son adaptaciones del HAR al objetivo del estudio.</p>
+<img src="mse_comparison.svg" alt="Comparación del error de pronóstico en 2025 y 2026">
+<h3>2026: métricas globales</h3>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo</th>
+      <th>MSE</th>
+      <th>RMSE macro</th>
+      <th>MAE</th>
+      <th>R² macro</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Corrección XGBoost anterior (06/oct)</td>
+      <td>0,429903</td>
+      <td>0,565053</td>
+      <td>0,326757</td>
+      <td>0,753991</td>
+    </tr>
+    <tr>
+      <td>HAR-XG ponderado anterior (05/oct)</td>
+      <td>0,433135</td>
+      <td>0,565714</td>
+      <td>0,325657</td>
+      <td>0,753466</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + corrección AR causal</td>
+      <td>0,453054</td>
+      <td>0,577919</td>
+      <td>0,339675</td>
+      <td>0,742281</td>
+    </tr>
+    <tr>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,456042</td>
+      <td>0,579586</td>
+      <td>0,344786</td>
+      <td>0,740759</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + AR sin nuevas etiquetas</td>
+      <td>0,456798</td>
+      <td>0,580002</td>
+      <td>0,341018</td>
+      <td>0,740544</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + último error maduro</td>
+      <td>0,457620</td>
+      <td>0,580652</td>
+      <td>0,344077</td>
+      <td>0,739852</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0,488810</td>
+      <td>0,597642</td>
+      <td>0,362523</td>
+      <td>0,723865</td>
+    </tr>
+    <tr>
+      <td>HAR diario OLS (1/7/28)</td>
+      <td>0,608566</td>
+      <td>0,687442</td>
+      <td>0,444517</td>
+      <td>0,647269</td>
+    </tr>
+    <tr>
+      <td>Persistencia</td>
+      <td>0,795143</td>
+      <td>0,767783</td>
+      <td>0,434525</td>
+      <td>0,545999</td>
+    </tr>
+  </tbody>
+</table>
+<h3>2025: métricas globales</h3>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Modelo</th>
+      <th>MSE</th>
+      <th>RMSE macro</th>
+      <th>MAE</th>
+      <th>R² macro</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR-XG ponderado anterior (05/oct)</td>
+      <td>0,452810</td>
+      <td>0,547024</td>
+      <td>0,362899</td>
+      <td>0,747719</td>
+    </tr>
+    <tr>
+      <td>Corrección XGBoost anterior (06/oct)</td>
+      <td>0,456044</td>
+      <td>0,549711</td>
+      <td>0,365038</td>
+      <td>0,745722</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + corrección AR causal</td>
+      <td>0,459498</td>
+      <td>0,555414</td>
+      <td>0,370904</td>
+      <td>0,740544</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + AR sin nuevas etiquetas</td>
+      <td>0,464227</td>
+      <td>0,557765</td>
+      <td>0,372727</td>
+      <td>0,738640</td>
+    </tr>
+    <tr>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,464681</td>
+      <td>0,558168</td>
+      <td>0,375569</td>
+      <td>0,737997</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + último error maduro</td>
+      <td>0,466855</td>
+      <td>0,560270</td>
+      <td>0,377344</td>
+      <td>0,737012</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0,537172</td>
+      <td>0,598079</td>
+      <td>0,414032</td>
+      <td>0,700735</td>
+    </tr>
+    <tr>
+      <td>HAR diario OLS (1/7/28)</td>
+      <td>0,624747</td>
+      <td>0,671408</td>
+      <td>0,459408</td>
+      <td>0,635159</td>
+    </tr>
+    <tr>
+      <td>Persistencia</td>
+      <td>0,828196</td>
+      <td>0,747700</td>
+      <td>0,497194</td>
+      <td>0,537732</td>
+    </tr>
+  </tbody>
+</table>
+<p>358 orígenes diarios en 2025 y 236 en 2026 (1 de enero–24 de agosto). Las métricas macro promedian resultados por activo, ventana y horizonte. RMSE macro no equivale a la raíz del MSE global. Cada fecha aporta una pérdida media sobre las 112 salidas dependientes.</p>
+<h3>Prueba primaria predeclarada: corrección AR, 2026</h3>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Referencia</th>
+      <th>Reducción MSE (%)</th>
+      <th>p bruto</th>
+      <th>p Holm4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,655055</td>
+      <td>0,308065</td>
+      <td>0,585139</td>
+    </tr>
+    <tr>
+      <td>HAR-XG + último error maduro</td>
+      <td>0,997777</td>
+      <td>0,263578</td>
+      <td>0,585139</td>
+    </tr>
+    <tr>
+      <td>HAR-XG ponderado anterior (05/oct)</td>
+      <td>-4,598848</td>
+      <td>0,146285</td>
+      <td>0,585139</td>
+    </tr>
+    <tr>
+      <td>Corrección XGBoost anterior (06/oct)</td>
+      <td>-5,385182</td>
+      <td>0,172328</td>
+      <td>0,585139</td>
+    </tr>
+  </tbody>
+</table>
+<p>DM bilateral con HLN, horizonte 7 y HAC Bartlett de 33 rezagos. Holm se aplica a estas cuatro comparaciones de 2026; 2025 es secundario. Se conservaron sensibilidades a 14/56 rezagos y tablas por ventana. La regla exigía menor MSE y ventaja significativa frente a las cuatro referencias en 2026, además de menor MSE frente al vigente en 2025. No se cumple.</p>
+<h2>La autocorrelación residual sigue presente</h2>
+<table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Año</th>
+      <th>Modelo</th>
+      <th>Mediana ACF, rezago 1</th>
+      <th>Fracción p LB28 &lt; 0,05</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2025</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,773083</td>
+      <td>0,937500</td>
+    </tr>
+    <tr>
+      <td>2025</td>
+      <td>HAR-XG + corrección AR causal</td>
+      <td>0,759808</td>
+      <td>0,928571</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-Ridge + XGBoost</td>
+      <td>0,783954</td>
+      <td>0,892857</td>
+    </tr>
+    <tr>
+      <td>2026</td>
+      <td>HAR-XG + corrección AR causal</td>
+      <td>0,779771</td>
+      <td>0,892857</td>
+    </tr>
+  </tbody>
+</table>
+<p>La corrección modela parte de la dependencia sin eliminarla. Ljung–Box se informa de forma descriptiva por serie, sin ajuste múltiple ni prueba global de esa fracción. Las ventanas superpuestas también inducen dependencia.</p>
+<h2>Qué permanece pendiente</h2><p>El EDA original fue posterior al modelo. Recalcularlo con desarrollo únicamente documenta el análisis sin cambiar esa cronología. 2025 y enero–agosto de 2026 ya se exploraron. Hace falta fijar el procedimiento y evaluar un periodo posterior sin inspección para obtener confirmación prospectiva.</p><p>La validación AR es condicional a hiperparámetros base seleccionados sobre todo 2024; no es una validación anidada independiente. En evaluación, los coeficientes quedan fijos, pero el estado incorpora errores maduros: e[s,h] se permite solo tras s+h ≤ t, al cierre de t. El control de último error recibe el mismo acceso a información reciente.</p>
+<h2>Verificación y archivos</h2><p>23 pruebas automatizadas aprobadas: causalidad de entradas, madurez de etiquetas, preservación de huecos, aislamiento del entrenamiento, colinealidad numérica y unidad diaria de inferencia. Los 209 archivos protegidos originales mantienen sus hashes, incluida la presentación TeX.</p>
+<p><a href="report.html">Informe técnico completo</a> · <a href="evaluation_protocol.json">Protocolo</a> · <a href="summary.json">Resultados y hashes</a> · <a href="macro_metrics.csv">Métricas CSV</a> · <a href="dm_ar_holm4.csv">DM y sensibilidad CSV</a> · <a href="diagnostics/mutual_information.csv">Información mutua CSV</a> · <a href="diagnostics/variance_inflation.csv">VIF CSV</a> · <a href="diagnostics/intraday_minute_profile.csv">Perfil por minuto CSV</a></p>
+<details><summary>Comandos de reproducción</summary><pre>.venv-repro/Scripts/python.exe -m unittest discover -s tests -p "test_professor_feedback*.py"
+.venv-repro/Scripts/python.exe src/professor_feedback_diagnostics.py
+.venv-repro/Scripts/python.exe src/professor_feedback_har_baseline.py
+.venv-repro/Scripts/python.exe src/professor_feedback_daily_har.py
+.venv-repro/Scripts/python.exe src/professor_feedback_residuals.py
+.venv-repro/Scripts/python.exe src/evaluate_professor_feedback.py
+.venv-repro/Scripts/python.exe src/report_professor_feedback.py</pre><p>Los ejecutores preservan resultados existentes y rechazan sobrescribirlos. Para un nuevo experimento, usar otra carpeta de salida en una copia de los scripts y congelar su protocolo antes de evaluar. Ninguno publica los resultados.</p></details>
+<p>Fuentes: <a href="https://doi.org/10.1093/jjfinec/nbp001">Corsi, HAR</a>; <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_regression.html">información mutua</a>; <a href="https://www.statsmodels.org/stable/generated/statsmodels.stats.outliers_influence.variance_inflation_factor.html">VIF</a>; <a href="https://doi.org/10.1016/S0927-5398(97)00004-2">periodicidad intradía</a>; <a href="https://pkg.robjhyndman.com/forecast/reference/dm.test.html">DM-HLN</a>.</p></html>

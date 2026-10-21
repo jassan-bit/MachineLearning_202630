@@ -1,0 +1,373 @@
+{
+  "status": "complete",
+  "evaluation_at_utc": "2026-10-18T17:38:26.225368+00:00",
+  "publication": "LOCAL ONLY",
+  "github_or_render_updated": false,
+  "strong_retrospective_rule_passed": false,
+  "untouched_confirmatory_test_available": false,
+  "protected_files_unchanged": 209,
+  "evaluation_protocol_sha256": "d81ac83a84088e6921b68f762e496244514b4d0a8d54e554b65ecaf28cc84d54",
+  "input_sha256": {
+    "results/optimized_minute_knn_2023_2025/predictions.csv.gz": "c422cc4616c4a88816d42f8c7bc948afb840f20e410395ed062298925552a3df",
+    "results/optimized_minute_ridge_2023_2025/predictions.csv.gz": "a1c8658d60f4419b0584aa5d13632207b794bf607ea42232e366688b6efc6ac5",
+    "results/optimized_minute_lasso_2023_2025/predictions.csv.gz": "4347582a2b73b64e82eff48d8541a498eff8832af68d750d8983c7be1e3f5fc5",
+    "results/optimized_minute_randomforest_2023_2025/predictions.csv.gz": "f136ab5970e8fb3f4be2043c9049947268fe78255f963c3a6d333e2d0e8c9fc8",
+    "results/optimized_minute_xgboost_2023_2025/predictions.csv.gz": "e1dc9173f9f774472e49c43bc9620122c5009d62ee06096b7e9c67f679f0caf0",
+    "results/optimized_minute_2023_2025/predictions.csv.gz": "a4fe23a96a16aa49a5a7f9d314a9033d8af61d9554fb9a39d7406eb481ca1f81",
+    "results/improved_classical_2023_2025/predictions.csv.gz": "0beb533b255e98daf9aeb79abdfdb8b38f35d6c1a83163c28b1d37848bc20971",
+    "results/professor_feedback_20261018/har_baseline/predictions_2025.csv.gz": "2c64816cb09271526275cfbf4e071983400f8ea9d0be18982ca84eeaf78dba4b",
+    "results/professor_feedback_20261018/daily_har/predictions_2025.csv.gz": "b00dc433b4331d0630a0f6245973b3583cf33122532a0069037597b5cfbae77a",
+    "results/professor_feedback_20261018/residuals/predictions_2025.csv.gz": "59486a1792d0abf467153724e4984c4b6f92bf20a435a4b1f97472dcdc777b44",
+    "results/har_xg_optimization_20261005/predictions_2025.csv.gz": "9c39f9d5baa41aa646cdd85df9900e2fcf0ce030b4d82d1891c8c5863e239b5f",
+    "results/har_residual_xgboost_research_20261006/predictions_2025.csv.gz": "a398f23061a1799d7305a2afab77f0f00915c1a2944f43257db2aa878228abbe",
+    "results/har_spca_research_20261005/baseline_2026/predictions.csv.gz": "0c514282505fef3c20261b43df997a0891ac8323b30467f1b48e17b5e87d3997",
+    "results/professor_feedback_20261018/har_baseline/predictions_2026.csv.gz": "e1488d8740859272349da9005bc2c43bcd66122744c5a24c105a2fe63821cd19",
+    "results/professor_feedback_20261018/daily_har/predictions_2026.csv.gz": "727eaaaff35600a4b7a3148451b25b881108ed1033b50e33b09501ae331bfaae",
+    "results/professor_feedback_20261018/residuals/predictions_2026.csv.gz": "9bb62623b67d89e534d7c6ce3ab685361099bc7b287639c91f621362d6e054a1",
+    "results/har_xg_optimization_20261005/predictions_2026.csv.gz": "05aae74af354bc31394368021a10ac827316709376e4ead372f9f5de3eb633ef",
+    "results/har_residual_xgboost_research_20261006/predictions_2026.csv.gz": "27f5e10420e8e3013024b4cd17215ef0b1dbb0c2c5c176de6cfaaacca9864afd"
+  },
+  "primary2026": [
+    {
+      "candidate": "HAR-XG + AR mature errors",
+      "reference": "HAR-Ridge + XGBoost",
+      "mse_candidate": 0.45305431909114063,
+      "mse_reference": 0.4560416445197653,
+      "reduction_percent": 0.6550554021816368,
+      "n": 236,
+      "horizonte_hln": 7,
+      "rezagos_hac": 33,
+      "diferencia_mse": -0.002987325428624705,
+      "dm": -1.0215070003224835,
+      "p": 0.30806472194470663,
+      "estado": "OK",
+      "p_holm": 0.5851386736441277,
+      "favorable_significant": false,
+      "year": 2026,
+      "scope": "global",
+      "hac": 33
+    },
+    {
+      "candidate": "HAR-XG + AR mature errors",
+      "reference": "HAR-XG + last mature error",
+      "mse_candidate": 0.45305431909114063,
+      "mse_reference": 0.4576203478820872,
+      "reduction_percent": 0.9977766093834384,
+      "n": 236,
+      "horizonte_hln": 7,
+      "rezagos_hac": 33,
+      "diferencia_mse": -0.004566028790946642,
+      "dm": -1.1206564456755737,
+      "p": 0.2635780565316036,
+      "estado": "OK",
+      "p_holm": 0.5851386736441277,
+      "favorable_significant": false,
+      "year": 2026,
+      "scope": "global",
+      "hac": 33
+    },
+    {
+      "candidate": "HAR-XG + AR mature errors",
+      "reference": "HAR-XG Ridge ponderado",
+      "mse_candidate": 0.45305431909114063,
+      "mse_reference": 0.4331350927420166,
+      "reduction_percent": -4.598848415403811,
+      "n": 236,
+      "horizonte_hln": 7,
+      "rezagos_hac": 33,
+      "diferencia_mse": 0.019919226349123954,
+      "dm": 1.4576042834194383,
+      "p": 0.14628466841103194,
+      "estado": "OK",
+      "p_holm": 0.5851386736441277,
+      "favorable_significant": false,
+      "year": 2026,
+      "scope": "global",
+      "hac": 33
+    },
+    {
+      "candidate": "HAR-XG + AR mature errors",
+      "reference": "HAR-Ridge + XGBoost residual",
+      "mse_candidate": 0.45305431909114063,
+      "mse_reference": 0.42990324546312875,
+      "reduction_percent": -5.38518233400902,
+      "n": 236,
+      "horizonte_hln": 7,
+      "rezagos_hac": 33,
+      "diferencia_mse": 0.023151073628011762,
+      "dm": 1.3689303664584398,
+      "p": 0.17232807520095403,
+      "estado": "OK",
+      "p_holm": 0.5851386736441277,
+      "favorable_significant": false,
+      "year": 2026,
+      "scope": "global",
+      "hac": 33
+    }
+  ],
+  "macro_metrics": [
+    {
+      "model": "HAR diario OLS (1/7/28)",
+      "mse": 0.6247470032433281,
+      "rmse": 0.6714077986791346,
+      "mae": 0.45940843901321504,
+      "r2": 0.635158912031361,
+      "year": 2025
+    },
+    {
+      "model": "HAR simple OLS (1/7/28)",
+      "mse": 0.9080284123575867,
+      "rmse": 0.8672358475533777,
+      "mae": 0.627232040472642,
+      "r2": 0.43362454342515777,
+      "year": 2025
+    },
+    {
+      "model": "HAR simple Ridge (1/7/28)",
+      "mse": 0.9314069217151336,
+      "rmse": 0.8804332898508681,
+      "mae": 0.6287648499647699,
+      "r2": 0.42169106527301475,
+      "year": 2025
+    },
+    {
+      "model": "HAR-Ridge + XGBoost",
+      "mse": 0.46468105025759116,
+      "rmse": 0.558168442866746,
+      "mae": 0.3755688775782429,
+      "r2": 0.7379970662889644,
+      "year": 2025
+    },
+    {
+      "model": "HAR-Ridge + XGBoost residual",
+      "mse": 0.4560437201913426,
+      "rmse": 0.5497106192902791,
+      "mae": 0.3650375346687804,
+      "r2": 0.7457216735518724,
+      "year": 2025
+    },
+    {
+      "model": "HAR-XG + AR mature errors",
+      "mse": 0.45949843712284927,
+      "rmse": 0.5554136601121971,
+      "mae": 0.3709042311321406,
+      "r2": 0.7405440689098419,
+      "year": 2025
+    },
+    {
+      "model": "HAR-XG + AR no online labels",
+      "mse": 0.46422735499983975,
+      "rmse": 0.5577646939419709,
+      "mae": 0.37272745617069286,
+      "r2": 0.738639676215301,
+      "year": 2025
+    },
+    {
+      "model": "HAR-XG + last mature error",
+      "mse": 0.46685475055410236,
+      "rmse": 0.5602698321550624,
+      "mae": 0.37734438282927824,
+      "r2": 0.7370122757146259,
+      "year": 2025
+    },
+    {
+      "model": "HAR-XG Ridge ponderado",
+      "mse": 0.45281031095377566,
+      "rmse": 0.5470240987065073,
+      "mae": 0.36289940613870375,
+      "r2": 0.7477190395641325,
+      "year": 2025
+    },
+    {
+      "model": "Lasso",
+      "mse": 0.5635815456240089,
+      "rmse": 0.6066319779205457,
+      "mae": 0.42124012152505436,
+      "r2": 0.690155154350385,
+      "year": 2025
+    },
+    {
+      "model": "Persistencia",
+      "mse": 0.8281963980144248,
+      "rmse": 0.7477004673651696,
+      "mae": 0.4971938200178325,
+      "r2": 0.5377324546604038,
+      "year": 2025
+    },
+    {
+      "model": "Random Forest",
+      "mse": 0.5245701540403828,
+      "rmse": 0.6025252663959183,
+      "mae": 0.41701672958819735,
+      "r2": 0.6970638861192253,
+      "year": 2025
+    },
+    {
+      "model": "Ridge",
+      "mse": 0.5370239723570983,
+      "rmse": 0.597104616913486,
+      "mae": 0.4138097972085878,
+      "r2": 0.7020981049745478,
+      "year": 2025
+    },
+    {
+      "model": "SVR Lineal",
+      "mse": 0.5371721265486189,
+      "rmse": 0.5980791376447117,
+      "mae": 0.41403207551645693,
+      "r2": 0.700734794043047,
+      "year": 2025
+    },
+    {
+      "model": "XGBoost",
+      "mse": 0.4965389931563373,
+      "rmse": 0.5797649719275243,
+      "mae": 0.38863959204263615,
+      "r2": 0.7154781598566357,
+      "year": 2025
+    },
+    {
+      "model": "k-NN",
+      "mse": 0.5206055532625232,
+      "rmse": 0.593681368950464,
+      "mae": 0.39685861178083937,
+      "r2": 0.7039423292042254,
+      "year": 2025
+    },
+    {
+      "model": "HAR diario OLS (1/7/28)",
+      "mse": 0.6085660591627164,
+      "rmse": 0.6874423810502966,
+      "mae": 0.4445167517904424,
+      "r2": 0.647268897170231,
+      "year": 2026
+    },
+    {
+      "model": "HAR simple OLS (1/7/28)",
+      "mse": 0.6963092368596573,
+      "rmse": 0.7934119339657988,
+      "mae": 0.5540002227994582,
+      "r2": 0.5620312757258422,
+      "year": 2026
+    },
+    {
+      "model": "HAR simple Ridge (1/7/28)",
+      "mse": 0.7687100731959955,
+      "rmse": 0.8287418417771761,
+      "mae": 0.6016121603270977,
+      "r2": 0.5293997699094684,
+      "year": 2026
+    },
+    {
+      "model": "HAR-Ridge + XGBoost",
+      "mse": 0.4560416445197653,
+      "rmse": 0.5795862961904712,
+      "mae": 0.34478597389871224,
+      "r2": 0.7407593924304644,
+      "year": 2026
+    },
+    {
+      "model": "HAR-Ridge + XGBoost residual",
+      "mse": 0.4299032454631288,
+      "rmse": 0.5650530829814804,
+      "mae": 0.3267571084384801,
+      "r2": 0.7539909010190261,
+      "year": 2026
+    },
+    {
+      "model": "HAR-XG + AR mature errors",
+      "mse": 0.4530543190911405,
+      "rmse": 0.577919343615277,
+      "mae": 0.3396748996341786,
+      "r2": 0.7422814710580655,
+      "year": 2026
+    },
+    {
+      "model": "HAR-XG + AR no online labels",
+      "mse": 0.45679789129021364,
+      "rmse": 0.580002146367659,
+      "mae": 0.34101790729321385,
+      "r2": 0.7405437407190512,
+      "year": 2026
+    },
+    {
+      "model": "HAR-XG + last mature error",
+      "mse": 0.45762034788208716,
+      "rmse": 0.5806522567944465,
+      "mae": 0.34407722237070804,
+      "r2": 0.739852108525648,
+      "year": 2026
+    },
+    {
+      "model": "HAR-XG Ridge ponderado",
+      "mse": 0.43313509274201667,
+      "rmse": 0.5657135332022268,
+      "mae": 0.3256571809495147,
+      "r2": 0.753466445621289,
+      "year": 2026
+    },
+    {
+      "model": "Lasso",
+      "mse": 0.4858036124165285,
+      "rmse": 0.5947383236846698,
+      "mae": 0.3644313930793029,
+      "r2": 0.7266316017996911,
+      "year": 2026
+    },
+    {
+      "model": "Persistencia",
+      "mse": 0.7951429439695751,
+      "rmse": 0.7677830133056313,
+      "mae": 0.4345249330006537,
+      "r2": 0.5459985803220241,
+      "year": 2026
+    },
+    {
+      "model": "Random Forest",
+      "mse": 0.4675007217221627,
+      "rmse": 0.5931657876929829,
+      "mae": 0.36104078265191825,
+      "r2": 0.7299350967078396,
+      "year": 2026
+    },
+    {
+      "model": "Ridge",
+      "mse": 0.48889478271577097,
+      "rmse": 0.5974337576288379,
+      "mae": 0.3607310913706047,
+      "r2": 0.7243488385555777,
+      "year": 2026
+    },
+    {
+      "model": "SVR Lineal",
+      "mse": 0.4888101333664053,
+      "rmse": 0.5976422486420935,
+      "mae": 0.36252288832269863,
+      "r2": 0.7238648420281564,
+      "year": 2026
+    },
+    {
+      "model": "XGBoost",
+      "mse": 0.472173362936221,
+      "rmse": 0.5906165979554105,
+      "mae": 0.34688686748151826,
+      "r2": 0.727724901078773,
+      "year": 2026
+    },
+    {
+      "model": "k-NN",
+      "mse": 0.513275184812873,
+      "rmse": 0.6175273636253154,
+      "mae": 0.3610782189791917,
+      "r2": 0.7058448874706978,
+      "year": 2026
+    }
+  ],
+  "analysis_code_sha256": "f78b1b2ac458a8c5e5e7b47244337386e7d7961d532a58f480f3bd6eb7a1c425",
+  "diagnostics_metadata_sha256": "426ba3bad4769d7d7a1f2083282d2aeed274821c5caa07e4e9258b3dfecf026c",
+  "training_freeze_sha256": {
+    "har_baseline": "91c9cd69b442e3d0e9624b5bde80c1998e80d3ecb074db081d79150893628c6e",
+    "daily_har": "aef2b0bf023e0776d3e5a6172ed257b6d1983cea9e2c3e47a860aba969f2b5f5",
+    "residuals": "8c5b5f4c0562669d9b760ff5465662c7ac31161d4986614cdb45d9f4fa4888ac"
+  }
+}

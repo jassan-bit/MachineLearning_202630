@@ -1,5 +1,18 @@
 # 4. Evaluación, interpretación y limitaciones
 
+:::{div}
+:class: correccion-profesor
+
+Los apartados 4.1–4.6 conservan la evaluación del primer entregable y su
+auditoría. La revisión incorpora [una referencia HAR diario OLS](#evaluacion-retroalimentacion)
+y [la evaluación de una corrección AR sobre HAR-XG](#evaluacion-ar-profesor),
+ejecutadas el 18 de octubre de 2026. Para esta ampliación, **2025 y
+enero–agosto de 2026 ya eran periodos explorados**. El protocolo congelado
+de la evaluación inicial de 4.4 no convierte estos nuevos experimentos
+en confirmación prospectiva.
+
+:::
+
 ## 4.1 Resultados de prueba de 2025
 
 ### 4.1.1 Tabla comparativa global: persistencia y SVR lineal
@@ -291,3 +304,147 @@ persistencia; no acredita por sí solo generalización. La evaluación
 adicional de 2026 aplica el procedimiento congelado a un periodo nuevo
 para los artefactos auditados. Su alcance se limita al periodo observado
 y a la información de uso previo disponible.
+
+:::{div}
+:class: correccion-profesor
+
+(evaluacion-retroalimentacion)=
+## 4.7 Corrección: comparación con una referencia HAR entrenada
+
+El [HAR diario OLS de 3.10](13_modelo_base_svr.md#har-profesor) permite
+comparar el SVR con persistencia y con una referencia temporal entrenada.
+La tabla usa las cuatro criptomonedas, las cuatro ventanas y los siete
+horizontes: **112 series**, con 358 orígenes por serie en 2025 y 236
+en enero–agosto de 2026. Se verificaron las mismas claves y etiquetas
+entre modelos; los modelos originales permanecen intactos.
+
+| Año | Modelo | MSE ↓ | RMSE macro ↓ | MAE macro ↓ | R² macro ↑ |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 2025 | Persistencia | 0,82820 | 0,74770 | 0,49719 | 0,53773 |
+| 2025 | HAR diario OLS (1/7/28) | 0,62475 | 0,67141 | 0,45941 | 0,63516 |
+| 2025 | SVR lineal | 0,53717 | 0,59808 | 0,41403 | 0,70073 |
+| 2026 | Persistencia | 0,79514 | 0,76778 | 0,43452 | 0,54600 |
+| 2026 | HAR diario OLS (1/7/28) | 0,60857 | 0,68744 | 0,44452 | 0,64727 |
+| 2026 | SVR lineal | 0,48881 | 0,59764 | 0,36252 | 0,72386 |
+
+Las métricas se calculan por activo, ventana y horizonte y después se
+promedian con igual peso. RMSE y MAE están en puntos porcentuales de
+volatilidad no anualizada; MSE, en esos puntos al cuadrado. El RMSE macro
+no es la raíz del MSE medio. El HAR diario queda entre persistencia y
+SVR en las cuatro métricas observadas de ambos periodos.
+
+La sensibilidad HAR intradía OLS obtiene RMSE macro **0,86724 en 2025**
+y **0,79341 en 2026**; la variante Ridge, **0,88043 y 0,82874**.
+Son adaptaciones distintas y no sustituyen la referencia diaria principal.
+Los soportes de entrenamiento difieren por el calentamiento documentado
+en 3.10, aunque las muestras de evaluación coinciden.
+
+Para no tratar las 112 salidas dependientes como observaciones
+independientes, cada origen aporta una diferencia de pérdida cuadrática
+media. Se aplicó **DM bilateral, corrección HLN con horizonte 7, HAC
+Bartlett con 33 rezagos y Holm2 sobre las dos referencias de cada año**.
+Este contraste y el bootstrap de 4.3 usan procedimientos y ajustes
+distintos; sus decisiones no tienen por qué coincidir.
+
+| Año | Comparación | Reducción observada de MSE del SVR | p bruto | p Holm2 |
+| --- | --- | ---: | ---: | ---: |
+| 2025 | SVR frente a persistencia | 35,14 % | 0,00043 | 0,00085 |
+| 2025 | SVR frente a HAR diario OLS | 14,02 % | 0,08488 | 0,08488 |
+| 2026 | SVR frente a persistencia | 38,53 % | 0,06338 | 0,12676 |
+| 2026 | SVR frente a HAR diario OLS | 19,68 % | 0,07920 | 0,12676 |
+
+El menor error observado del SVR **no acredita una ventaja significativa
+frente al HAR diario** al 5 % en estos contrastes. Tampoco rechazar
+igualdad equivale a demostrar equivalencia. Holm2 se aplica por año,
+sin un ajuste conjunto de todos los experimentos históricos.
+
+Descargas: [métricas completas](../../results/professor_feedback_20261018/macro_metrics.csv),
+[contrastes SVR y Holm2](../../results/professor_feedback_20261018/dm_svr_baselines_holm2.csv),
+[comprobaciones de emparejamiento](../../results/professor_feedback_20261018/alignment_checks.csv)
+y [protocolo de evaluación de la ampliación](../../results/professor_feedback_20261018/evaluation_protocol.json).
+
+:::
+
+:::{div}
+:class: correccion-profesor
+
+(evaluacion-ar-profesor)=
+## 4.8 Corrección: resultados del modelo AR de errores maduros
+
+La ampliación de [3.11](13_modelo_base_svr.md#residuos-profesor)
+modela errores de **HAR-Ridge + XGBoost**, sin modificar el SVR ni sus
+predicciones originales. Con las mismas 112 series y fechas de evaluación:
+
+| Año | Modelo o control | MSE ↓ | RMSE macro ↓ | R² macro ↑ |
+| --- | --- | ---: | ---: | ---: |
+| 2025 | HAR-Ridge + XGBoost original | 0,46468 | 0,55817 | 0,73800 |
+| 2025 | HAR-XG + AR de errores maduros | 0,45950 | 0,55541 | 0,74054 |
+| 2025 | HAR-XG + último error maduro | 0,46685 | 0,56027 | 0,73701 |
+| 2025 | HAR-XG + AR sin nuevas etiquetas observadas | 0,46423 | 0,55776 | 0,73864 |
+| 2026 | HAR-Ridge + XGBoost original | 0,45604 | 0,57959 | 0,74076 |
+| 2026 | HAR-XG + AR de errores maduros | 0,45305 | 0,57792 | 0,74228 |
+| 2026 | HAR-XG + último error maduro | 0,45762 | 0,58065 | 0,73985 |
+| 2026 | HAR-XG + AR sin nuevas etiquetas observadas | 0,45680 | 0,58000 | 0,74054 |
+
+El corrector reduce el MSE frente al HAR-XG original **1,12 % en 2025**
+y **0,66 % en 2026**. El control de último error dispone de las mismas
+etiquetas maduras recientes; la variante sin nuevas etiquetas distingue
+ese acceso de la existencia de coeficientes AR fijos. La mejora media
+no implica mejora en cada fecha, activo, ventana u horizonte.
+
+### 4.8.1 Regla declarada y resultado de la comparación primaria
+
+Antes de que el integrador leyera los nuevos resultados AR, el protocolo
+de evaluación declaró **2026 como periodo primario** y 2025 como
+secundario. Exigía menor MSE global de 2026 y DM favorable con
+$p_{\rm Holm4}<0,05$ frente a las cuatro referencias declaradas, además
+de menor MSE que el HAR-XG original en 2025. DM usa una pérdida media por
+origen, HLN con horizonte 7 y HAC Bartlett con 33 rezagos. Las cuatro
+referencias de 2026 forman la familia Holm4 de esta regla.
+
+| Referencia de 2026 | MSE de referencia | Reducción de MSE del AR | p bruto | p Holm4 |
+| --- | ---: | ---: | ---: | ---: |
+| HAR-Ridge + XGBoost original | 0,45604 | 0,66 % | 0,30806 | 0,58514 |
+| HAR-XG + último error maduro | 0,45762 | 1,00 % | 0,26358 | 0,58514 |
+| HAR-XG Ridge ponderado, experimento anterior | 0,43314 | −4,60 % | 0,14628 | 0,58514 |
+| HAR-Ridge + XGBoost residual, experimento anterior | 0,42990 | −5,39 % | 0,17233 | 0,58514 |
+
+**La regla no se cumple:** hay cero ventajas significativas ajustadas
+en 2026 y el MSE supera el de las dos variantes anteriores. Se conserva
+el modelo original y se documenta el corrector como experimento; no
+se justifica sustituirlo mediante este criterio. Se guardan sensibilidades
+a 14 y 56 rezagos y resultados por ventana, que no se usan como vías
+alternativas para aprobar la regla. La predeclaración de esta evaluación
+no borra la exploración previa de 2025–2026 ni hace independiente la
+selección condicional del corrector.
+
+### 4.8.2 Dependencia residual antes y después
+
+| Año | Modelo | Mediana ACF, rezago 1 | Series con p bruto de Ljung–Box(28) < 0,05 |
+| --- | --- | ---: | ---: |
+| 2025 | HAR-XG original | 0,77308 | 105/112 |
+| 2025 | HAR-XG + AR de errores maduros | 0,75981 | 104/112 |
+| 2026 | HAR-XG original | 0,78395 | 100/112 |
+| 2026 | HAR-XG + AR de errores maduros | 0,77977 | 100/112 |
+
+La dependencia **sigue presente**. Estos conteos son descriptivos y usan
+valores p individuales, sin ajuste múltiple ni prueba global de la
+fracción; no se comparan directamente con el ajuste Holm de 3.6.
+Las ventanas superpuestas inducen parte de la correlación y la reducción
+de MSE no demuestra residuos blancos. El experimento atiende la falta
+de modelado dinámico en la ampliación HAR-XG; la corrección específica
+de la dependencia residual del SVR sigue pendiente.
+
+Descargas: [métricas](../../results/professor_feedback_20261018/macro_metrics.csv),
+[DM, familias Holm4 y sensibilidades](../../results/professor_feedback_20261018/dm_ar_holm4.csv),
+[diagnósticos por serie](../../results/professor_feedback_20261018/residual_diagnostics.csv),
+[resumen residual](../../results/professor_feedback_20261018/residual_diagnostics_summary.csv)
+y [resumen, criterio y hashes](../../results/professor_feedback_20261018/summary.json).
+
+**Límite que permanece:** el EDA original fue posterior al modelado.
+Reconstruir diagnósticos solo con desarrollo y congelar modelos para
+esta ampliación no modifica esa cronología. Una confirmación prospectiva
+requiere un periodo posterior sin inspección previa y un procedimiento
+fijado antes de observarlo.
+
+:::

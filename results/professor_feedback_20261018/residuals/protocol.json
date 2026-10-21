@@ -1,0 +1,63 @@
+{
+  "created_at_utc": "2026-10-18T17:33:35.482220+00:00",
+  "publication": "LOCAL ONLY",
+  "github_or_render_updates_authorized": false,
+  "base_hyperparameters": "Frozen original; selected on ALL six 2024 blocks",
+  "validation_limitation": "CONDITIONAL on 2024-selected base; not nested/independent validation of base architecture",
+  "response": "Actual minus honest out-of-fold base forecast, in original volatility percentage points",
+  "training_archive": "2023 expanding 120-origin warmup/60-origin blocks, strict seven-day purge; original six purged 2024 OOF blocks",
+  "model": "Seven direct Ridge AR regressions: e[t,h] ~ e[t-h,h],...,e[t-h-p+1,h]",
+  "coefficient_training": "For each block only train origins with seven-day labels strictly before its first origin",
+  "scaling": "StandardScaler on usable AR train rows only",
+  "orders": [
+    1,
+    3,
+    7
+  ],
+  "alphas": [
+    1.0,
+    10.0,
+    100.0
+  ],
+  "shrinkage": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "search_candidates_per_configuration": 36,
+  "selection": "Minimum pooled natural-unit MSE on six original 2024 validation blocks, common order/alpha/eta per asset/window",
+  "same_access_control": "Last matured e[t-h,h], shrinkage from same 2024 validation grid",
+  "online": "Coefficients fixed before 2025; history updates after close with only horizon-specific mature actuals",
+  "offline": "Same frozen coefficients, 2024 OOF initial state; after 2025 recursively use predicted errors, no new observed labels",
+  "missing_history": "No interpolation/compression; zero correction when exact calendar lags missing",
+  "evaluation": "2025 and Jan01-Aug24 2026 already inspected; retrospective; no confirmatory holdout",
+  "primary": "2026 global MSE and DM versus frozen base AND same-online-access control; report 2025 as secondary",
+  "dm": "Paired daily loss averaged over 4 assets/4 windows/7 horizons; HLN7, Bartlett HAC33; Holm4 across two rivals/two years",
+  "replacement": "No publication authorized; lower 2026 MSE and significant Holm4 wins versus both comparators required even for statistical evidence",
+  "input_sha256": {
+    "results\\har_ridge_xgboost_audit_20261005\\blend_cv\\oof_predictions.csv": "ac988e0c8dff4c1c4321437d2d2cdd80a5374b39073a4bf28527e7d7aeb145e8",
+    "results\\improved_classical_2023_2025\\selected_inputs.csv": "4b82691d06317bc2b5990cc1c1926f2c98a0d96da59aeb833596f1b63553d046",
+    "results\\improved_classical_2023_2025\\predictions.csv.gz": "0beb533b255e98daf9aeb79abdfdb8b38f35d6c1a83163c28b1d37848bc20971",
+    "results\\har_spca_research_20261005\\baseline_2026\\predictions.csv.gz": "0c514282505fef3c20261b43df997a0891ac8323b30467f1b48e17b5e87d3997",
+    "results\\improved_classical_2023_2025\\models\\BNBUSDT_v14.joblib": "d73fab98b1f2e16070fd7bac4b6744b75cc362ffdcf54a1efc9d13113936357b",
+    "results\\improved_classical_2023_2025\\models\\BNBUSDT_v21.joblib": "1650faa7c81669b75f66cf471d153e826b6208e8dcb484250c839dfe018cd2b4",
+    "results\\improved_classical_2023_2025\\models\\BNBUSDT_v28.joblib": "cc9e7a236af8ea6cfadcf4f5e9bb9c11dcf33e0d9c89323192a51447f6e9eda1",
+    "results\\improved_classical_2023_2025\\models\\BNBUSDT_v7.joblib": "4c988796de0908f3e32bde454c8adb9c52b887636d36015af440f0ef922a0256",
+    "results\\improved_classical_2023_2025\\models\\BTCUSDT_v14.joblib": "09938621cec86879588fcb70af620f4d9b87b46fa2eb3fa33c16744352c2b7af",
+    "results\\improved_classical_2023_2025\\models\\BTCUSDT_v21.joblib": "accc4a20a9b2439090bc29029e25417ab7e1c4ee9e43eb0bba9b21e6d90e3467",
+    "results\\improved_classical_2023_2025\\models\\BTCUSDT_v28.joblib": "84258d3c3c9ea9ca6a2097c6e33f81d51a6c7f4dd360f88ac621738d33802cc0",
+    "results\\improved_classical_2023_2025\\models\\BTCUSDT_v7.joblib": "fd0c6508445d833abe8f37938c04ff2e725a8a5f24479faea4a8945f8d034867",
+    "results\\improved_classical_2023_2025\\models\\ETHUSDT_v14.joblib": "ab1e9fe53977dac8b20c55c9215dc1c425ed551284645fe1347ed6bef8124dc3",
+    "results\\improved_classical_2023_2025\\models\\ETHUSDT_v21.joblib": "1bdf149f4d1dce1a338d5893c03d253da03524dd841b4f91ab411a8c501b4cbb",
+    "results\\improved_classical_2023_2025\\models\\ETHUSDT_v28.joblib": "ac5c3c84674752b99b3c8b983619dd32f99e9b196404b18cdae722c0515b72b2",
+    "results\\improved_classical_2023_2025\\models\\ETHUSDT_v7.joblib": "a515da2470bc7ef707ae42d450fa8da4357a37c23d9b8ad2ed39fa83e2ca6c47",
+    "results\\improved_classical_2023_2025\\models\\XRPUSDT_v14.joblib": "02f3c5532561c754afa07334fb333f9485c12ccc42a552de4ee86c6d4a5c0e5c",
+    "results\\improved_classical_2023_2025\\models\\XRPUSDT_v21.joblib": "f37cda17a8d726b9ac32181d0e267ffd9bb3423ac63bbaa4a3b0fcc86c98be0c",
+    "results\\improved_classical_2023_2025\\models\\XRPUSDT_v28.joblib": "fb3be14a21a5ee8d16c6149b4685b509565cb460fc923ec0dcbdd540f65d40f7",
+    "results\\improved_classical_2023_2025\\models\\XRPUSDT_v7.joblib": "401c36dcb9bef7e7526bf1602119f5c4dd0d1172ead4f3d3ff866ad764faf083"
+  },
+  "training_source_sha256": {
+    "src\\professor_feedback_residuals.py": "1847824047607d5599cea912347011906c08008dc25ac4040b5290354b008e0d"
+  }
+}

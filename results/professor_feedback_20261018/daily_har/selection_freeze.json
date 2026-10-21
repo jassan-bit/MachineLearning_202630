@@ -1,0 +1,26 @@
+{
+  "frozen_at_utc": "2026-10-18T17:35:44.514272+00:00",
+  "all16_models_frozen": true,
+  "hyperparameter_search_performed": false,
+  "test_forecasts_or_metrics_computed": false,
+  "protocol_sha256": "6f8e39e835b75c9317f704848f4160df668d1358e9eb321209e4e04ec41b8b27",
+  "training_support_sha256": "6f32d320a7dc80e18143654031556ad60c99698a52f259d3317922f4cdf9cea7",
+  "model_sha256": {
+    "BTCUSDT_v7.joblib": "d6fd34e984c21afe198dd0299fbc33244763afdbc06d2e914555f238ac7e5505",
+    "BTCUSDT_v14.joblib": "da70e9856951bb1b902a831947e0befbe393201483a3b6c62748f047197a259b",
+    "BTCUSDT_v21.joblib": "b5caf80409ad4bde8e9d1c35e5cb5c1e074a09c4a24b77d0555512796980515f",
+    "BTCUSDT_v28.joblib": "cafe5585b10ce8e1f2dad9f56b93d6df13b9f067c712c990d888896451821cd5",
+    "ETHUSDT_v7.joblib": "e94066929fbd7b680cb8501660c3bba5ca63a91ed632a761daedd8aa3b07bbb8",
+    "ETHUSDT_v14.joblib": "e196b8a9687f2e44491b92a90e6314bb56e08b69e0540b23c625f164038f9c4a",
+    "ETHUSDT_v21.joblib": "4e8c43973649dbbf32b7c635cace3ab7451b1a041025b9bd68a5d35beff7c6d7",
+    "ETHUSDT_v28.joblib": "a7600c2f50d0536034fbb1d9a734a498976c1fa585fb55dbd79af8e0de13ee63",
+    "BNBUSDT_v7.joblib": "1945c07441ccd00cf63ba82d93edf7d471b8da1f227ec2f5cb9ab97fa172e24b",
+    "BNBUSDT_v14.joblib": "caf82878554b344950bd8e6a7689eba4e7d4355b2eddb631a675ef18685a1404",
+    "BNBUSDT_v21.joblib": "d7591e09735562444392c70de41b685e9254f2cddc2c80deaa2fc0fcc37244c2",
+    "BNBUSDT_v28.joblib": "c90f5e656905e83280960285fe35155697a1ab25a4d0346bc47a4bff9f52f8a3",
+    "XRPUSDT_v7.joblib": "d4372535414eb204f4f0c6765c8e170c04ab830047994547624fca87543cc87f",
+    "XRPUSDT_v14.joblib": "b98a47a70b7f738532af126468167e5f2236333d003484a308199a4fdc72705e",
+    "XRPUSDT_v21.joblib": "6518faf2453cf34eedbe08d2c502f64fb33e9e53ae038d0cc28981c92e7b3bb1",
+    "XRPUSDT_v28.joblib": "a4a2029fbda50f32dbdec2e9580ed9fdd08c345ef3827b634ff65772d725f57a"
+  }
+}

@@ -1,0 +1,33 @@
+year,model,rows,max_abs_actual_error
+2025,HAR diario OLS (1/7/28),40096,0.0
+2025,HAR simple OLS (1/7/28),40096,0.0
+2025,HAR simple Ridge (1/7/28),40096,0.0
+2025,HAR-Ridge + XGBoost,40096,0.0
+2025,HAR-Ridge + XGBoost residual,40096,0.0
+2025,HAR-XG + AR mature errors,40096,0.0
+2025,HAR-XG + AR no online labels,40096,0.0
+2025,HAR-XG + last mature error,40096,0.0
+2025,HAR-XG Ridge ponderado,40096,0.0
+2025,Lasso,40096,0.0
+2025,Persistencia,40096,0.0
+2025,Random Forest,40096,0.0
+2025,Ridge,40096,0.0
+2025,SVR Lineal,40096,0.0
+2025,XGBoost,40096,0.0
+2025,k-NN,40096,0.0
+2026,HAR diario OLS (1/7/28),26432,0.0
+2026,HAR simple OLS (1/7/28),26432,0.0
+2026,HAR simple Ridge (1/7/28),26432,0.0
+2026,HAR-Ridge + XGBoost,26432,0.0
+2026,HAR-Ridge + XGBoost residual,26432,0.0
+2026,HAR-XG + AR mature errors,26432,0.0
+2026,HAR-XG + AR no online labels,26432,0.0
+2026,HAR-XG + last mature error,26432,0.0
+2026,HAR-XG Ridge ponderado,26432,0.0
+2026,Lasso,26432,0.0
+2026,Persistencia,26432,0.0
+2026,Random Forest,26432,0.0
+2026,Ridge,26432,0.0
+2026,SVR Lineal,26432,0.0
+2026,XGBoost,26432,0.0
+2026,k-NN,26432,0.0
