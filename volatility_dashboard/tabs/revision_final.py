@@ -42,9 +42,9 @@ def layout():
         html.P('Siete familias × cuatro métodos de optimización: 28 benchmarks. '
                'Esta vista amplía la evidencia del proyecto y conserva el modelo '
                'HAR-Ridge + XGBoost original como referencia.'),
-        html.P('Los resultados de 2025 y 2026 son retrospectivos. Los candidatos '
-               'HAR son experimentales: todavía no se ha demostrado una mejora '
-               'estadística que justifique sustituir el modelo original.',
+        html.P('Los resultados de 2025 y 2026 son retrospectivos. Esta vista compara '
+               'HAR-Ridge + XGBoost con siete familias de regresión y cuatro '
+               'métodos de optimización de hiperparámetros.',
                className='notice final-review-status'),
         _downloads(),
         html.Div([
@@ -210,8 +210,8 @@ def _dm_section(year, optimizer, window):
         return html.Section([
             html.H3('Comparaciones dirigidas por ventana'),
             html.P('La tabla de 112 contrastes por ventana corresponde exclusivamente a 2025. '
-                   'No se reutilizan sus valores p para 2026. Más abajo se muestran '
-                   'los cuatro contrastes globales HAR de 2026, con su propia familia Holm4.',
+                   'No se reutilizan sus valores p para 2026. Los intervalos bootstrap '
+                   'globales de 2026 se muestran en su sección y no son contrastes DM por ventana.',
                    className='notice'),
             _link('Consultar la evaluación estadística de 2026', f'{data.RESULTS}/evaluation/report.html'),
         ], className='panel')
@@ -285,37 +285,6 @@ def _windows_section(year):
                'expositiva retrospectiva. No se debe elegir el objetivo por el valor p más favorable.',
                className='interpretation'),
     ], className='panel')
-
-
-def _candidate_section(year):
-    frame = data.candidate_global(year)
-    display = frame[['model', 'mse_original', 'mse', 'mse_reduction_pct',
-                     'mse_gain', 'gain_ci_lower', 'gain_ci_upper', 'p', 'p_holm',
-                     'decision_holm4']].rename(columns={'model': 'Candidato experimental',
-        'mse_original': 'MSE original global', 'mse': 'MSE candidato global',
-        'mse_reduction_pct': 'Reducción MSE (%)',
-        'mse_gain': 'Ganancia MSE: original − candidato',
-        'gain_ci_lower': 'IC bootstrap ganancia inferior',
-        'gain_ci_upper': 'IC bootstrap ganancia superior', 'p': 'p bruto',
-        'p_holm': 'p Holm4', 'decision_holm4': 'Decisión al 5 %'})
-    display = _format_p(display, ['p bruto', 'p Holm4'])
-    return html.Section([
-        html.Span('Actualización · intervalos bootstrap HAR', className='bootstrap-update-badge'),
-        html.H3(f'Candidatos HAR experimentales · global {year}'),
-        html.P('Familia distinta: cuatro candidatos HAR-XG frente al HAR original. '
-               'Se agregan las cuatro ventanas, cuatro activos y siete horizontes '
-               '(112 errores por origen). Esta tabla no cambia con los filtros de ventana '
-               'u optimizador y no es la tabla Holm7/28/112.'),
-        html.P('La ganancia es MSE original − MSE candidato: un valor positivo favorece '
-               'al candidato. Los límites corresponden al bootstrap estacionario emparejado '
-               'global y son individuales; su lectura es distinta del contraste DM con Holm4.'),
-        table(display, page_size=4),
-        html.P('Ninguno de los cuatro candidatos demuestra una mejora con el ajuste Holm4 '
-               'en 2025 ni en 2026. El menor error puntual de algunos candidatos '
-               'permite continuar la investigación; el modelo original permanece como referencia.',
-               className='notice'),
-        _link('MCS, SPA, intervalos estacionarios y contrastes dirigidos', f'{data.RESULTS}/evaluation/report.html'),
-    ], className='panel bootstrap-update')
 
 
 def _outer_section(optimizer):
@@ -426,7 +395,6 @@ def _render(year, optimizer, window):
         _bootstrap_section(year, optimizer),
         _dm_section(year, optimizer, window),
         _windows_section(year),
-        _candidate_section(year),
         _outer_section(optimizer),
         *_diagnostic_sections(),
     ])

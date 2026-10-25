@@ -21,11 +21,11 @@ métrica, no de diferencias entre modelos; el solapamiento no constituye una
 prueba de superioridad. No se fabrican intervalos de R² ni intervalos por
 ventana a partir de los límites globales.
 
-La tabla de candidatos HAR añade los intervalos emparejados ya guardados en
-`evaluation/paired_effects_vs_original.csv`. Aquí la ganancia se define como
-`MSE original - MSE candidato`: positiva favorece al candidato. Los cuatro
-intervalos incluyen cero en cada año y los contrastes Holm4 siguen sin
-demostrar una mejora. Se conservan las familias y conclusiones DM existentes.
+La vista principal se centra en HAR-Ridge + XGBoost frente a los otros métodos.
+Se retiró la sección de candidatos HAR experimentales y sus contrastes Holm4
+de ambos años. Los informes históricos conservan la evidencia de esa
+investigación; las comparaciones frente a los 28 benchmarks y sus intervalos
+bootstrap siguen disponibles con los filtros de año y optimizador.
 No se reentrenan modelos, no se modifican pronósticos y no se publican nuevas
 copias de pérdidas por fecha.
 

@@ -144,8 +144,24 @@ class FinalReviewTests(unittest.TestCase):
         columns = [column['name'] for node in components(rendered)
                    if node.get('type') == 'DataTable'
                    for column in node['props']['columns']]
-        self.assertIn('p Holm4', columns)
+        self.assertIn('IC 95 % inferior', columns)
+        self.assertNotIn('p Holm4', columns)
         self.assertNotIn('p Holm112', columns)
+
+    def test_main_review_excludes_experimental_har_table_and_does_not_load_its_data(self):
+        for year in data.YEARS:
+            with self.subTest(year=year), patch.object(data, 'candidate_global',
+                    side_effect=AssertionError('Removed section must not load candidates')):
+                rendered = view.render(year, 'all', 7)
+                headings = [node['props']['children'] for node in components(rendered)
+                            if node.get('type') in ('H3', 'Span')]
+                self.assertFalse(any('Candidatos HAR experimentales' in str(item) for item in headings))
+                columns = [column['name'] for node in components(rendered)
+                           if node.get('type') == 'DataTable'
+                           for column in node['props']['columns']]
+                self.assertNotIn('Candidato experimental', columns)
+                self.assertNotIn('p Holm4', columns)
+                self.assertIn('MSE global', columns)
 
     def test_callback_serializes_and_only_reads_bundle(self):
         def hashes():
