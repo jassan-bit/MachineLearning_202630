@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "views": 10,
+  "rows": 60,
+  "original_point_estimates_and_dm_tests_match": true,
+  "historical_inputs_unchanged": true,
+  "source_sha256": {
+    "src/build_bootstrap_confidence_report.py": "93b37333f4a6f485f13b16246ca441e2acd8db6e361abe8bbc4d7e2f8d8f9eef",
+    "volatility_dashboard/confidence_intervals.py": "3fbefb2bea05464f278b7ec9f77f4d64a8c74922299213beaaf271be627ebc9f",
+    "volatility_dashboard/diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585"
+  },
+  "no_model_training": true,
+  "publication_authorized": true
+}

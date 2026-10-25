@@ -1,4 +1,4 @@
-"""Focused checks for the published seven-method HAC forest and its filters."""
+"""Paired temporal resampling, exact percentiles and dashboard alignment."""
 import json
 import unittest
 from unittest.mock import patch
@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 
 from volatility_dashboard.confidence_intervals import (
-    BENCHMARK, MODELS, RIVALS, _holm, confidence_intervals,
+    BENCHMARK, MODELS, RIVALS, _bootstrap_intervals, _forest, _holm,
+    _stationary_indices, confidence_intervals,
 )
 from volatility_dashboard.diebold_mariano import dm_test
 
@@ -39,6 +40,9 @@ class DashboardConfidenceIntervalTests(unittest.TestCase):
         self.assertEqual(details['cells_per_origin'], 14)
         self.assertEqual(details['lags'], 12)
         self.assertEqual(details['family_size'], 6)
+        self.assertEqual(details['bootstrap_block_length'], 13)
+        self.assertEqual(details['bootstrap_repetitions'], 5000)
+        self.assertEqual(details['interval_method'], 'stationary_bootstrap_percentile')
         self.assertEqual(table.model.tolist(), list(RIVALS))
         self.assertTrue(table.n.eq(70).all())
         self.assertEqual(len(table), 6)
@@ -63,21 +67,53 @@ class DashboardConfidenceIntervalTests(unittest.TestCase):
             self.assertAlmostEqual(row.dm_gain, test['dm'])
             self.assertAlmostEqual(row.p_raw_DM_HLN, test['p'])
 
-    def test_hac_interval_matches_independent_bartlett_quadratic_form(self):
-        _, table, details = confidence_intervals(predictions(), 'ETHUSDT', 7, 1)
+    def test_bootstrap_percentiles_match_independently_enumerated_samples(self):
+        values = np.array([[0., 0.], [1., 2.], [10., 20.], [100., 200.]])
+        indices = np.array([[0, 1, 2, 3], [0, 0, 1, 1], [2, 3, 2, 3], [3, 3, 3, 0]])
+        means = np.array([[27.75, 55.5], [.5, 1.], [55., 110.], [75., 150.]])
+        bounds, errors, varying = _bootstrap_intervals(values, indices, .05)
+        np.testing.assert_allclose(bounds, np.quantile(means, [.025, .975], axis=0))
+        np.testing.assert_allclose(errors, means.std(axis=0, ddof=1))
+        np.testing.assert_array_equal(varying, [True, True])
+        # Shared draws preserve the exact proportional relation between rivals.
+        np.testing.assert_allclose(bounds[:, 1], 2*bounds[:, 0])
+        self.assertNotAlmostEqual(values[:, 0].mean()-bounds[0, 0],
+                                  bounds[1, 0]-values[:, 0].mean())
+
+    def test_stationary_draws_follow_geometric_restart_and_circular_continuation(self):
+        n, repetitions, length, seed = 9, 1000, 3, 17
+        rng = np.random.default_rng(seed)
+        starts = rng.integers(0, n, size=(repetitions, n))
+        restart = rng.random((repetitions, n)) < 1/length
+        observed = _stationary_indices(n, repetitions, length, seed)
+        np.testing.assert_array_equal(observed[:, 0], starts[:, 0])
+        for row in range(repetitions):
+            for step in range(1, n):
+                expected = starts[row, step] if restart[row, step] else (observed[row, step-1]+1) % n
+                self.assertEqual(observed[row, step], expected)
+        self.assertTrue(np.all((observed >= 0) & (observed < n)))
+
+    def test_reproducible_seed_and_shuffle_independent_order(self):
         frame = predictions()
-        frame = frame[frame.symbol.eq('ETHUSDT') & frame.horizon.eq(1)].copy()
-        frame['loss'] = (frame.actual-frame.forecast)**2
-        pivot = frame.pivot(index='origin', columns='model', values='loss')
-        gain = (pivot['Ridge']-pivot[BENCHMARK]).to_numpy()
-        centered = gain-gain.mean()
-        distances = np.abs(np.arange(len(gain))[:, None]-np.arange(len(gain))[None, :])
-        kernel = np.maximum(0., 1-distances/(details['lags']+1))
-        expected_se = np.sqrt((centered@kernel@centered)/len(gain)**2)
-        row = table[table.model.eq('Ridge')].iloc[0]
-        self.assertAlmostEqual(row.se_HAC, expected_se)
-        self.assertAlmostEqual(row.ci_high_gain-row.gain, 1.959963984540054*expected_se)
-        self.assertAlmostEqual(row.gain-row.ci_low_gain, 1.959963984540054*expected_se)
+        _, first, _ = confidence_intervals(frame, repetitions=1000)
+        _, second, _ = confidence_intervals(frame.sample(frac=1, random_state=19), repetitions=1000)
+        pd.testing.assert_frame_equal(first, second)
+        _, different, _ = confidence_intervals(frame, repetitions=1000, seed=1)
+        np.testing.assert_allclose(first.gain, different.gain)
+        np.testing.assert_allclose(first.p_holm6, different.p_holm6)
+        self.assertFalse(np.allclose(first.ci_low_gain, different.ci_low_gain))
+
+    def test_percentile_endpoints_are_not_clipped_to_observed_estimate(self):
+        _, table, _ = confidence_intervals(predictions(), repetitions=1000)
+        table.loc[0, ['gain', 'ci_low_gain', 'ci_high_gain']] = [1., 2., 3.]
+        figure = _forest(table, .05)
+        interval = next(trace for trace in figure.data if trace.meta
+                        and trace.meta.get('role') == 'bootstrap_interval'
+                        and trace.meta['model'] == RIVALS[0])
+        self.assertEqual(list(interval.x), [2., 3.])
+        points = [trace for trace in figure.data if trace.meta
+                  and trace.meta.get('role') == 'observed_gain']
+        self.assertTrue(any(1. in trace.x for trace in points))
 
     def test_stars_follow_holm6_and_not_the_individual_interval(self):
         raw = [.002308, .150037, .000027, .000106, .017882, .004809]
@@ -93,7 +129,8 @@ class DashboardConfidenceIntervalTests(unittest.TestCase):
         self.assertEqual(details['significant_wins'], 5)
         self.assertFalse(bool(table.iloc[1].star))
         self.assertGreater(table.iloc[1].ci_low_gain, 0)
-        self.assertEqual(sum('*' in label for trace in figure.data for label in trace.y), 5)
+        self.assertEqual(sum('*' in label for trace in figure.data if trace.meta
+                             and trace.meta.get('role') == 'observed_gain' for label in trace.y), 5)
 
     def test_a_better_rival_is_shown_with_negative_gain_and_its_own_winner(self):
         frame = predictions()
@@ -151,7 +188,10 @@ class DashboardConfidenceIntervalTests(unittest.TestCase):
     def test_bad_filters_and_nonfinite_selected_forecasts_are_rejected(self):
         frame = predictions()
         for arguments in [dict(window=8), dict(horizon=0), dict(horizon=True), dict(alpha=0),
-                          dict(alpha=1), dict(alpha=True), dict(year=2030), dict(symbol='UNKNOWN')]:
+                          dict(alpha=1), dict(alpha=True), dict(year=2030), dict(symbol='UNKNOWN'),
+                          dict(repetitions=999), dict(repetitions=100001), dict(repetitions=1000.5),
+                          dict(seed=-1), dict(seed=True), dict(block_length=0),
+                          dict(block_length=70), dict(block_length=1.5)]:
             with self.subTest(arguments=arguments), self.assertRaises(ValueError):
                 confidence_intervals(frame, **arguments)
         frame.loc[0, 'forecast'] = np.nan

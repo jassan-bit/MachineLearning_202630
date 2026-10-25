@@ -1,0 +1,1311 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intervalos bootstrap temporal · revisión local</title>
+<style>body{font:16px system-ui,sans-serif;margin:auto;padding:28px;max-width:1180px;color:#183044;background:#f8fafc}
+h1,h2{color:#12334d}p{line-height:1.6}.notice{padding:18px;background:#fff3cd;color:#664d03;border-left:5px solid #e0ad00}
+section{background:#fffdf2;border:2px solid #e0ad00;padding:20px;margin:25px 0;overflow:auto;border-radius:8px}
+img{max-width:100%;height:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:9px;text-align:left;border-bottom:1px solid #dce4ec}
+th{background:#fff3cd}a{color:#07687a}nav a{display:inline-block;margin:6px 12px 6px 0}summary{cursor:pointer;margin:20px 0}</style>
+<h1>Intervalos de confianza por bootstrap temporal</h1>
+<p class="notice"><strong>Actualización · intervalos bootstrap.</strong> Los intervalos percentiles de bootstrap temporal reemplazan los intervalos normales HAC. Los cambios se identifican en amarillo. Se conservan los modelos y pronósticos originales.</p>
+<p>Se estima la ganancia de MSE: pérdida del rival menos pérdida del HAR-Ridge + XGBoost original.
+Un valor positivo favorece al original. Cada réplica remuestrea bloques de fechas consecutivas y usa las mismas fechas para todos los modelos.
+Se aplican percentiles 2,5 y 97,5 a las ganancias medias remuestreadas, sin una fórmula normal para el intervalo.</p>
+<p>Los intervalos del 95 % son individuales: no tienen ajuste por comparaciones múltiples ni predicen la volatilidad futura.
+Los asteriscos conservan el contraste DM-HLN con Holm6; ese contraste es distinto de la lectura del intervalo bootstrap.</p>
+<p>El bootstrap requiere condiciones de dependencia débil y estacionariedad aproximada. La longitud media de bloque es una regla explícita,
+no una garantía de capturar toda la dependencia; se muestran alternativas de sensibilidad. Ambos periodos se habían explorado y siguen siendo retrospectivos.</p>
+<p class="notice"><strong>Sensibilidad observada:</strong> en 2025, ventana de 7 días, el intervalo de Random Forest incluye cero con bloques medios de 6 y 13 días,
+pero lo excluye con 26 días. En la vista global de 2026, el intervalo de Lasso incluye cero con 17 días y lo excluye con 34 y 68 días.
+Estas lecturas dependen de la longitud del bloque: se conserva la regla principal declarada y se muestran todas las alternativas, sin elegir el intervalo más favorable.</p>
+<p>5,000 réplicas por vista · semilla 42 · longitud media de bloque: máximo entre ventana + horizonte máximo − 1 y ⌈n¹ᐟ³⌉.</p><p><a href="protocol.json">Protocolo y hashes</a> · <a href="all_comparisons.csv">Todas las comparaciones</a> · <a href="block_length_sensitivity.csv">Sensibilidad a longitud de bloque</a> · <a href="hac_vs_bootstrap_bounds.csv">Límites HAC anteriores y bootstrap</a></p><nav><a href="#view-2025-global">2025 / global</a><a href="#view-2025-7">2025 / 7</a><a href="#view-2025-14">2025 / 14</a><a href="#view-2025-21">2025 / 21</a><a href="#view-2025-28">2025 / 28</a><a href="#view-2026-global">2026 / global</a><a href="#view-2026-7">2026 / 7</a><a href="#view-2026-14">2026 / 14</a><a href="#view-2026-21">2026 / 21</a><a href="#view-2026-28">2026 / 28</a></nav><section id="view-2025-global"><h2>2025 · global · cuatro ventanas</h2><p><a href="2025/global/comparisons.csv">Descargar tabla CSV</a> · <a href="2025/global/forest_plot.svg">Figura SVG</a> · <a href="2025/global/protocol.json">Protocolo de esta vista</a></p><img src="2025/global/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2025, global · cuatro ventanas"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0559245</td>
+      <td>0.0253582</td>
+      <td>0.0952789</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00355789</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0723429</td>
+      <td>0.0373793</td>
+      <td>0.110573</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000498746</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0989005</td>
+      <td>0.0509595</td>
+      <td>0.1582</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000557777</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0598891</td>
+      <td>0.0300106</td>
+      <td>0.0925362</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000498746</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0318579</td>
+      <td>0.0212263</td>
+      <td>0.0431028</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>7.98786e-07</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0724911</td>
+      <td>0.0370505</td>
+      <td>0.112895</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000498746</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0559245</td>
+      <td>0.0253582</td>
+      <td>0.0952789</td>
+      <td>0.0192495</td>
+      <td>0.0925995</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0723429</td>
+      <td>0.0373793</td>
+      <td>0.110573</td>
+      <td>0.0365012</td>
+      <td>0.108185</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0989005</td>
+      <td>0.0509595</td>
+      <td>0.1582</td>
+      <td>0.0470508</td>
+      <td>0.15075</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0598891</td>
+      <td>0.0300106</td>
+      <td>0.0925362</td>
+      <td>0.0306056</td>
+      <td>0.0891726</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0318579</td>
+      <td>0.0212263</td>
+      <td>0.0431028</td>
+      <td>0.0204686</td>
+      <td>0.0432473</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0724911</td>
+      <td>0.0370505</td>
+      <td>0.112895</td>
+      <td>0.0365986</td>
+      <td>0.108384</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2025-7"><h2>2025 · ventana 7 días</h2><p><a href="2025/7/comparisons.csv">Descargar tabla CSV</a> · <a href="2025/7/forest_plot.svg">Figura SVG</a> · <a href="2025/7/protocol.json">Protocolo de esta vista</a></p><img src="2025/7/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2025, ventana 7 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.136748</td>
+      <td>0.0490689</td>
+      <td>0.238478</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0144259</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.151944</td>
+      <td>0.0865381</td>
+      <td>0.224175</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000160146</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.209507</td>
+      <td>0.0909234</td>
+      <td>0.365276</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00923263</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0771543</td>
+      <td>-0.0117738</td>
+      <td>0.163403</td>
+      <td>IC incluye cero</td>
+      <td>0.150037</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0673384</td>
+      <td>0.0206835</td>
+      <td>0.11288</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0357641</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.152313</td>
+      <td>0.080144</td>
+      <td>0.234377</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000529422</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.136748</td>
+      <td>0.0490689</td>
+      <td>0.238478</td>
+      <td>0.0440017</td>
+      <td>0.229495</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.151944</td>
+      <td>0.0865381</td>
+      <td>0.224175</td>
+      <td>0.0832331</td>
+      <td>0.220656</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.209507</td>
+      <td>0.0909234</td>
+      <td>0.365276</td>
+      <td>0.0781605</td>
+      <td>0.340853</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0771543</td>
+      <td>-0.0117738</td>
+      <td>0.163403</td>
+      <td>-0.0257735</td>
+      <td>0.180082</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0673384</td>
+      <td>0.0206835</td>
+      <td>0.11288</td>
+      <td>0.0128696</td>
+      <td>0.121807</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.152313</td>
+      <td>0.080144</td>
+      <td>0.234377</td>
+      <td>0.0775533</td>
+      <td>0.227074</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2025-14"><h2>2025 · ventana 14 días</h2><p><a href="2025/14/comparisons.csv">Descargar tabla CSV</a> · <a href="2025/14/forest_plot.svg">Figura SVG</a> · <a href="2025/14/protocol.json">Protocolo de esta vista</a></p><img src="2025/14/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2025, ventana 14 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0444454</td>
+      <td>0.0174983</td>
+      <td>0.0759597</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0160735</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0834523</td>
+      <td>0.0302875</td>
+      <td>0.146797</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0160735</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.105513</td>
+      <td>0.0545113</td>
+      <td>0.171608</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00394985</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0658281</td>
+      <td>0.0362664</td>
+      <td>0.0979993</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0011951</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0197857</td>
+      <td>0.00986458</td>
+      <td>0.0294512</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00421183</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0660267</td>
+      <td>0.0280401</td>
+      <td>0.115239</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0160735</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0444454</td>
+      <td>0.0174983</td>
+      <td>0.0759597</td>
+      <td>0.0116251</td>
+      <td>0.0772656</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0834523</td>
+      <td>0.0302875</td>
+      <td>0.146797</td>
+      <td>0.0261356</td>
+      <td>0.140769</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.105513</td>
+      <td>0.0545113</td>
+      <td>0.171608</td>
+      <td>0.0455346</td>
+      <td>0.165491</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0658281</td>
+      <td>0.0362664</td>
+      <td>0.0979993</td>
+      <td>0.0321288</td>
+      <td>0.0995274</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0197857</td>
+      <td>0.00986458</td>
+      <td>0.0294512</td>
+      <td>0.00825859</td>
+      <td>0.0313128</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0660267</td>
+      <td>0.0280401</td>
+      <td>0.115239</td>
+      <td>0.019067</td>
+      <td>0.112986</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2025-21"><h2>2025 · ventana 21 días</h2><p><a href="2025/21/comparisons.csv">Descargar tabla CSV</a> · <a href="2025/21/forest_plot.svg">Figura SVG</a> · <a href="2025/21/protocol.json">Protocolo de esta vista</a></p><img src="2025/21/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2025, ventana 21 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0275651</td>
+      <td>0.00719133</td>
+      <td>0.0480437</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.044253</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0353534</td>
+      <td>0.0189015</td>
+      <td>0.0534405</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00116008</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0702926</td>
+      <td>0.025598</td>
+      <td>0.13516</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.044253</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.055315</td>
+      <td>0.0312388</td>
+      <td>0.0832691</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.000147086</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0235775</td>
+      <td>0.0123091</td>
+      <td>0.0371779</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00116008</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0515567</td>
+      <td>0.0238194</td>
+      <td>0.0861356</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.00876205</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0275651</td>
+      <td>0.00719133</td>
+      <td>0.0480437</td>
+      <td>0.00342197</td>
+      <td>0.0517083</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0353534</td>
+      <td>0.0189015</td>
+      <td>0.0534405</td>
+      <td>0.0170609</td>
+      <td>0.0536459</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0702926</td>
+      <td>0.025598</td>
+      <td>0.13516</td>
+      <td>0.0114344</td>
+      <td>0.129151</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.055315</td>
+      <td>0.0312388</td>
+      <td>0.0832691</td>
+      <td>0.0304177</td>
+      <td>0.0802124</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0235775</td>
+      <td>0.0123091</td>
+      <td>0.0371779</td>
+      <td>0.0112876</td>
+      <td>0.0358674</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0515567</td>
+      <td>0.0238194</td>
+      <td>0.0861356</td>
+      <td>0.0184481</td>
+      <td>0.0846653</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2025-28"><h2>2025 · ventana 28 días</h2><p><a href="2025/28/comparisons.csv">Descargar tabla CSV</a> · <a href="2025/28/forest_plot.svg">Figura SVG</a> · <a href="2025/28/protocol.json">Protocolo de esta vista</a></p><img src="2025/28/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2025, ventana 28 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0149393</td>
+      <td>0.000761846</td>
+      <td>0.0298784</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0186216</td>
+      <td>0.00332384</td>
+      <td>0.0360648</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0102897</td>
+      <td>-0.000741798</td>
+      <td>0.0210321</td>
+      <td>IC incluye cero</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.041259</td>
+      <td>0.0120586</td>
+      <td>0.073633</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0532494</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0167302</td>
+      <td>0.00399287</td>
+      <td>0.0326209</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.107432</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0200674</td>
+      <td>0.00635419</td>
+      <td>0.0347493</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0402024</td>
+      <td>Favorece HAR-Ridge + XGBoost</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0149393</td>
+      <td>0.000761846</td>
+      <td>0.0298784</td>
+      <td>0.000713583</td>
+      <td>0.0291649</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0186216</td>
+      <td>0.00332384</td>
+      <td>0.0360648</td>
+      <td>0.00249975</td>
+      <td>0.0347435</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0102897</td>
+      <td>-0.000741798</td>
+      <td>0.0210321</td>
+      <td>-0.00149575</td>
+      <td>0.0220751</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.041259</td>
+      <td>0.0120586</td>
+      <td>0.073633</td>
+      <td>0.0103349</td>
+      <td>0.0721831</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0167302</td>
+      <td>0.00399287</td>
+      <td>0.0326209</td>
+      <td>0.00185968</td>
+      <td>0.0316007</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0200674</td>
+      <td>0.00635419</td>
+      <td>0.0347493</td>
+      <td>0.00590801</td>
+      <td>0.0342268</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2026-global"><h2>2026 · global · cuatro ventanas</h2><p><a href="2026/global/comparisons.csv">Descargar tabla CSV</a> · <a href="2026/global/forest_plot.svg">Figura SVG</a> · <a href="2026/global/protocol.json">Protocolo de esta vista</a></p><img src="2026/global/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2026, global · cuatro ventanas"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0572335</td>
+      <td>0.01281</td>
+      <td>0.121022</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.31953</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0328531</td>
+      <td>0.0087842</td>
+      <td>0.0636686</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.261295</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.029762</td>
+      <td>0.000980855</td>
+      <td>0.0614105</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.31953</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0114591</td>
+      <td>-0.0228858</td>
+      <td>0.0398007</td>
+      <td>IC incluye cero</td>
+      <td>0.541949</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0161317</td>
+      <td>-0.00229999</td>
+      <td>0.0384784</td>
+      <td>IC incluye cero</td>
+      <td>0.325427</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0327685</td>
+      <td>0.00932893</td>
+      <td>0.0629105</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.261295</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0572335</td>
+      <td>0.01281</td>
+      <td>0.121022</td>
+      <td>-0.00478303</td>
+      <td>0.11925</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0328531</td>
+      <td>0.0087842</td>
+      <td>0.0636686</td>
+      <td>0.00199739</td>
+      <td>0.0637089</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.029762</td>
+      <td>0.000980855</td>
+      <td>0.0614105</td>
+      <td>-0.0048843</td>
+      <td>0.0644082</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0114591</td>
+      <td>-0.0228858</td>
+      <td>0.0398007</td>
+      <td>-0.0243009</td>
+      <td>0.0472191</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0161317</td>
+      <td>-0.00229999</td>
+      <td>0.0384784</td>
+      <td>-0.00582398</td>
+      <td>0.0380874</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0327685</td>
+      <td>0.00932893</td>
+      <td>0.0629105</td>
+      <td>0.00183009</td>
+      <td>0.0637069</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2026-7"><h2>2026 · ventana 7 días</h2><p><a href="2026/7/comparisons.csv">Descargar tabla CSV</a> · <a href="2026/7/forest_plot.svg">Figura SVG</a> · <a href="2026/7/protocol.json">Protocolo de esta vista</a></p><img src="2026/7/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2026, ventana 7 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.159966</td>
+      <td>0.0350723</td>
+      <td>0.347414</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.289912</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0768484</td>
+      <td>0.00859617</td>
+      <td>0.179014</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.496502</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0494106</td>
+      <td>-0.0396243</td>
+      <td>0.137635</td>
+      <td>IC incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0312316</td>
+      <td>-0.065734</td>
+      <td>0.108802</td>
+      <td>IC incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0449172</td>
+      <td>-0.0183906</td>
+      <td>0.117162</td>
+      <td>IC incluye cero</td>
+      <td>0.795347</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0727658</td>
+      <td>0.0100616</td>
+      <td>0.163643</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.496502</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.159966</td>
+      <td>0.0350723</td>
+      <td>0.347414</td>
+      <td>0.00636033</td>
+      <td>0.313572</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0768484</td>
+      <td>0.00859617</td>
+      <td>0.179014</td>
+      <td>-0.0172497</td>
+      <td>0.170946</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0494106</td>
+      <td>-0.0396243</td>
+      <td>0.137635</td>
+      <td>-0.0516726</td>
+      <td>0.150494</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0312316</td>
+      <td>-0.065734</td>
+      <td>0.108802</td>
+      <td>-0.0714717</td>
+      <td>0.133935</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0449172</td>
+      <td>-0.0183906</td>
+      <td>0.117162</td>
+      <td>-0.0317235</td>
+      <td>0.121558</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0727658</td>
+      <td>0.0100616</td>
+      <td>0.163643</td>
+      <td>-0.011045</td>
+      <td>0.156577</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2026-14"><h2>2026 · ventana 14 días</h2><p><a href="2026/14/comparisons.csv">Descargar tabla CSV</a> · <a href="2026/14/forest_plot.svg">Figura SVG</a> · <a href="2026/14/protocol.json">Protocolo de esta vista</a></p><img src="2026/14/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2026, ventana 14 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0350606</td>
+      <td>0.00696448</td>
+      <td>0.0709229</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.171843</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0452073</td>
+      <td>0.0150954</td>
+      <td>0.0827727</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.0833338</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0212842</td>
+      <td>-0.0106005</td>
+      <td>0.0509011</td>
+      <td>IC incluye cero</td>
+      <td>0.686183</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0115221</td>
+      <td>-0.0292065</td>
+      <td>0.0442265</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.00493505</td>
+      <td>-0.00888174</td>
+      <td>0.0220367</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0286793</td>
+      <td>0.00766402</td>
+      <td>0.0521192</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.118293</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0350606</td>
+      <td>0.00696448</td>
+      <td>0.0709229</td>
+      <td>0.00222493</td>
+      <td>0.0678962</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.0452073</td>
+      <td>0.0150954</td>
+      <td>0.0827727</td>
+      <td>0.0104456</td>
+      <td>0.0799689</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.0212842</td>
+      <td>-0.0106005</td>
+      <td>0.0509011</td>
+      <td>-0.0123317</td>
+      <td>0.0549001</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.0115221</td>
+      <td>-0.0292065</td>
+      <td>0.0442265</td>
+      <td>-0.0302829</td>
+      <td>0.0533272</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.00493505</td>
+      <td>-0.00888174</td>
+      <td>0.0220367</td>
+      <td>-0.0127286</td>
+      <td>0.0225987</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0286793</td>
+      <td>0.00766402</td>
+      <td>0.0521192</td>
+      <td>0.00467788</td>
+      <td>0.0526807</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2026-21"><h2>2026 · ventana 21 días</h2><p><a href="2026/21/comparisons.csv">Descargar tabla CSV</a> · <a href="2026/21/forest_plot.svg">Figura SVG</a> · <a href="2026/21/protocol.json">Protocolo de esta vista</a></p><img src="2026/21/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2026, ventana 21 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0170307</td>
+      <td>-0.0060789</td>
+      <td>0.0450243</td>
+      <td>IC incluye cero</td>
+      <td>0.990757</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-0.000325475</td>
+      <td>-0.0184975</td>
+      <td>0.015422</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.039289</td>
+      <td>0.00172412</td>
+      <td>0.0979444</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.874848</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.00583776</td>
+      <td>-0.0114641</td>
+      <td>0.0218613</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0142414</td>
+      <td>0.00195915</td>
+      <td>0.0316369</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.551985</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0198286</td>
+      <td>-0.00549864</td>
+      <td>0.0545572</td>
+      <td>IC incluye cero</td>
+      <td>0.990757</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0170307</td>
+      <td>-0.0060789</td>
+      <td>0.0450243</td>
+      <td>-0.0109797</td>
+      <td>0.045041</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>-0.000325475</td>
+      <td>-0.0184975</td>
+      <td>0.015422</td>
+      <td>-0.019437</td>
+      <td>0.018786</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.039289</td>
+      <td>0.00172412</td>
+      <td>0.0979444</td>
+      <td>-0.0157518</td>
+      <td>0.0943297</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>0.00583776</td>
+      <td>-0.0114641</td>
+      <td>0.0218613</td>
+      <td>-0.0143311</td>
+      <td>0.0260066</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.0142414</td>
+      <td>0.00195915</td>
+      <td>0.0316369</td>
+      <td>-0.00180232</td>
+      <td>0.0302851</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0198286</td>
+      <td>-0.00549864</td>
+      <td>0.0545572</td>
+      <td>-0.0155438</td>
+      <td>0.0552009</td>
+    </tr>
+  </tbody>
+</table></details></section><section id="view-2026-28"><h2>2026 · ventana 28 días</h2><p><a href="2026/28/comparisons.csv">Descargar tabla CSV</a> · <a href="2026/28/forest_plot.svg">Figura SVG</a> · <a href="2026/28/protocol.json">Protocolo de esta vista</a></p><img src="2026/28/forest_plot.png" alt="Intervalos bootstrap de ganancia MSE: 2026, ventana 28 días"><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rival</th>
+      <th>Ganancia MSE</th>
+      <th>IC bootstrap inferior</th>
+      <th>IC bootstrap superior</th>
+      <th>Lectura IC individual</th>
+      <th>p DM Holm6</th>
+      <th>Conclusión DM Holm6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0168766</td>
+      <td>0.00555185</td>
+      <td>0.0331783</td>
+      <td>Favorece al original (IC individual)</td>
+      <td>0.242018</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.00968243</td>
+      <td>-0.007679</td>
+      <td>0.0318444</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.00906412</td>
+      <td>-0.000432369</td>
+      <td>0.0211081</td>
+      <td>IC incluye cero</td>
+      <td>0.807386</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-0.00275514</td>
+      <td>-0.0188942</td>
+      <td>0.00885542</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.000433248</td>
+      <td>-0.00334196</td>
+      <td>0.00499908</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0098003</td>
+      <td>-0.00696738</td>
+      <td>0.0299646</td>
+      <td>IC incluye cero</td>
+      <td>1</td>
+      <td>Sin diferencia significativa</td>
+    </tr>
+  </tbody>
+</table><details><summary>Comparar límites anteriores HAC y nuevos bootstrap</summary><table class="dataframe results">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>gain</th>
+      <th>bootstrap_low</th>
+      <th>bootstrap_high</th>
+      <th>hac_normal_low</th>
+      <th>hac_normal_high</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>k-NN</td>
+      <td>0.0168766</td>
+      <td>0.00555185</td>
+      <td>0.0331783</td>
+      <td>0.0012747</td>
+      <td>0.0324785</td>
+    </tr>
+    <tr>
+      <td>Ridge</td>
+      <td>0.00968243</td>
+      <td>-0.007679</td>
+      <td>0.0318444</td>
+      <td>-0.0135135</td>
+      <td>0.0328784</td>
+    </tr>
+    <tr>
+      <td>Lasso</td>
+      <td>0.00906412</td>
+      <td>-0.000432369</td>
+      <td>0.0211081</td>
+      <td>-0.00323596</td>
+      <td>0.0213642</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>-0.00275514</td>
+      <td>-0.0188942</td>
+      <td>0.00885542</td>
+      <td>-0.0184357</td>
+      <td>0.0129254</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>0.000433248</td>
+      <td>-0.00334196</td>
+      <td>0.00499908</td>
+      <td>-0.00410696</td>
+      <td>0.00497345</td>
+    </tr>
+    <tr>
+      <td>SVR Lineal</td>
+      <td>0.0098003</td>
+      <td>-0.00696738</td>
+      <td>0.0299646</td>
+      <td>-0.0118401</td>
+      <td>0.0314407</td>
+    </tr>
+  </tbody>
+</table></details></section></html>

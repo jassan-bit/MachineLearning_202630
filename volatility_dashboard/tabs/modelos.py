@@ -69,10 +69,11 @@ def _render(symbol,window,horizon,models,metric,focus,asset,detail_h):
         predictions, symbol=symbol, window=window, horizon=horizon)
     confidence_display = confidence_table[[
         'model','mse_original','mse_rival','gain','ci_low_gain','ci_high_gain',
-        'p_holm6','conclusion_5pct']].rename(columns={
+        'ci_conclusion','p_holm6','conclusion_5pct']].rename(columns={
             'model':'Rival','mse_original':'MSE original','mse_rival':'MSE rival',
             'gain':'Ganancia MSE','ci_low_gain':'IC 95 % inferior','ci_high_gain':'IC 95 % superior',
-            'p_holm6':'p Holm6','conclusion_5pct':'Conclusión Holm6'})
+            'ci_conclusion':'Lectura del IC bootstrap',
+            'p_holm6':'p Holm6','conclusion_5pct':'Conclusión DM-Holm6'})
     figures = [graph_card(f'Comparación · {METRICS[m]}',px.bar(global_view,x='model',y=m,color='model',color_discrete_map=COLORS),numeric_note(global_view,m)) for m in ['rmse','mae','r2']]
     all_assets = aggregate(all_metrics,'TODOS',int(window),horizon,models)
     matrix = all_assets.pivot(index='model',columns='symbol',values=metric)
@@ -156,20 +157,28 @@ def _render(symbol,window,horizon,models,metric,focus,asset,detail_h):
             html.P('TODOS promedia las pérdidas de activos y horizontes dentro de cada origen diario; no los trata como observaciones independientes. Los rezagos HAC cubren ventana + horizonte − 2, con un mínimo automático. La evaluación de 2025 es retrospectiva; la prueba no elimina el sesgo por selección previa ni implica equivalencia cuando no se rechaza H₀.'),
             table(dm_results) if not dm_results.empty else html.P('Selecciona al menos dos modelos.'),
             html.A('Referencia metodológica',href='https://pkg.robjhyndman.com/forecast/reference/dm.test.html',target='_blank')],className='panel'),
-        graph_card('IC 95 % HAC · HAR-Ridge + XGBoost original frente a seis modelos de ML',
-            confidence_figure,confidence_details['note']),
         html.Section([
+            html.Span('Actualización · intervalos bootstrap', className='bootstrap-update-badge'),
+            html.P('Los intervalos normales anteriores se sustituyen por intervalos bootstrap temporal. '
+                   'El fondo amarillo identifica este cambio metodológico.', className='bootstrap-update-intro'),
+            graph_card('IC 95 % bootstrap temporal · HAR-Ridge + XGBoost original frente a seis modelos de ML',
+                confidence_figure,confidence_details['note']),
+            html.Section([
             html.H3('Diferencias de MSE frente al modelo original'),
             html.P('Esta comparación siempre incluye los seis modelos clásicos y el original. '
                 'Respeta los filtros de activo, ventana y horizonte. Ganancia positiva: menor MSE '
-                'del original. Si el IC incluye cero, no se demuestra una diferencia individual; '
+                'del original. Los límites se obtienen de los percentiles 2,5 y 97,5 de 5.000 '
+                'réplicas de bootstrap estacionario emparejado, sin asumir errores normales. '
+                'Si el IC incluye cero, no se demuestra una diferencia individual; '
                 'eso no prueba un empate. Los intervalos son individuales y no se ajustan por Holm.'),
             html.P('Las estrellas y esta tabla usan Holm sobre las seis comparaciones contra el '
-                'original. La tabla DM anterior ajusta todos los pares de los modelos seleccionados '
+                'original mediante DM-HLN; son un criterio distinto del IC bootstrap. '
+                'La tabla DM anterior ajusta todos los pares de los modelos seleccionados '
                 '(21 pares cuando están los siete); sus valores p pueden ser diferentes.'),
             table(confidence_display),
             html.A('Ver gráficas globales y por ventana · 2025 y 2026',
-                href='/confidence-intervals/',target='_blank',rel='noopener')],className='panel'),
+                href='/confidence-intervals/',target='_blank',rel='noopener')],className='panel bootstrap-update-details')
+        ], className='panel bootstrap-update', id='bootstrap-confidence-update'),
         html.Div(figures,className='grid-three'),
         graph_card('Mapa de rendimiento por activo',heat,f'{matrix.shape[0]} modelos y {matrix.shape[1]} activos disponibles; ventana {window}, horizonte {horizon}.'),
         html.Section([html.H3('Comparación global por activo'),table(pivot.reset_index())],className='panel'),

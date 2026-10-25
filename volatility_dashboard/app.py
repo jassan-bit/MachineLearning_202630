@@ -82,7 +82,26 @@ def create_app():
     @app.server.route('/confidence-intervals/<path:filename>')
     def confidence_report(filename):
         return send_from_directory(
-            str(ROOT/'results/har_original_ml_confidence_20261006'), filename)
+            str(ROOT/'results/har_original_ml_bootstrap'), filename)
+
+    @app.server.route('/bootstrap-release.json')
+    def bootstrap_release():
+        root = ROOT / 'results/har_original_ml_bootstrap'
+        try:
+            protocol = json.loads((root / 'protocol.json').read_text(encoding='utf-8'))
+            verification = json.loads((root / 'verification.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return {'status': 'unavailable'}, 404
+        return {
+            'status': verification['status'],
+            'method': 'stationary_bootstrap_percentile',
+            'repetitions': protocol['repetitions'],
+            'seed': protocol['seed'],
+            'confidence_level': 1 - protocol['alpha'],
+            'views': verification['views'],
+            'highlight': 'yellow',
+            'deployed_commit': os.environ.get('RENDER_GIT_COMMIT', ''),
+        }, 200
 
     return app
 

@@ -1,0 +1,33 @@
+{
+  "year": 2026,
+  "n": 236,
+  "start": "2026-01-01",
+  "end": "2026-08-24",
+  "symbol": "TODOS",
+  "window": 28,
+  "scope": "global",
+  "horizon": "TODOS",
+  "horizon_hln": 7,
+  "lags": 33,
+  "assets": 4,
+  "cells_per_origin": 112,
+  "benchmark": "HAR-Ridge + XGBoost",
+  "rivals": [
+    "k-NN",
+    "Ridge",
+    "Lasso",
+    "Random Forest",
+    "XGBoost",
+    "SVR Lineal"
+  ],
+  "family_size": 6,
+  "bootstrap_repetitions": 5000,
+  "bootstrap_seed": 42,
+  "bootstrap_block_length": 34,
+  "interval_method": "stationary paired percentile bootstrap",
+  "bootstrap_quantile_method": "linear",
+  "alpha": 0.05,
+  "confidence_level": 0.95,
+  "interval_simultaneous": false,
+  "retrospective": true
+}

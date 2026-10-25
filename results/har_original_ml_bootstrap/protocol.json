@@ -1,0 +1,73 @@
+{
+  "publication": "APPROVED FOR PUBLICATION",
+  "publication_authorized": true,
+  "no_model_training": true,
+  "no_prediction_changes": true,
+  "benchmark": "HAR-Ridge + XGBoost",
+  "rivals": [
+    "k-NN",
+    "Ridge",
+    "Lasso",
+    "Random Forest",
+    "XGBoost",
+    "SVR Lineal"
+  ],
+  "years": [
+    2025,
+    2026
+  ],
+  "scopes": [
+    "global",
+    "7",
+    "14",
+    "21",
+    "28"
+  ],
+  "alpha": 0.05,
+  "statistic": "mean(loss_rival - loss_original); positive favors original",
+  "bootstrap": "Paired stationary bootstrap over consecutive daily origins, circular continuation",
+  "repetitions": 5000,
+  "seed": 42,
+  "quantiles": [
+    0.025,
+    0.975
+  ],
+  "quantile_method": "linear",
+  "expected_block_length": "max(window + maximum_horizon - 1, ceil(n**(1/3))); global uses window=28",
+  "sensitivity": "All views report floor(L/2), L and 2L without selecting a favorable result",
+  "pairing": "One shared date resample for all six rivals; assets/horizons/windows already averaged within each date",
+  "normal_errors_assumed": false,
+  "interval_simultaneous": false,
+  "interval_predictive": false,
+  "assumptions": "Approximate stationarity and weak temporal dependence; block-length heuristic is not an optimality guarantee",
+  "limitations": "Conditional on fixed forecasts; no model/selection uncertainty or correction of prior test inspection",
+  "tests": "DM-HLN/HAC with Holm6 retained unchanged as a separate criterion; stars are not bootstrap decisions",
+  "created_at_utc": "2026-10-25T00:33:05.956335+00:00",
+  "input_sha256": {
+    "results/har_original_ml_confidence_20261006/2025/global/daily_loss.csv": "cb4d496ac711cfacc8e46d2be1e7ccd5a90ace0f40657938042b33184e6d7718",
+    "results/har_original_ml_confidence_20261006/2025/global/comparisons.csv": "df49017af0a1bf58287245a916327450e4e326ba47fecf8308420e579af60cfa",
+    "results/har_original_ml_confidence_20261006/2025/7/daily_loss.csv": "de45a69cbb133f06885c63ef0d65e16da75433bb6a73ed221a82ebbd0857d095",
+    "results/har_original_ml_confidence_20261006/2025/7/comparisons.csv": "e52ba2393190cd138b90c6f9c51a4504c0f4f8446df284f132dd072e2315ebfb",
+    "results/har_original_ml_confidence_20261006/2025/14/daily_loss.csv": "69ef0a688612a498da380adc20d809c419216d5b13f9b994c85c612bbb7a67b8",
+    "results/har_original_ml_confidence_20261006/2025/14/comparisons.csv": "d8799a16236489b4cb3680b17bff91647059e08bed946f7cd0c241e2df6c7dd3",
+    "results/har_original_ml_confidence_20261006/2025/21/daily_loss.csv": "45eb232b17bfdbd9dfa85d00e7d1935c05fb5cb1b8b223d348939dc4e900514a",
+    "results/har_original_ml_confidence_20261006/2025/21/comparisons.csv": "74bdf18878f3377dc5d6aaf9cc3a5def51056a106c54169970d467e2a4e0f9eb",
+    "results/har_original_ml_confidence_20261006/2025/28/daily_loss.csv": "421272fc87695cc4768eb520c87719ad0897551e0764a68ffaab7a61223f7eba",
+    "results/har_original_ml_confidence_20261006/2025/28/comparisons.csv": "d6347455b4ff9850f16eb5184d7b860f0391474c48184745585818b5b053ae1e",
+    "results/har_original_ml_confidence_20261006/2026/global/daily_loss.csv": "c611559918e2cabe4ba450d320145de83fbe85e9bdfbaf4a45aad450b28bc7e3",
+    "results/har_original_ml_confidence_20261006/2026/global/comparisons.csv": "058666583677e3a6279a57915985b460cc05d7f00d5210d289e3e79b9ec33bb1",
+    "results/har_original_ml_confidence_20261006/2026/7/daily_loss.csv": "3eea7166bc6472cba5f30628f8c629cf79dcd8a88749d7778cbc10797aec556d",
+    "results/har_original_ml_confidence_20261006/2026/7/comparisons.csv": "55d42cedfeefa4c4bb395dc9b4c66666e15c43a0a8b419689deaafb5c4c32d24",
+    "results/har_original_ml_confidence_20261006/2026/14/daily_loss.csv": "e67b7bfaa2d95821a4a6f07b4334a6eb03b3bebeddfb69c90ca31380e9b932d6",
+    "results/har_original_ml_confidence_20261006/2026/14/comparisons.csv": "02aa69e41440b4e465ce94a70fb5e9941c2b6472853bf7e71e6eae6c48d304a3",
+    "results/har_original_ml_confidence_20261006/2026/21/daily_loss.csv": "6642068dbcdad6d1df533a0a0ab4e20ad150b78f9d9ad4445900558a67500039",
+    "results/har_original_ml_confidence_20261006/2026/21/comparisons.csv": "67b378312a7a064c1b8b38c3418cd9494dc13de41d6ef305abea590648858ac0",
+    "results/har_original_ml_confidence_20261006/2026/28/daily_loss.csv": "acb460b231893bc26747a0304e3099571d68b97a39df5a12f72b3c94dc6c89e3",
+    "results/har_original_ml_confidence_20261006/2026/28/comparisons.csv": "d31db6b018cb4215daa94aeb76fdfc1e7a99977f943c09e3ea155a573096cc1e"
+  },
+  "source_sha256": {
+    "src/build_bootstrap_confidence_report.py": "93b37333f4a6f485f13b16246ca441e2acd8db6e361abe8bbc4d7e2f8d8f9eef",
+    "volatility_dashboard/confidence_intervals.py": "3fbefb2bea05464f278b7ec9f77f4d64a8c74922299213beaaf271be627ebc9f",
+    "volatility_dashboard/diebold_mariano.py": "3ce2ca5513d937e29e74f3c142c73186a3f29e8090ed7fc3f4a3ccaf61dc2585"
+  }
+}

@@ -1,3 +1,47 @@
+## Actualización: intervalos bootstrap temporal, identificados en amarillo
+
+La comparación de modelos sustituye los intervalos normales HAC de ganancia
+de MSE por intervalos percentiles del 95 % de **bootstrap estacionario
+emparejado**. Se remuestrean fechas en bloques circulares de longitud aleatoria;
+se usan las mismas fechas para todos los modelos, conservando juntos los
+activos y horizontes de cada origen. No se remuestrean errores individuales
+como si fueran independientes ni se utiliza una fórmula normal para los límites.
+
+El protocolo fija 5.000 réplicas, semilla 42 y longitud media de bloque
+`max(ventana + horizonte máximo - 1, ceil(n**(1/3)))`: 13 días para ventana 7
+y siete horizontes; 34 días en el resumen de las cuatro ventanas. Es una regla
+heurística; el informe muestra sensibilidad con L/2, L y 2L sin escoger el
+intervalo más favorable. Los límites son los percentiles 2,5 y 97,5, con
+interpolación lineal. Las series de diferencias constantes se marcan como
+no evaluables para el intervalo.
+
+La ganancia sigue siendo `MSE rival - MSE original`: positiva favorece al
+HAR-Ridge + XGBoost original. Las estrellas y sus valores p conservan el
+contraste DM-HLN con HAC y Holm6; ese contraste es un criterio diferente
+del intervalo bootstrap individual. No se ajustan los intervalos por
+multiplicidad y no se interpretan como intervalos predictivos. El bootstrap
+requiere estabilidad temporal aproximada y dependencia débil; no elimina
+la exploración previa de 2025/2026 ni incorpora la incertidumbre del ajuste
+y selección de los modelos guardados.
+
+El informe y las figuras nuevos están en `results/har_original_ml_bootstrap/`;
+`/confidence-intervals/` apunta a ese informe. La comparación de modelos y el
+informe identifican el cambio en amarillo con la etiqueta
+«Actualización · intervalos bootstrap». El informe
+HAC anterior se conserva como evidencia histórica. La revisión final ya
+incluye su propio bootstrap estacionario y no cambia su protocolo.
+No se reentrenan modelos ni se modifican pronósticos. La publicación ha sido
+autorizada por el usuario. El generador prepara archivos sin publicar por sí
+mismo; `/bootstrap-release.json` identifica el protocolo y el commit que
+ejecuta el servidor para verificar el despliegue.
+
+Reproducir el informe desde las pérdidas diarias guardadas:
+
+```bash
+python src/build_bootstrap_confidence_report.py --publish
+python -m unittest discover -s tests -p 'test_dashboard_confidence*.py'
+```
+
 ## Revisión publicada del 18 de octubre de 2026
 
 La aplicación de Render (`volatility_dashboard.app:server`) incorpora una cuarta

@@ -1,8 +1,8 @@
-"""Paired HAC intervals for the original hybrid against six classical methods.
+"""Paired stationary-bootstrap intervals against six classical methods.
 
 Only the seven published original model names enter this view. Squared losses
 are averaged across selected assets and horizons within each daily origin;
-the effective sample size is the number of dates. Normal HAC intervals are
+the effective sample size is the number of dates. Percentile intervals are
 individual, and the stars use a separate DM-HLN/t test with Holm over the six
 benchmark comparisons. Research scripts, fitted artifacts and remote services
 are never imported or accessed by this module.
@@ -12,7 +12,6 @@ from numbers import Integral, Real
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from scipy.stats import norm
 
 from .diebold_mariano import dm_test
 
@@ -21,10 +20,12 @@ BENCHMARK = 'HAR-Ridge + XGBoost'
 RIVALS = ('k-NN', 'Ridge', 'Lasso', 'Random Forest', 'XGBoost', 'SVR Lineal')
 MODELS = (BENCHMARK,) + RIVALS
 SOURCES = {
-    'HAC de Newey–West': 'https://doi.org/10.2307/1913610',
+    'Bootstrap estacionario de Politis–Romano': 'https://doi.org/10.1080/01621459.1994.10476870',
     'DM con corrección HLN': 'https://pkg.robjhyndman.com/forecast/reference/dm.test.html',
     'Ajuste Holm': 'https://www.jstor.org/stable/4615733',
 }
+BOOTSTRAP_REPETITIONS = 5000
+BOOTSTRAP_SEED = 42
 
 
 def _holm(p_values, family_size):
@@ -112,29 +113,71 @@ def _paired_daily(predictions, symbol, window, horizon, year):
     return daily, details
 
 
-def _interval(differential, lags, alpha):
-    d = np.asarray(differential, dtype=float)
-    n = len(d)
-    mean = float(d.mean())
-    centered = d-mean
-    variance = float(centered@centered/n)
-    for lag in range(1, lags+1):
-        variance += 2*(1-lag/(lags+1))*float(centered[lag:]@centered[:-lag]/n)
-    scale = float(np.mean(d**2))
-    if not np.isfinite([mean, variance, scale]).all():
-        raise ValueError('Las diferencias de pérdida desbordan la escala numérica.')
-    if variance <= np.finfo(float).eps*max(scale, np.finfo(float).tiny):
-        return dict(gain=mean, se_HAC=None, ci_low_gain=None, ci_high_gain=None)
-    error = float(np.sqrt(variance/n))
-    half_width = float(norm.ppf(1-alpha/2))*error
-    return dict(gain=mean, se_HAC=error, ci_low_gain=mean-half_width, ci_high_gain=mean+half_width)
+def _stationary_indices(n, repetitions, block_length, seed):
+    """Circular stationary bootstrap; geometric blocks with E[length]=L.
+
+    Each row is shared by all models, assets and horizons, never drawn
+    independently for competing forecasts. A restart selects a uniform date;
+    otherwise the next original date is retained (with circular wrapping).
+    """
+    rng = np.random.default_rng(seed)
+    starts = rng.integers(0, n, size=(repetitions, n))
+    restart = rng.random((repetitions, n)) < 1 / block_length
+    indices = np.empty_like(starts)
+    indices[:, 0] = starts[:, 0]
+    for step in range(1, n):
+        indices[:, step] = np.where(restart[:, step], starts[:, step],
+                                    (indices[:, step-1] + 1) % n)
+    return indices
+
+
+def _bootstrap_intervals(differentials, indices, alpha):
+    """Recompute paired mean loss gains, then take empirical percentiles.
+
+    Batch indexing bounds memory. No normal quantile or standard-error
+    approximation enters the endpoints. A constant differential is reported
+    as degenerate rather than implying certainty from a zero-width interval.
+    """
+    values = np.asarray(differentials, dtype=float)
+    if values.ndim != 2 or not np.isfinite(values).all():
+        raise ValueError('Las diferencias de pérdida deben ser finitas y bidimensionales.')
+    draws = np.empty((len(indices), values.shape[1]))
+    for start in range(0, len(indices), 256):
+        draws[start:start+256] = values[indices[start:start+256]].mean(axis=1)
+    if not np.isfinite(draws).all():
+        raise ValueError('Las réplicas bootstrap desbordan la escala numérica.')
+    bounds = np.quantile(draws, [alpha / 2, 1 - alpha / 2], axis=0, method='linear')
+    scales = np.max(np.abs(values), axis=0)
+    varying = np.ptp(values, axis=0) > 16 * np.finfo(float).eps * np.maximum(scales, np.finfo(float).tiny)
+    bounds[:, ~varying] = np.nan
+    errors = draws.std(axis=0, ddof=1)
+    errors[~varying] = np.nan
+    return bounds, errors, varying
 
 
 def _comparison_rows(daily, details, alpha):
+    repetitions = _integer(details.get('bootstrap_repetitions', BOOTSTRAP_REPETITIONS), 'Réplicas bootstrap')
+    seed = _integer(details.get('bootstrap_seed', BOOTSTRAP_SEED), 'Semilla bootstrap')
+    default_length = max(details['window'] + details['horizon_hln'] - 1,
+                         int(np.ceil(len(daily) ** (1/3))))
+    length = _integer(details.get('bootstrap_block_length', default_length), 'Longitud de bloque')
+    if not 1000 <= repetitions <= 100000 or seed < 0 or not 1 <= length < len(daily):
+        raise ValueError('Bootstrap requiere 1000–100000 réplicas, semilla no negativa y bloque entre 1 y n−1.')
+    details.update(bootstrap_repetitions=repetitions, bootstrap_seed=seed,
+                   bootstrap_block_length=length, interval_method='stationary_bootstrap_percentile',
+                   bootstrap_quantile_method='linear')
+    differentials = daily[list(RIVALS)].to_numpy() - daily[[BENCHMARK]].to_numpy()
+    indices = _stationary_indices(len(daily), repetitions, length, seed)
+    bounds, errors, varying = _bootstrap_intervals(differentials, indices, alpha)
     rows = []
-    for rival in RIVALS:
-        gain = daily[rival].to_numpy()-daily[BENCHMARK].to_numpy()
-        interval = _interval(gain, details['lags'], alpha)
+    for column, rival in enumerate(RIVALS):
+        gain = differentials[:, column]
+        interval = dict(gain=float(gain.mean()), se_bootstrap=float(errors[column]),
+                        ci_low_gain=float(bounds[0, column]), ci_high_gain=float(bounds[1, column]),
+                        ci_status='OK' if varying[column] else 'Variación temporal insuficiente',
+                        bootstrap_repetitions=repetitions, bootstrap_seed=seed,
+                        bootstrap_block_length=length,
+                        interval_method='stationary_bootstrap_percentile')
         test = dm_test(gain, horizon=details['horizon_hln'], lags=details['lags'])
         rows.append(dict(model=rival, benchmark=BENCHMARK,
                          mse_original=float(daily[BENCHMARK].mean()), mse_rival=float(daily[rival].mean()),
@@ -150,6 +193,11 @@ def _comparison_rows(daily, details, alpha):
     result['conclusion_5pct'] = [
         'No evaluable' if not np.isfinite(row.p_holm6) else
         'Sin diferencia significativa' if row.winner is None else 'Favorece '+row.winner
+        for row in result.itertuples()]
+    result['ci_conclusion'] = [
+        'IC no evaluable' if not np.isfinite(row.ci_low_gain) else
+        'Favorece al original (IC individual)' if row.ci_low_gain > 0 else
+        'Favorece al rival (IC individual)' if row.ci_high_gain < 0 else 'IC incluye cero'
         for row in result.itertuples()]
     return result
 
@@ -167,18 +215,31 @@ def _forest(table, alpha):
         selected = table[selection & table.ci_low_gain.notna()]
         if selected.empty:
             continue
-        custom = selected[['ci_low_gain', 'ci_high_gain', 'p_holm6', 'p_raw_DM_HLN', 'n', 'rezagos_hac']].to_numpy()
+        # Percentile endpoints need not surround the observed estimate.
+        # Draw exact segments and separate points, never negative error widths.
+        for row in selected.itertuples():
+            label = row.model + (' *' if row.star else '')
+            figure.add_trace(go.Scatter(
+                x=[row.ci_low_gain, row.ci_high_gain], y=[label, label],
+                mode='lines+markers', line=dict(color=color, width=2),
+                marker=dict(color=color, symbol='line-ns', size=10),
+                showlegend=False, legendgroup=title,
+                meta=dict(role='bootstrap_interval', model=row.model),
+                customdata=[[row.ci_low_gain, row.ci_high_gain]]*2,
+                hovertemplate=('%{y}<br>IC bootstrap individual: '
+                               '[%{customdata[0]:.6f}, %{customdata[1]:.6f}]<extra></extra>')))
+        custom = selected[['ci_low_gain', 'ci_high_gain', 'p_holm6', 'p_raw_DM_HLN', 'n',
+                           'bootstrap_block_length', 'bootstrap_repetitions']].to_numpy()
         figure.add_trace(go.Scatter(
             x=selected.gain.tolist(), y=[row.model+(' *' if row.star else '') for row in selected.itertuples()],
-            mode='markers', name=title, marker=dict(color=color, size=10),
-            error_x=dict(type='data', symmetric=False,
-                         array=(selected.ci_high_gain-selected.gain).tolist(),
-                         arrayminus=(selected.gain-selected.ci_low_gain).tolist(), color=color, thickness=2, width=5),
+            mode='markers', name=title, legendgroup=title, marker=dict(color=color, size=10),
+            meta=dict(role='observed_gain'),
             customdata=custom,
-            hovertemplate=('%{y}<br>Ganancia MSE: %{x:.6f}<br>IC individual: '
+            hovertemplate=('%{y}<br>Ganancia MSE: %{x:.6f}<br>IC bootstrap individual: '
                            '[%{customdata[0]:.6f}, %{customdata[1]:.6f}]'
                            '<br>p Holm6: %{customdata[2]:.6f}<br>p DM-HLN: %{customdata[3]:.6f}'
-                           '<br>Orígenes: %{customdata[4]:.0f}<br>Rezagos HAC: %{customdata[5]:.0f}'
+                           '<br>Orígenes: %{customdata[4]:.0f}<br>Longitud media de bloque: %{customdata[5]:.0f}'
+                           '<br>Réplicas: %{customdata[6]:.0f}'
                            '<extra></extra>')))
     invalid = table[table.ci_low_gain.isna()]
     if not invalid.empty:
@@ -197,7 +258,8 @@ def _forest(table, alpha):
     return figure
 
 
-def confidence_intervals(predictions, symbol='TODOS', window=7, horizon='TODOS', year=None, alpha=.05):
+def confidence_intervals(predictions, symbol='TODOS', window=7, horizon='TODOS', year=None, alpha=.05,
+                         repetitions=BOOTSTRAP_REPETITIONS, seed=BOOTSTRAP_SEED, block_length=None):
     """Return an interactive forest, six comparison rows and explanatory details.
 
     The models selector used by other dashboard sections does not alter this
@@ -207,6 +269,9 @@ def confidence_intervals(predictions, symbol='TODOS', window=7, horizon='TODOS',
     if isinstance(alpha, bool) or not isinstance(alpha, Real) or not np.isfinite(alpha) or not 0 < alpha < 1:
         raise ValueError('alpha debe estar entre cero y uno.')
     daily, details = _paired_daily(predictions, symbol, window, horizon, year)
+    details.update(bootstrap_repetitions=repetitions, bootstrap_seed=seed)
+    if block_length is not None:
+        details['bootstrap_block_length'] = block_length
     result = _comparison_rows(daily, details, float(alpha))
     details.update(alpha=float(alpha), confidence_level=float(1-alpha), interval_simultaneous=False,
                    significant_wins=int((result.star & result.winner.eq(BENCHMARK)).sum()),
@@ -217,10 +282,16 @@ def confidence_intervals(predictions, symbol='TODOS', window=7, horizon='TODOS',
         f"{details['year']} · {details['start']} a {details['end']} · {details['n']} orígenes diarios. "
         f"Activo: {symbol}; ventana: {details['window']}; horizonte: {horizon}. "
         'Una ganancia positiva favorece HAR-Ridge + XGBoost original. '
-        f'Las barras son intervalos HAC normales individuales al {confidence}. '
+        f'Las barras son intervalos percentiles bootstrap estacionario individuales al {confidence}, '
+        f"con {details['bootstrap_repetitions']} réplicas, longitud media de bloque "
+        f"{details['bootstrap_block_length']} días y semilla {details['bootstrap_seed']}. "
+        'Se remuestrean bloques de fechas emparejadas para todos los modelos; no se supone normalidad de los errores. '
         f'El asterisco indica DM-HLN significativo después de Holm entre los seis rivales (α = {alpha:g}). '
         'El intervalo y el asterisco usan criterios diferentes. '
         f"Rezagos HAC: {details['lags']}; horizonte HLN: {details['horizon_hln']}. "
         'Activos y horizontes se promedian dentro de cada día. '
+        'La longitud de bloque es una regla heurística, no una garantía de capturar toda la dependencia. '
+        'Se requiere estabilidad temporal aproximada; los intervalos condicionan en los modelos guardados, '
+        'no son intervalos predictivos y la evaluación sigue siendo retrospectiva. '
         'Sin diferencia significativa no demuestra equivalencia.')
     return _forest(result, alpha), result, details

@@ -1,6 +1,7 @@
-"""Published dashboard callbacks preserve originals and expose exact HAC bounds."""
+"""Local dashboard callbacks preserve originals and expose exact bootstrap bounds."""
 from pathlib import Path
 from itertools import combinations
+import json
 import sys
 import unittest
 import warnings
@@ -31,19 +32,24 @@ def components(node, kind):
 
 
 def forest_points(figure):
-    """Recover drawn endpoints from Plotly's asymmetric error bars."""
+    """Recover exact percentile segments separately from observed mean markers."""
     points = {}
     for trace in figure['data']:
-        if 'error_x' not in trace:
-            continue
-        errors = trace['error_x']
-        for label, gain, upper, lower in zip(trace['y'], trace['x'],
-                errors['array'], errors['arrayminus']):
-            name = label[:-2] if label.endswith(' *') else label
-            if name in points:
-                raise AssertionError('A rival appears twice in the forest.')
-            points[name] = dict(gain=gain, ci_low_gain=gain-lower,
-                                ci_high_gain=gain+upper, star=label.endswith(' *'))
+        role = trace.get('meta', {}).get('role')
+        if role == 'bootstrap_interval':
+            name = trace['meta']['model']
+            if 'ci_low_gain' in points.get(name, {}):
+                raise AssertionError('A rival interval appears twice in the forest.')
+            self_bounds = list(trace['x'])
+            if len(self_bounds) != 2:
+                raise AssertionError('A confidence interval must have two endpoints.')
+            points.setdefault(name, {}).update(ci_low_gain=self_bounds[0], ci_high_gain=self_bounds[1])
+        elif role == 'observed_gain':
+            for label, gain in zip(trace['y'], trace['x']):
+                name = label[:-2] if label.endswith(' *') else label
+                if 'gain' in points.get(name, {}):
+                    raise AssertionError('A rival estimate appears twice in the forest.')
+                points.setdefault(name, {}).update(gain=gain, star=label.endswith(' *'))
     return points
 
 
@@ -52,8 +58,10 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
     def setUpClass(cls):
         cls.client = create_app().server.test_client()
         cls.predictions, _, _ = loader.repository()
-        cls.saved = pd.read_csv(ROOT / 'results/har_original_ml_confidence_20261006/2025/7/comparisons.csv')
+        cls.saved = pd.read_csv(ROOT / 'results/har_original_ml_bootstrap/2025/7/comparisons.csv')
         cls.saved = cls.saved.set_index('model').loc[list(confidence.RIVALS)]
+        cls.legacy = pd.read_csv(ROOT / 'results/har_original_ml_confidence_20261006/2025/7/comparisons.csv')
+        cls.legacy = cls.legacy.set_index('model').loc[list(confidence.RIVALS)]
 
     def callback(self, models=None):
         values = [('models-symbol', 'TODOS'), ('models-window', 7), ('models-horizon', 'TODOS'),
@@ -91,10 +99,10 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
                     [point[field] for field in ['gain', 'ci_low_gain', 'ci_high_gain']],
                     expected[['gain', 'ci_low_gain', 'ci_high_gain']].to_numpy(dtype=float),
                     rtol=1e-12, atol=1e-13)
-                self.assertEqual(point['star'], bool(expected.star_holm6))
+                self.assertEqual(point['star'], bool(expected.star))
         self.assertEqual(sum(point['star'] for point in points.values()), 5)
 
-    def test_callback_forest_and_six_rival_table_match_saved_hac_results(self):
+    def test_callback_forest_and_six_rival_table_match_saved_bootstrap_results(self):
         payload, tables, figure = self.callback()
         self.assert_forest_matches_saved(figure)
         confidence_tables = [table for table in tables if 'Rival' in table.columns]
@@ -102,8 +110,9 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
         observed = confidence_tables[0].set_index('Rival').sort_index()
         fields = {'mse_original': 'MSE original', 'mse_rival': 'MSE rival',
             'gain': 'Ganancia MSE', 'ci_low_gain': 'IC 95 % inferior',
-            'ci_high_gain': 'IC 95 % superior', 'p_holm6': 'p Holm6',
-            'conclusion_5pct': 'Conclusión Holm6'}
+            'ci_high_gain': 'IC 95 % superior', 'ci_conclusion': 'Lectura del IC bootstrap',
+            'p_holm6': 'p Holm6',
+            'conclusion_5pct': 'Conclusión DM-Holm6'}
         expected = self.saved[list(fields)].rename(columns=fields).round(6).sort_index()
         expected.index.name = 'Rival'
         pd.testing.assert_frame_equal(observed, expected, check_dtype=False)
@@ -122,22 +131,22 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
         self.assertTrue(observed.horizonte_hln.eq(7).all())
         self.assertTrue(observed.rezagos_hac.eq(12).all())
         self.assertTrue(observed.estado.eq('OK').all())
-        # The published confidence CSV independently freezes every original
+        # The historical confidence CSV independently freezes every original
         # model's MSE and the original's six DM/Holm21 comparisons. No local
         # research-only DM export is needed to run this test in the checkout.
-        means = self.saved.mse_rival.to_dict()
-        means[confidence.BENCHMARK] = float(self.saved.mse_original.iloc[0])
+        means = self.legacy.mse_rival.to_dict()
+        means[confidence.BENCHMARK] = float(self.legacy.mse_original.iloc[0])
         for (a, b), row in observed.iterrows():
             with self.subTest(pair=(a, b)):
                 self.assertAlmostEqual(row.mse_a, round(means[a], 6), places=12)
                 self.assertAlmostEqual(row.mse_b, round(means[b], 6), places=12)
                 self.assertAlmostEqual(row.diferencia_mse, round(means[a]-means[b], 6), places=12)
         har = observed.loc[confidence.BENCHMARK]
-        expected = pd.DataFrame(dict(mse_a=self.saved.mse_original, mse_b=self.saved.mse_rival,
-            n=self.saved.n, horizonte_hln=self.saved.horizonte_hln, rezagos_hac=self.saved.rezagos_hac,
-            diferencia_mse=-self.saved.gain, dm=-self.saved.dm_gain, p=self.saved.p_raw_DM_HLN,
-            estado=self.saved.estado, p_holm=self.saved.p_holm21,
-            conclusion_5pct=np.where(self.saved.p_holm21.lt(.05),
+        expected = pd.DataFrame(dict(mse_a=self.legacy.mse_original, mse_b=self.legacy.mse_rival,
+            n=self.legacy.n, horizonte_hln=self.legacy.horizonte_hln, rezagos_hac=self.legacy.rezagos_hac,
+            diferencia_mse=-self.legacy.gain, dm=-self.legacy.dm_gain, p=self.legacy.p_raw_DM_HLN,
+            estado=self.legacy.estado, p_holm=self.legacy.p_holm21,
+            conclusion_5pct=np.where(self.legacy.p_holm21.lt(.05),
                 'Favorece ' + confidence.BENCHMARK, 'Sin diferencia significativa')))
         expected.index.name = 'modelo_b'
         expected = expected[har.columns].round(6).sort_index()
@@ -146,6 +155,30 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
         self.assertTrue(har.mse_a.eq(1.186401).all())
         self.assertTrue(har.n.eq(358).all())
         self.assertEqual(int(har.p_holm.lt(.05).sum()), 3)
+
+    def test_yellow_update_contains_only_bootstrap_graph_explanation_and_table(self):
+        payload, _, _ = self.callback()
+        highlighted = [section for section in components(payload, 'Section')
+                       if section.get('id') == 'bootstrap-confidence-update']
+        self.assertEqual(len(highlighted), 1)
+        update = highlighted[0]
+        self.assertIn('bootstrap-update', update['className'].split())
+        badges = list(components(update, 'Span'))
+        self.assertTrue(any(item.get('children') == 'Actualización · intervalos bootstrap'
+                            for item in badges))
+        graphs = list(components(update, 'Graph'))
+        self.assertEqual(len(graphs), 1)
+        self.assertIn('Ganancia de MSE', graphs[0]['figure']['layout']['xaxis']['title']['text'])
+        tables = list(components(update, 'DataTable'))
+        self.assertEqual(len(tables), 1)
+        self.assertIn('Lectura del IC bootstrap', tables[0]['data'][0])
+        self.assertNotIn('modelo_a', tables[0]['data'][0])
+        self.assertNotIn('posición', tables[0]['data'][0])
+        with self.client.get('/assets/style.css') as response:
+            self.assertEqual(response.status_code, 200)
+            css = response.get_data(as_text=True)
+        self.assertIn('.bootstrap-update{background:#fff3cd;', css)
+        self.assertIn('border:2px solid #e0ad00;color:#664d03', css)
 
     def test_model_subset_filters_ranking_while_forest_keeps_six_rivals(self):
         subset = ['Ridge', 'XGBoost']
@@ -168,7 +201,7 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
             with self.subTest(path=relative):
                 with self.client.get('/confidence-intervals/' + suffix) as response:
                     self.assertEqual(response.status_code, 200)
-                    saved = ROOT / 'results/har_original_ml_confidence_20261006' / relative
+                    saved = ROOT / 'results/har_original_ml_bootstrap' / relative
                     self.assertEqual(response.data, saved.read_bytes())
                     if relative.endswith('.png'):
                         self.assertEqual(response.data[:8], b'\x89PNG\r\n\x1a\n')
@@ -183,6 +216,29 @@ class DashboardConfidencePublicationTests(unittest.TestCase):
                      '/confidence-intervals/nonexistent.png']:
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 404)
+
+    def test_report_protocol_and_sensitivity_cover_both_years_and_all_views(self):
+        output = ROOT / 'results/har_original_ml_bootstrap'
+        protocol = json.loads((output / 'protocol.json').read_text(encoding='utf-8'))
+        self.assertFalse(protocol['normal_errors_assumed'])
+        self.assertFalse(protocol['interval_simultaneous'])
+        self.assertFalse(protocol['interval_predictive'])
+        self.assertTrue(protocol['publication_authorized'])
+        self.assertEqual(protocol['repetitions'], 5000)
+        self.assertEqual(protocol['seed'], 42)
+        sensitivity = pd.read_csv(output / 'block_length_sensitivity.csv')
+        summary = pd.read_csv(output / 'comparison_summary.csv')
+        self.assertEqual(len(summary), 10)
+        self.assertEqual(len(sensitivity), 180)
+        for row in summary.itertuples():
+            with self.subTest(year=row.year, scope=row.volatility_window):
+                selected = sensitivity[sensitivity.year.eq(row.year)
+                    & sensitivity.volatility_window.eq(str(row.volatility_window))]
+                length = row.bootstrap_block_length
+                self.assertEqual(set(selected.block_length), {length // 2, length, length * 2})
+                self.assertTrue(selected.groupby('block_length').size().eq(6).all())
+                self.assertEqual(set(selected.model), set(confidence.RIVALS))
+                self.assertEqual(row.n, 358 if row.year == 2025 else 236)
 
     def test_runtime_confidence_module_never_replays_models_fits_or_repository_audits(self):
         before = self.predictions.copy(deep=True)
