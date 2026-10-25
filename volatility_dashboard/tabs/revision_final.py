@@ -114,6 +114,97 @@ def _metrics_section(frame, year, window):
     ], className='panel')
 
 
+def _bootstrap_section(year, optimizer):
+    """Expose saved global intervals without treating window filters as new data."""
+    heading = html.Span('Actualización · bootstrap por optimizador',
+                        className='bootstrap-update-badge')
+    try:
+        intervals = data.optimizer_intervals(year, optimizer)
+        protocol = data.bootstrap_protocol()
+    except (OSError, ValueError, KeyError, IndexError, TypeError):
+        LOGGER.warning('No se pudieron leer los intervalos bootstrap por optimizador.', exc_info=True)
+        return html.Section([
+            heading,
+            html.H3(f'IC bootstrap por optimizador · global {year}'),
+            html.P('Los intervalos globales guardados no están disponibles en este paquete. '
+                   'Las métricas y comparaciones anteriores siguen disponibles; '
+                   'no se sustituyen estos intervalos por aproximaciones normales.'),
+        ], className='panel bootstrap-update', id='optimizer-bootstrap-update')
+    mse = intervals.loc[intervals.metric.eq('mse')].sort_values(
+        ['estimate', 'model']).reset_index(drop=True)
+    figure = go.Figure()
+    for row in mse.itertuples():
+        color = '#b13e75' if row.model == data.REFERENCE else '#087f8c'
+        # Percentile intervals may be asymmetric or exclude the observed point.
+        figure.add_trace(go.Scatter(
+            x=[row.ci_lower, row.ci_upper], y=[row.model, row.model],
+            mode='lines+markers', line=dict(color=color, width=2),
+            marker=dict(color=color, symbol='line-ns', size=9), showlegend=False,
+            meta=dict(role='optimizer_bootstrap_interval', model=row.model),
+            customdata=[[row.ci_lower, row.ci_upper]]*2,
+            hovertemplate=('%{y}<br>IC bootstrap individual: '
+                           '[%{customdata[0]:.6f}, %{customdata[1]:.6f}]<extra></extra>')))
+    for label, color, selected in [
+            ('HAR original', '#b13e75', mse.model.eq(data.REFERENCE)),
+            ('Procedimientos optimizados', '#087f8c', ~mse.model.eq(data.REFERENCE))]:
+        points = mse.loc[selected]
+        figure.add_trace(go.Scatter(
+            x=points.estimate.tolist(), y=points.model.tolist(), mode='markers',
+            name=label, marker=dict(color=color, size=9),
+            meta=dict(role='optimizer_bootstrap_estimate'),
+            customdata=points[['ci_lower', 'ci_upper']].to_numpy(),
+            hovertemplate=('%{y}<br>MSE global: %{x:.6f}<br>IC bootstrap individual: '
+                           '[%{customdata[0]:.6f}, %{customdata[1]:.6f}]<extra></extra>')))
+    original = mse.loc[mse.model.eq(data.REFERENCE)].iloc[0]
+    figure.add_vline(x=float(original.estimate), line_dash='dash',
+                     line_color='#b13e75', line_width=1)
+    figure.update_layout(
+        height=max(450, 28*len(mse)+140),
+        xaxis_title='MSE global (puntos porcentuales²)', yaxis_title='',
+        yaxis=dict(categoryorder='array', categoryarray=mse.model.iloc[::-1].tolist(),
+                   automargin=True),
+        margin=dict(l=180, r=35, t=35, b=95))
+    names = {'model': 'Modelo', 'estimate': 'Estimación',
+             'ci_lower': 'IC 95 % inferior', 'ci_upper': 'IC 95 % superior'}
+    display = mse[['model', 'estimate', 'ci_lower', 'ci_upper']].rename(
+        columns={**names, 'estimate': 'MSE global'})
+    other = intervals.loc[intervals.metric.isin(['rmse', 'mae']),
+                          ['model', 'metric', 'estimate', 'ci_lower', 'ci_upper']].copy()
+    other['metric'] = other.metric.str.upper()
+    other = other.rename(columns={**names, 'metric': 'Métrica'})
+    method = ('Todos · 28 benchmarks' if optimizer == 'all' else
+              {'bayesian': 'Bayesiana (Optuna TPE)', 'genetic': 'Genética (DEAP)'}.get(
+                  optimizer, data.OPTIMIZERS[optimizer]))
+    return html.Section([
+        heading,
+        html.H3(f'IC 95 % bootstrap por optimizador · {method} · global {year}'),
+        html.P('Esta sección responde al año y al optimizador seleccionados. '
+               'Resume conjuntamente las cuatro ventanas, cuatro activos y siete horizontes '
+               '(112 errores por origen): no cambia con el filtro superior de ventana. '
+               'Incluye todos los benchmarks del optimizador y el HAR original.'),
+        graph_card('MSE global · intervalos bootstrap individuales', figure,
+                   f"Bootstrap estacionario emparejado: {protocol['repetitions']:,} réplicas, "
+                   f"longitud media de bloque {protocol['block_length']} días y semilla {protocol['seed']}. "
+                   'Los puntos son estimaciones de MSE; las líneas son sus intervalos del 95 %. '
+                   'La vertical marca el MSE puntual del HAR original; no es un umbral de significancia.'),
+        table(display, page_size=8),
+        html.Details([
+            html.Summary('Ver también intervalos bootstrap de RMSE y MAE'),
+            html.P('RMSE macro: promedio de RMSE por serie; no es la raíz del MSE global. '
+                   'RMSE y MAE se expresan en puntos porcentuales de volatilidad sin anualizar.'),
+            table(other, page_size=8),
+        ]),
+        html.P('No se supone normalidad de los errores. Se conservan juntos activos, ventanas '
+               'y horizontes al remuestrear fechas. Son intervalos individuales, sin ajuste por '
+               'comparaciones múltiples y distintos de los intervalos de diferencias de MSE. '
+               'El solapamiento entre intervalos no constituye un contraste de superioridad. '
+               'El bootstrap requiere estabilidad temporal aproximada; los pronósticos están '
+               'fijos y la evaluación sigue siendo retrospectiva.', className='interpretation'),
+        _link('Descargar intervalos globales de todos los procedimientos (CSV)',
+              f'{data.RESULTS}/evaluation/metric_intervals.csv'),
+    ], className='panel bootstrap-update', id='optimizer-bootstrap-update')
+
+
 def _dm_section(year, optimizer, window):
     if year != 2025:
         return html.Section([
@@ -198,25 +289,33 @@ def _windows_section(year):
 
 def _candidate_section(year):
     frame = data.candidate_global(year)
-    display = frame[['model', 'mse_original', 'mse', 'mse_reduction_pct', 'p', 'p_holm',
+    display = frame[['model', 'mse_original', 'mse', 'mse_reduction_pct',
+                     'mse_gain', 'gain_ci_lower', 'gain_ci_upper', 'p', 'p_holm',
                      'decision_holm4']].rename(columns={'model': 'Candidato experimental',
         'mse_original': 'MSE original global', 'mse': 'MSE candidato global',
-        'mse_reduction_pct': 'Reducción MSE (%)', 'p': 'p bruto',
+        'mse_reduction_pct': 'Reducción MSE (%)',
+        'mse_gain': 'Ganancia MSE: original − candidato',
+        'gain_ci_lower': 'IC bootstrap ganancia inferior',
+        'gain_ci_upper': 'IC bootstrap ganancia superior', 'p': 'p bruto',
         'p_holm': 'p Holm4', 'decision_holm4': 'Decisión al 5 %'})
     display = _format_p(display, ['p bruto', 'p Holm4'])
     return html.Section([
+        html.Span('Actualización · intervalos bootstrap HAR', className='bootstrap-update-badge'),
         html.H3(f'Candidatos HAR experimentales · global {year}'),
         html.P('Familia distinta: cuatro candidatos HAR-XG frente al HAR original. '
                'Se agregan las cuatro ventanas, cuatro activos y siete horizontes '
                '(112 errores por origen). Esta tabla no cambia con los filtros de ventana '
                'u optimizador y no es la tabla Holm7/28/112.'),
+        html.P('La ganancia es MSE original − MSE candidato: un valor positivo favorece '
+               'al candidato. Los límites corresponden al bootstrap estacionario emparejado '
+               'global y son individuales; su lectura es distinta del contraste DM con Holm4.'),
         table(display, page_size=4),
         html.P('Ninguno de los cuatro candidatos demuestra una mejora con el ajuste Holm4 '
                'en 2025 ni en 2026. El menor error puntual de algunos candidatos '
                'permite continuar la investigación; el modelo original permanece como referencia.',
                className='notice'),
         _link('MCS, SPA, intervalos estacionarios y contrastes dirigidos', f'{data.RESULTS}/evaluation/report.html'),
-    ], className='panel')
+    ], className='panel bootstrap-update')
 
 
 def _outer_section(optimizer):
@@ -324,6 +423,7 @@ def _render(year, optimizer, window):
     metrics = data.metrics(year, optimizer, window)
     return html.Div([
         _metrics_section(metrics, year, window),
+        _bootstrap_section(year, optimizer),
         _dm_section(year, optimizer, window),
         _windows_section(year),
         _candidate_section(year),

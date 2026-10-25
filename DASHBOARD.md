@@ -1,3 +1,34 @@
+## Intervalos bootstrap para los cuatro optimizadores
+
+La pestaña **Optimización y revisión final** muestra en amarillo los intervalos
+globales de MSE, RMSE y MAE para **Grid Search, Random Search, Bayesiana
+(Optuna TPE) y Genética (DEAP)**. El gráfico muestra todos los procedimientos
+del optimizador seleccionado y el HAR original: siete benchmarks más la
+referencia, o los 28 benchmarks cuando se selecciona «Todos».
+
+Se reutilizan los intervalos publicados en
+`evaluation/metric_intervals.csv` del paquete `final_review_20261018`: bootstrap
+estacionario emparejado, 2.000 réplicas, longitud media de bloque 34 días,
+semilla 42 y cobertura individual del 95 %. Sus estimaciones se comprueban
+contra `evaluation/macro_metrics.csv`. Este es el protocolo histórico de la
+revisión final; la comparación original de siete modelos conserva su bootstrap
+de 5.000 réplicas descrito a continuación.
+
+El año y optimizador filtran esta nueva sección. Los intervalos son **globales**:
+agregan cuatro ventanas, cuatro activos y siete horizontes. El filtro superior
+de ventana no los modifica, y la interfaz lo indica. Son intervalos de cada
+métrica, no de diferencias entre modelos; el solapamiento no constituye una
+prueba de superioridad. No se fabrican intervalos de R² ni intervalos por
+ventana a partir de los límites globales.
+
+La tabla de candidatos HAR añade los intervalos emparejados ya guardados en
+`evaluation/paired_effects_vs_original.csv`. Aquí la ganancia se define como
+`MSE original - MSE candidato`: positiva favorece al candidato. Los cuatro
+intervalos incluyen cero en cada año y los contrastes Holm4 siguen sin
+demostrar una mejora. Se conservan las familias y conclusiones DM existentes.
+No se reentrenan modelos, no se modifican pronósticos y no se publican nuevas
+copias de pérdidas por fecha.
+
 ## Actualización: intervalos bootstrap temporal, identificados en amarillo
 
 La comparación de modelos sustituye los intervalos normales HAC de ganancia

@@ -64,6 +64,25 @@ class FinalReviewTests(unittest.TestCase):
         self._csv(f'{data.RESULTS}/evaluation/macro_by_window.csv', metrics)
         self._csv(f'{data.RESULTS}/evaluation/macro_metrics.csv', macro)
         self._csv(f'{data.RESULTS}/evaluation/directed_dm_all_years.csv', directed)
+        units = {'mse': 'percentage_points_squared', 'rmse': 'percentage_points',
+                 'mae': 'percentage_points'}
+        self._csv(f'{data.RESULTS}/evaluation/metric_intervals.csv', [
+            {'year': row['year'], 'model': row['model'], 'metric': metric,
+             'estimate': row[metric], 'ci_lower': row[metric]-.01,
+             'ci_upper': row[metric]+.01, 'nominal_coverage': .95,
+             'ci_method': 'paired stationary bootstrap percentile', 'unit': unit}
+            for row in macro for metric, unit in units.items()])
+        self._csv(f'{data.RESULTS}/evaluation/paired_effects_vs_original.csv', [
+            {'year': row['year'], 'model': row['model'], 'reference': data.REFERENCE,
+             'mse_gain': .4+(row['year']-2025)*.1-row['mse'],
+             'gain_ci_lower': .4+(row['year']-2025)*.1-row['mse']-.02,
+             'gain_ci_upper': .4+(row['year']-2025)*.1-row['mse']+.02}
+            for row in macro if row['model'].startswith('HAR-XG [')])
+        protocol_path = data.artifact_path(f'{data.RESULTS}/evaluation/protocol.json')
+        protocol_path.write_text(json.dumps({'intervals': {'reps': 2000,
+            'block_length': 34, 'coverage': .95,
+            'method': 'paired stationary bootstrap percentile; individual, not simultaneous'},
+            'seed': 42}), encoding='utf-8')
         dm = []
         for window in data.WINDOWS:
             for method in data.OPTIMIZERS:

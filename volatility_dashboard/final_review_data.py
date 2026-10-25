@@ -110,6 +110,61 @@ def metrics(year, optimizer='all', window=7):
     return frame.sort_values(['mse', 'model']).reset_index(drop=True)
 
 
+def bootstrap_protocol():
+    """Read the recorded global bootstrap settings, without rerunning research."""
+    protocol = metadata(f'{RESULTS}/evaluation/protocol.json', required=True)
+    intervals = protocol['intervals']
+    settings = dict(repetitions=int(intervals['reps']),
+                    block_length=int(intervals['block_length']),
+                    seed=int(protocol['seed']), coverage=float(intervals['coverage']))
+    if (settings['repetitions'] < 1000 or settings['block_length'] < 1
+            or settings['seed'] < 0 or not 0 < settings['coverage'] < 1
+            or 'stationary bootstrap percentile' not in intervals['method']):
+        raise ValueError('El protocolo bootstrap global no es válido.')
+    return settings
+
+
+def optimizer_intervals(year, optimizer='all'):
+    """Global metric intervals; the upper window filter intentionally does not apply.
+
+    These are individual CIs of each model's MSE/RMSE/MAE, not CIs of a
+    paired model difference. A common date resample was used by the study.
+    """
+    year, optimizer, _ = _selection(year, optimizer)
+    settings = bootstrap_protocol()
+    full = csv(f'{RESULTS}/evaluation/metric_intervals.csv')
+    required = {'year', 'model', 'metric', 'estimate', 'ci_lower', 'ci_upper',
+                'ci_method', 'nominal_coverage', 'unit'}
+    if not required.issubset(full.columns):
+        raise ValueError('Faltan columnas de los intervalos bootstrap globales.')
+    wanted_metrics = ('mse', 'rmse', 'mae')
+    labels = [REFERENCE, *_benchmark_labels(optimizer)]
+    frame = full.loc[full.year.eq(year) & full.model.isin(labels)
+                     & full.metric.isin(wanted_metrics)].copy()
+    expected = {(model, metric) for model in labels for metric in wanted_metrics}
+    keys = list(zip(frame.model, frame.metric))
+    if len(keys) != len(expected) or set(keys) != expected:
+        raise ValueError('El panel bootstrap global está incompleto o duplicado.')
+    values = frame[['estimate', 'ci_lower', 'ci_upper', 'nominal_coverage']].to_numpy(float)
+    if (not np.isfinite(values).all() or (frame.ci_lower > frame.ci_upper).any()
+            or not np.allclose(frame.nominal_coverage, settings['coverage'], rtol=0, atol=1e-12)
+            or not frame.ci_method.eq('paired stationary bootstrap percentile').all()):
+        raise ValueError('Los límites o el método bootstrap global no son válidos.')
+    units = {'mse': 'percentage_points_squared', 'rmse': 'percentage_points',
+             'mae': 'percentage_points'}
+    if not frame.unit.eq(frame.metric.map(units)).all():
+        raise ValueError('Las unidades de los intervalos no corresponden a las métricas.')
+    macro = csv(f'{RESULTS}/evaluation/macro_metrics.csv')
+    control = macro.loc[macro.year.eq(year) & macro.model.isin(labels)]
+    if len(control) != len(labels) or control.model.duplicated().any():
+        raise ValueError('Falta el control de métricas globales del año seleccionado.')
+    control = control.set_index('model')
+    expected_estimates = [float(control.loc[row.model, row.metric]) for row in frame.itertuples()]
+    if not np.allclose(frame.estimate, expected_estimates, rtol=1e-10, atol=1e-12):
+        raise ValueError('Las estimaciones bootstrap no corresponden a las métricas globales.')
+    return frame.sort_values(['metric', 'estimate', 'model']).reset_index(drop=True)
+
+
 def dm_2025(optimizer='all', window=7):
     """Filter frozen 112 comparisons, preserving every adjusted p-value."""
     _, optimizer, window = _selection(2025, optimizer, window)
@@ -175,6 +230,18 @@ def candidate_global(year):
         'Favorece al candidato' if p < .05 and d < 0 else
         'Favorece al original' if p < .05 and d > 0 else 'No rechaza H₀'
         for p, d in zip(merged.p_holm, merged.diferencia_mse)]
+    effects = csv(f'{RESULTS}/evaluation/paired_effects_vs_original.csv')
+    effects = effects.loc[effects.year.eq(year) & effects.model.isin(labels)]
+    if (len(effects) != 4 or effects.model.duplicated().any()
+            or not effects.reference.eq(REFERENCE).all()):
+        raise ValueError('Faltan los cuatro intervalos emparejados de los candidatos HAR.')
+    merged = merged.merge(effects[['model', 'mse_gain', 'gain_ci_lower', 'gain_ci_upper']],
+                          on='model', validate='one_to_one')
+    if (not np.isfinite(merged[['mse_gain', 'gain_ci_lower', 'gain_ci_upper']].to_numpy(float)).all()
+            or (merged.gain_ci_lower > merged.gain_ci_upper).any()
+            or not np.allclose(merged.mse_gain, merged.mse_original - merged.mse,
+                               rtol=1e-10, atol=1e-12)):
+        raise ValueError('Los intervalos HAR no respetan la orientación original − candidato.')
     return merged.sort_values('mse').reset_index(drop=True)
 
 
